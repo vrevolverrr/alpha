@@ -1,5 +1,5 @@
 import 'package:alpha/model/player.dart';
-import 'package:alpha/widgets/players/player_card.dart';
+import 'package:alpha/screens/players/player_card.dart';
 import 'package:flutter/material.dart';
 
 class PlayersScreen extends StatefulWidget {

@@ -1,10 +1,12 @@
 import 'package:alpha/model/job.dart';
 import 'package:alpha/model/player.dart';
+import 'package:alpha/screens/job_prospect/screen.dart';
 import 'package:alpha/utils/helper.dart';
-import 'package:alpha/widgets/job_selection/bottom_floating_bar.dart';
-import 'package:alpha/widgets/job_selection/job_tile.dart';
+import 'package:alpha/screens/job_selection/bottom_floating_bar.dart';
+import 'package:alpha/screens/job_selection/job_tile.dart';
+import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class JobSelectionScreen extends StatefulWidget {
   final Player player;
@@ -26,6 +28,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
 
     for (int i = 0; i < 2; i++) {
       for (Job job in Job.values) {
+        if (job.tier != 0) continue;
+
         if (i == 0 && widget.player.education.lessThan(job.education)) {
           continue;
         }
@@ -45,12 +49,22 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
                   invalid.value = true;
                   invalid.notifyListeners();
                 },
-          child: JobTile(
-              job: job,
-              eligible:
-                  widget.player.education.greaterThanOrEqualsTo(job.education),
-              selected:
-                  selectedJob != null && selectedJob!.jobTitle == job.jobTitle),
+          onLongPress: job.hasProgression
+              ? () => {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (BuildContext context) =>
+                            JobProspectScreen(job: job)))
+                  }
+              : null,
+          child: Hero(
+            tag: job.jobTitle,
+            child: JobTile(
+                job: job,
+                eligible: widget.player.education
+                    .greaterThanOrEqualsTo(job.education),
+                selected: selectedJob != null &&
+                    selectedJob!.jobTitle == job.jobTitle),
+          ),
         ));
 
         if (row.length >= 3) {
@@ -87,23 +101,15 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
   }
 
   @override
+  void dispose() {
+    invalid.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0.0,
-        leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: const Icon(
-            Icons.arrow_back,
-            size: 28.0,
-            color: Colors.black87,
-          ),
-        ),
-        title: const Text(
-          "Job Selection",
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-      ),
+      appBar: const AlphaAppBar(title: "Select Job"),
       body: Stack(
         children: [
           SingleChildScrollView(child: buildJobGrid()),

@@ -1,5 +1,5 @@
-import 'package:alpha/widgets/dashboard/dashboard_item.dart';
-import 'package:alpha/widgets/dashboard/horizontal_player_card.dart';
+import 'package:alpha/screens/dashboard/dashboard_item.dart';
+import 'package:alpha/screens/dashboard/horizontal_player_card.dart';
 import 'package:alpha/model/player.dart';
 import 'package:flutter/material.dart';
 

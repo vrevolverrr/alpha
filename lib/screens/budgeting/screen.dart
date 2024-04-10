@@ -1,4 +1,4 @@
-import 'package:alpha/widgets/budgeting/budget_tile.dart';
+import 'package:alpha/screens/budgeting/budget_tile.dart';
 import 'package:alpha/model/player.dart';
 import 'package:flutter/material.dart';
 

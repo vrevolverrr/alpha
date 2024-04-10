@@ -1,4 +1,4 @@
-import 'package:alpha/widgets/budgeting/screen.dart';
+import 'package:alpha/screens/budgeting/screen.dart';
 import 'package:alpha/model/player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:alpha/widgets/job_selection/screen.dart';
+import 'package:alpha/screens/job_selection/screen.dart';
 import 'package:alpha/model/player.dart';
 import 'package:flutter/material.dart';
 
