@@ -1,6 +1,9 @@
+import 'package:alpha/model/game_state.dart';
 import 'package:alpha/screens/job_selection/screen.dart';
 import 'package:alpha/model/player.dart';
+import 'package:alpha/screens/player_creation/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,18 +35,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Player> players = [
-    Player("Bryan", "yelllow"),
-    Player("Joyce", "blue"),
-    Player("Alen", "green"),
-    Player("Jacky", "red"),
-    Player("Lily", "purple")
-  ];
-
   @override
   Widget build(BuildContext context) {
     // return Scaffold(body: PlayersScreen(players: players));
     // return Scaffold(body: DashboardScreen(player: players[0]));
-    return JobSelectionScreen(player: players[0]);
+    return ChangeNotifierProvider(
+        create: (context) => GameState(
+            playerNames: ["Bryan", "Alen", "Aaron", "Joyce", "Lisong"]),
+        child: const JobSelectionScreen());
   }
 }

@@ -1,8 +1,13 @@
 import 'package:alpha/model/education.dart';
 
+enum PlayerFields {
+  savings,
+  happiness,
+  education,
+}
+
 class Player {
   final String name;
-  final String color;
 
   Education education = Education.bachelors;
   double savings = 2000.0;
@@ -18,7 +23,7 @@ class Player {
     "Self Improvement": 0.1
   };
 
-  Player(this.name, this.color);
+  Player(this.name);
 
   double updateSavings(double delta) {
     savings += delta;

@@ -1,3 +1,4 @@
+import 'package:alpha/model/game_state.dart';
 import 'package:alpha/model/job.dart';
 import 'package:alpha/model/player.dart';
 import 'package:alpha/screens/job_prospect/screen.dart';
@@ -7,11 +8,10 @@ import 'package:alpha/screens/job_selection/job_tile.dart';
 import 'package:alpha/widgets/alpha_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class JobSelectionScreen extends StatefulWidget {
-  final Player player;
-
-  const JobSelectionScreen({super.key, required this.player});
+  const JobSelectionScreen({super.key});
 
   @override
   State<JobSelectionScreen> createState() => _JobSelectionScreenState();
@@ -22,46 +22,42 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
   Job? selectedJob;
   ValueNotifier<bool> invalid = ValueNotifier(false);
 
-  Column buildJobGrid() {
+  Column buildJobGrid(Player player) {
     List<Widget> row = [];
     List<Widget> column = [];
 
     for (int i = 0; i < 2; i++) {
       for (Job job in Job.values) {
+        // only render tier 0 jobs
         if (job.tier != 0) continue;
 
-        if (i == 0 && widget.player.education.lessThan(job.education)) {
+        // FIRST PASS : only render eligible jobs, ignore ineligible jobs
+        if (i == 0 && player.education.lessThan(job.education)) {
           continue;
         }
-        if (i == 1 &&
-            widget.player.education.greaterThanOrEqualsTo(job.education)) {
+
+        // SECOND PASS : render the ineligible jobs
+        if (i == 1 && player.education.greaterThanOrEqualsTo(job.education)) {
           continue;
         }
 
         row.add(GestureDetector(
-          onTap: widget.player.education.greaterThanOrEqualsTo(job.education)
-              ? () => {
-                    setState(() {
-                      selectedJob = job;
-                    })
-                  }
+          onTap: player.education.greaterThanOrEqualsTo(job.education)
+              ? () => setState(() => selectedJob = job)
               : () {
                   invalid.value = true;
                   invalid.notifyListeners();
                 },
           onLongPress: job.hasProgression
-              ? () => {
-                    Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (BuildContext context) =>
-                            JobProspectScreen(job: job)))
-                  }
+              ? () => Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (BuildContext context) =>
+                      JobProspectScreen(job: job)))
               : null,
           child: Hero(
             tag: job.jobTitle,
             child: JobTile(
                 job: job,
-                eligible: widget.player.education
-                    .greaterThanOrEqualsTo(job.education),
+                eligible: player.education.greaterThanOrEqualsTo(job.education),
                 selected: selectedJob != null &&
                     selectedJob!.jobTitle == job.jobTitle),
           ),
@@ -112,7 +108,12 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
       appBar: const AlphaAppBar(title: "Select Job"),
       body: Stack(
         children: [
-          SingleChildScrollView(child: buildJobGrid()),
+          Consumer(
+            builder:
+                (BuildContext context, GameState gameState, Widget? child) =>
+                    SingleChildScrollView(
+                        child: buildJobGrid(gameState.getActivePlayer())),
+          ),
           AnimatedBottomFloatingBar(
               invalidNotifier: invalid,
               selected: selectedJob != null,
