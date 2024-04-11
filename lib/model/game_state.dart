@@ -8,8 +8,8 @@ class GameState extends ChangeNotifier {
   int _activePlayerIndex = 0;
 
   GameState({required List<String> playerNames}) {
-    for (String p in playerNames) {
-      createPlayer(p);
+    for (final String player in playerNames) {
+      createPlayer(player);
     }
   }
 
@@ -35,11 +35,14 @@ class GameState extends ChangeNotifier {
     return true;
   }
 
-  Player getActivePlayer() {
+  Player get activePlayer {
     return _playerList[_activePlayerIndex];
   }
 
-  void updatePlayer() {}
+  void updatePlayer(PlayerUpdates updates) {
+    updates.player.update(updates);
+    notifyListeners();
+  }
 
   int incrementGameState() {
     // TODO idk

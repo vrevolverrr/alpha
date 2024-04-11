@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 
 class AlphaAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final String? title;
+  final void Function()? onTap;
 
-  const AlphaAppBar({super.key, required this.title});
+  const AlphaAppBar({super.key, this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       scrolledUnderElevation: 0.0,
       leading: GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          if (onTap != null) onTap!();
+          Navigator.of(context).pop();
+        },
         child: const Icon(
           Icons.arrow_back,
           size: 28.0,
           color: Colors.black87,
         ),
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600),
-      ),
+      title: title != null
+          ? Text(
+              title!,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            )
+          : null,
     );
   }
 

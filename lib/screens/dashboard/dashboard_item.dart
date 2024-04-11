@@ -1,18 +1,19 @@
+import 'package:alpha/model/game_state.dart';
 import 'package:alpha/screens/budgeting/screen.dart';
-import 'package:alpha/model/player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DashboardItem extends StatefulWidget {
   final String title;
   final String description;
-  final Player player;
+  final void Function() onTap;
 
   const DashboardItem(
       {super.key,
-      required this.player,
       required this.title,
-      required this.description});
+      required this.description,
+      required this.onTap});
 
   @override
   State<DashboardItem> createState() => _DashboardItemState();
@@ -33,11 +34,7 @@ class _DashboardItemState extends State<DashboardItem> {
       onTapCancel: () => setState(() {
         hover = false;
       }),
-      onTap: () => setState(() {
-        Navigator.of(context).push(CupertinoPageRoute(
-            builder: (BuildContext context) =>
-                BudgetingScreen(player: widget.player)));
-      }),
+      onTap: widget.onTap,
       child: AnimatedScale(
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeOut,

@@ -112,7 +112,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
             builder:
                 (BuildContext context, GameState gameState, Widget? child) =>
                     SingleChildScrollView(
-                        child: buildJobGrid(gameState.getActivePlayer())),
+                        child: buildJobGrid(gameState.activePlayer)),
           ),
           AnimatedBottomFloatingBar(
               invalidNotifier: invalid,

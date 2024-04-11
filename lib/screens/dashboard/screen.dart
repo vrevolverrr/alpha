@@ -1,12 +1,13 @@
+import 'package:alpha/model/game_state.dart';
+import 'package:alpha/screens/budgeting/screen.dart';
 import 'package:alpha/screens/dashboard/dashboard_item.dart';
 import 'package:alpha/screens/dashboard/horizontal_player_card.dart';
-import 'package:alpha/model/player.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
-  final Player player;
-
-  const DashboardScreen({super.key, required this.player});
+  const DashboardScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _DashboardScreenState();
@@ -21,7 +22,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            HorizontalPlayerCard(player: widget.player),
+            Consumer(
+                builder: (BuildContext context, GameState gameState,
+                        Widget? child) =>
+                    HorizontalPlayerCard(player: gameState.activePlayer)),
             const SizedBox(
               height: 50.0,
             ),
@@ -30,22 +34,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 const SizedBox(width: 20.0),
                 DashboardItem(
-                  player: widget.player,
                   title: "Budgeting",
                   description:
                       "Strategically allocate your budgets to maximise profits and happiness",
+                  onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (BuildContext context) =>
+                          const BudgetingScreen())),
                 ),
                 DashboardItem(
-                  player: widget.player,
-                  title: "Investments",
-                  description:
-                      "Invest your excess cash into the stock market to earn side income",
-                ),
+                    title: "Investments",
+                    description:
+                        "Invest your excess cash into the stock market to earn side income",
+                    onTap: () => print("Investments")),
                 DashboardItem(
-                    player: widget.player,
                     title: "Businesses",
                     description:
-                        "Manage your businesses to maximise profit or sell it based on its valuation"),
+                        "Manage your businesses to maximise profit or sell it based on its valuation",
+                    onTap: () => print("Businesses")),
                 const SizedBox(width: 20.0)
               ],
             )

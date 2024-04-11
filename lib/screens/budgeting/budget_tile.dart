@@ -4,14 +4,14 @@ class BudgetingTile extends StatefulWidget {
   final Color color;
   final String title;
   final double initial;
-  final Function updateCallback;
+  final void Function(double percentage) onPercentageChange;
 
   const BudgetingTile(
       {super.key,
       required this.color,
       required this.title,
       required this.initial,
-      required this.updateCallback});
+      required this.onPercentageChange});
 
   @override
   State<StatefulWidget> createState() => _BudgetingTileState();
@@ -44,18 +44,12 @@ class _BudgetingTileState extends State<BudgetingTile> {
             fillPercent += percentDelta;
           }
         }),
-        onPointerDown: (event) => {
-          setState(() {
-            hover = true;
-          })
+        onPointerDown: (event) => setState(() => hover = true),
+        onPointerUp: (event) => {
+          setState(() => hover = false),
+          widget.onPercentageChange(fillPercent)
         },
-        onPointerUp: (event) =>
-            {setState(() => hover = false), widget.updateCallback(fillPercent)},
-        onPointerCancel: (event) => {
-          setState(() {
-            hover = false;
-          })
-        },
+        onPointerCancel: (event) => setState(() => hover = false),
         child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(colors: const [
