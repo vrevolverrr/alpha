@@ -1,12 +1,12 @@
 import 'package:alpha/model/game_state.dart';
 import 'package:alpha/model/job.dart';
 import 'package:alpha/model/player.dart';
+import 'package:alpha/screens/dashboard/screen.dart';
 import 'package:alpha/screens/job_prospect/screen.dart';
 import 'package:alpha/utils/helper.dart';
-import 'package:alpha/screens/job_selection/bottom_floating_bar.dart';
+import 'package:alpha/widgets/bottom_floating_bar.dart';
 import 'package:alpha/screens/job_selection/job_tile.dart';
 import 'package:alpha/widgets/alpha_app_bar.dart';
-import 'package:alpha/widgets/selection_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +37,21 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
     super.dispose();
   }
 
+  void onProceed() {
+    /// Callback for tapping "proceed" in [AnimatedBottomFloatingBar]
+    /// Updates the job of the [activePlayer] then pushes to [DashboardScreen]
+
+    PlayerUpdates updates = PlayerUpdates();
+    // Read the current [GameState] from global provider
+    GameState gameState = context.read<GameState>();
+
+    updates.setJob(selectedJob as Job); // selectedJob is not null
+    gameState.updatePlayer(gameState.activePlayer, updates);
+
+    Navigator.of(context).push(
+        CupertinoPageRoute(builder: (context) => const DashboardScreen()));
+  }
+
   Column buildJobGrid(Player player) {
     List<Widget> row = [];
     List<Widget> column = [];
@@ -57,7 +72,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
     for (int i = 0; i < 2; i++) {
       for (Job job in Job.values) {
         // only render tier 0 jobs
-        if (job.tier != 0) continue;
+        if (job.tier != 0 || job == Job.unemployed) continue;
 
         // FIRST PASS : only render eligible jobs, ignore ineligible jobs
         if (i == 0 && player.education.lessThan(job.education)) {
@@ -119,6 +134,32 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
     );
   }
 
+  Widget bottomBarTextFactory() {
+    /// Decides the Widget to show in the [AnimatedBottomFloatingBar] based
+    /// on the current state
+
+    if (selectedJob == null) {
+      return const Text("✋ Please select a job to apply",
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 17.0,
+              fontWeight: FontWeight.w500));
+    }
+
+    return RichText(
+        text: TextSpan(
+      text:
+          "You have chose to work as ${isVowel(selectedJob!.jobTitle[0]) ? 'an' : 'a'} ",
+      style: const TextStyle(
+          color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w500),
+      children: <TextSpan>[
+        TextSpan(
+            text: selectedJob!.jobTitle,
+            style: const TextStyle(fontWeight: FontWeight.w700))
+      ],
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,37 +173,14 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
           AnimatedBottomFloatingBar(
               animationController: animationController,
               selected: selectedJob != null,
-              text: (() {
-                if (selectedJob == null) {
-                  return const Text("Please select a job to apply",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w500));
-                }
-
-                return RichText(
-                    text: TextSpan(
-                  text:
-                      "You have chose to work as ${isVowel(selectedJob!.jobTitle[0]) ? 'an' : 'a'} ",
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 17.0,
-                      fontWeight: FontWeight.w500),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: selectedJob != null ? selectedJob!.jobTitle : "",
-                        style: const TextStyle(fontWeight: FontWeight.w700))
-                  ],
-                ));
-              })(),
+              text: bottomBarTextFactory(),
               invalidText: const Text(
                   "You are education level does not qualify for this job",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 17.0,
                       fontWeight: FontWeight.w500)),
-              onProceed: () => print("Hello"))
+              onProceed: onProceed)
         ],
       ),
     );

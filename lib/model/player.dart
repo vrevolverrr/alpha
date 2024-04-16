@@ -1,8 +1,9 @@
 import 'package:alpha/model/education.dart';
 import 'dart:math';
 
+import 'package:alpha/model/job.dart';
+
 class PlayerUpdates {
-  final Player player;
   double _deltaSavings = 0;
   double _deltaSalary = 0;
   double _deltaCommitments = 0;
@@ -10,8 +11,9 @@ class PlayerUpdates {
   int _deltaTime = 0;
   bool _incrementEducation = false;
   Map<Budget, double> _deltaBudget = {};
+  Job? _newJob;
 
-  PlayerUpdates(this.player);
+  PlayerUpdates();
 
   PlayerUpdates setDeltaSavings(double delta) {
     _deltaSavings = delta;
@@ -48,31 +50,19 @@ class PlayerUpdates {
     return this;
   }
 
+  PlayerUpdates setJob(Job job) {
+    _newJob = job;
+    return this;
+  }
+
   double get deltaSavings => _deltaSavings;
   double get deltaSalary => _deltaSalary;
   double get deltaCommitments => _deltaCommitments;
   int get deltaHappiness => _deltaHappiness;
   int get deltaTime => _deltaTime;
   bool get incrementEducation => _incrementEducation;
-
-  double get newSavings => player.savings + _deltaSavings;
-  double get newSalary => player.salary + _deltaSalary;
-  double get newCommitments => player.commitments + _deltaCommitments;
-  int get newHappiness => player.happiness + _deltaHappiness;
-  int get newTime => player.time + _deltaTime;
-  Education get newEducation => _incrementEducation
-      ? Education
-          .values[min(player.education.index + 1, Education.values.length - 1)]
-      : player.education;
-
-  Map<Budget, double> get newBudgets {
-    final Map<Budget, double> newBudgets = Map.from(player.budgets);
-
-    _deltaBudget.forEach((key, value) {
-      newBudgets[key] = value;
-    });
-    return newBudgets;
-  }
+  Job? get newJob => _newJob;
+  Map<Budget, double> get deltaBudget => _deltaBudget;
 }
 
 enum Budget {
@@ -90,8 +80,9 @@ enum Budget {
 class Player {
   final String _name;
 
-  // TODO set default values
   Education _education = Education.bachelors;
+  Job _job = Job.unemployed;
+
   double _savings = 2000.0;
   double _salary = 2400.0;
   double _commitments = 671.0;
@@ -118,14 +109,21 @@ class Player {
   Map<Budget, double> get budgets => _budgets;
 
   void update(PlayerUpdates updates) {
-    _savings = updates.newSavings;
-    _salary = updates.newSalary;
-    _commitments = updates.newCommitments;
-    _education = updates.newEducation;
-    _happiness = updates.newHappiness;
-    _time = updates.newTime;
+    _savings += updates.deltaSavings;
+    _salary += updates.deltaSalary;
+    _commitments += updates.deltaCommitments;
+    _happiness += updates.deltaHappiness;
 
-    updates.newBudgets.forEach((key, value) {
+    if (updates.newJob != null) {
+      _job = updates.newJob as Job;
+    }
+
+    _education = updates.incrementEducation
+        ? Education
+            .values[min(education.index + 1, Education.values.length - 1)]
+        : education;
+
+    updates.deltaBudget.forEach((key, value) {
       _budgets[key] = value;
     });
   }

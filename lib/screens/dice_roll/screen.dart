@@ -1,5 +1,5 @@
-import 'package:alpha/screens/dashboard/screen.dart';
-import 'package:alpha/screens/job_selection/bottom_floating_bar.dart';
+import 'package:alpha/screens/gametile_selection/screen.dart';
+import 'package:alpha/widgets/bottom_floating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -23,18 +23,15 @@ class DiceRollScreen extends StatelessWidget {
             style:
                 const TextStyle(fontWeight: FontWeight.w600, fontSize: 200.0),
           ),
-          /*
           AnimatedBottomFloatingBar(
-            selected: true,
-            animationController: AnimationController(vsync: this),
-            invalidText: const SizedBox(),
-            text: const Text(
-              "✋ Please move your player on the board before proceeding",
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.0),
-            ),
-            onProceed: () => Navigator.of(context).push(CupertinoPageRoute(
-                builder: (BuildContext context) => const DashboardScreen())),
-          )*/
+              selected: true,
+              text: const Text(
+                "✋ Please move your player on the board before proceeding",
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.0),
+              ),
+              onProceed: () => Navigator.of(context).push(CupertinoPageRoute(
+                  builder: (BuildContext context) =>
+                      const GameTileSelectionScreen()))),
         ],
       ),
     ));

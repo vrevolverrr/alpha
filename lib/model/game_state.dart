@@ -2,9 +2,8 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:alpha/model/player.dart';
-import 'package:flutter/material.dart';
 
-class GameState extends ChangeNotifier {
+class GameState {
   final List<Player> _playerList = [];
   int _activePlayerIndex = 0;
 
@@ -40,9 +39,8 @@ class GameState extends ChangeNotifier {
     return _playerList[_activePlayerIndex];
   }
 
-  void updatePlayer(PlayerUpdates updates) {
-    updates.player.update(updates);
-    notifyListeners();
+  void updatePlayer(Player player, PlayerUpdates updates) {
+    player.update(updates);
   }
 
   int incrementGameState() {

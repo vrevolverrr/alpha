@@ -20,88 +20,86 @@ class _BudgetingScreenState extends State<BudgetingScreen> {
     budget[field] = percentage;
   }
 
+  void onTapBack() {
+    GameState gameState = context.read<GameState>();
+    PlayerUpdates updates = PlayerUpdates();
+    updates.setDeltaBudget(budget);
+    gameState.updatePlayer(gameState.activePlayer, updates);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GameState>(
-      builder: (BuildContext context, GameState gameState, Widget? child) =>
-          Scaffold(
-              appBar: AlphaAppBar(
-                onTapBack: () {
-                  PlayerUpdates updates = PlayerUpdates(gameState.activePlayer);
-                  updates.setDeltaBudget(budget);
-                  gameState.updatePlayer(updates);
-                },
+        builder: (BuildContext context, GameState gameState, Widget? child) {
+      final Player activePlayer = gameState.activePlayer;
+
+      return Scaffold(
+          appBar: AlphaAppBar(title: "Budgeting", onTapBack: onTapBack),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("💰 Monthly Budget",
+                  style:
+                      TextStyle(fontSize: 40.0, fontWeight: FontWeight.w700)),
+              const SizedBox(height: 20.0),
+              Text(
+                """Take-Home Pay (\$${activePlayer.salary.toStringAsFixed(2)}) minus Financial
+                      Commitments (\$${activePlayer.commitments.toStringAsFixed(2)})""",
+                style: const TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w500),
               ),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              const SizedBox(height: 15.0),
+              Text(
+                "💵 ${activePlayer.savings.toStringAsFixed(2)}",
+                style: const TextStyle(
+                    fontSize: 28.0, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 30.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const Text("💰 Monthly Budget",
-                      style: TextStyle(
-                          fontSize: 40.0, fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 20.0),
-                  Text(
-                    """Take-Home Pay (\$${gameState.activePlayer.salary.toStringAsFixed(2)}) minus Financial
-                      Commitments (\$${gameState.activePlayer.commitments.toStringAsFixed(2)})""",
-                    style: const TextStyle(
-                        fontSize: 20.0, fontWeight: FontWeight.w500),
+                  const SizedBox(width: 20.0),
+                  BudgetingTile(
+                    title: "Savings",
+                    initial: activePlayer.budgets[Budget.savings]!,
+                    color: Colors.red,
+                    onPercentageChange: (percentage) =>
+                        updateBudget(Budget.savings, percentage),
                   ),
-                  const SizedBox(height: 15.0),
-                  Text(
-                    "💵 ${gameState.activePlayer.savings.toStringAsFixed(2)}",
-                    style: const TextStyle(
-                        fontSize: 28.0, fontWeight: FontWeight.w700),
+                  BudgetingTile(
+                    title: "Investments",
+                    initial: activePlayer.budgets[Budget.investments]!,
+                    color: Colors.red,
+                    onPercentageChange: (percentage) =>
+                        updateBudget(Budget.investments, percentage),
                   ),
-                  const SizedBox(height: 30.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const SizedBox(width: 20.0),
-                      BudgetingTile(
-                        title: "Savings",
-                        initial:
-                            gameState.activePlayer.budgets[Budget.savings]!,
-                        color: Colors.red,
-                        onPercentageChange: (percentage) =>
-                            updateBudget(Budget.savings, percentage),
-                      ),
-                      BudgetingTile(
-                        title: "Investments",
-                        initial:
-                            gameState.activePlayer.budgets[Budget.investments]!,
-                        color: Colors.red,
-                        onPercentageChange: (percentage) =>
-                            updateBudget(Budget.investments, percentage),
-                      ),
-                      BudgetingTile(
-                        title: "Daily Expenses",
-                        initial: gameState
-                            .activePlayer.budgets[Budget.dailyExpenses]!,
-                        color: Colors.red,
-                        onPercentageChange: (percentage) =>
-                            updateBudget(Budget.dailyExpenses, percentage),
-                      ),
-                      BudgetingTile(
-                        title: Budget.recreational.title,
-                        initial: gameState
-                            .activePlayer.budgets[Budget.recreational]!,
-                        color: Colors.red,
-                        onPercentageChange: (percentage) =>
-                            updateBudget(Budget.recreational, percentage),
-                      ),
-                      BudgetingTile(
-                        title: Budget.selfImprovement.title,
-                        initial: gameState
-                            .activePlayer.budgets[Budget.selfImprovement]!,
-                        color: Colors.red,
-                        onPercentageChange: (percentage) =>
-                            updateBudget(Budget.selfImprovement, percentage),
-                      ),
-                      const SizedBox(width: 20.0),
-                    ],
+                  BudgetingTile(
+                    title: "Daily Expenses",
+                    initial: activePlayer.budgets[Budget.dailyExpenses]!,
+                    color: Colors.red,
+                    onPercentageChange: (percentage) =>
+                        updateBudget(Budget.dailyExpenses, percentage),
                   ),
-                  const SizedBox(height: 50.0)
+                  BudgetingTile(
+                    title: Budget.recreational.title,
+                    initial: activePlayer.budgets[Budget.recreational]!,
+                    color: Colors.red,
+                    onPercentageChange: (percentage) =>
+                        updateBudget(Budget.recreational, percentage),
+                  ),
+                  BudgetingTile(
+                    title: Budget.selfImprovement.title,
+                    initial: activePlayer.budgets[Budget.selfImprovement]!,
+                    color: Colors.red,
+                    onPercentageChange: (percentage) =>
+                        updateBudget(Budget.selfImprovement, percentage),
+                  ),
+                  const SizedBox(width: 20.0),
                 ],
-              )),
-    );
+              ),
+              const SizedBox(height: 50.0)
+            ],
+          ));
+    });
   }
 }

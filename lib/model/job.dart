@@ -117,6 +117,14 @@ enum Job {
       education: Education.uneducated,
       timeConsumed: 100,
       hasProgression: false,
+      tier: 0),
+
+  unemployed(
+      jobTitle: "Unemployed",
+      jobSalary: 0.0,
+      education: Education.uneducated,
+      timeConsumed: 0,
+      hasProgression: false,
       tier: 0);
 
   const Job(

@@ -15,6 +15,19 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  void onTapItemBudgeting() {
+    Navigator.of(context).push(CupertinoPageRoute(
+        builder: (BuildContext context) => const BudgetingScreen()));
+  }
+
+  void onTapItemInvestments() {
+    print("Investments");
+  }
+
+  void onTapItemBusinesses() {
+    print("Businesses");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,20 +67,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   title: "Budgeting",
                   description:
                       "Strategically allocate your budgets to maximise profits and happiness",
-                  onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (BuildContext context) =>
-                          const BudgetingScreen())),
+                  onTap: onTapItemBudgeting,
                 ),
                 DashboardItem(
                     title: "Investments",
                     description:
                         "Invest your excess cash into the stock market to earn side income",
-                    onTap: () => print("Investments")),
+                    onTap: onTapItemInvestments),
                 DashboardItem(
                     title: "Businesses",
                     description:
                         "Manage your businesses to maximise profit or sell it based on its valuation",
-                    onTap: () => print("Businesses")),
+                    onTap: onTapItemBusinesses),
                 const SizedBox(width: 20.0)
               ],
             )

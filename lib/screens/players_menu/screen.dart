@@ -13,6 +13,19 @@ class PlayersMenuScreen extends StatefulWidget {
 }
 
 class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
+  void onTapPlayerCard() {
+    /// Callback for tapping the active [PlayerCard]
+    /// Rolls the dice and pushes to the [DiceRollScreen]
+
+    // Read the current [GameState] from global provider
+    GameState gameState = context.read<GameState>();
+
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+      int dice = gameState.rollDice();
+      return DiceRollScreen(dice);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,31 +42,21 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
                 ),
                 PlayerCard(
                   player: gameState.players[0],
-                  onTap: () => Navigator.of(context)
-                      .push(CupertinoPageRoute(builder: (context) {
-                    int dice = gameState.rollDice();
-                    return DiceRollScreen(dice);
-                  })),
+                  onTap: onTapPlayerCard,
                 ),
                 PlayerCard(player: gameState.players[1]),
-                const SizedBox(
-                  width: 150.0,
-                )
+                const SizedBox(width: 150.0)
               ],
             ),
             const SizedBox(height: 50.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const SizedBox(
-                  width: 5.0,
-                ),
+                const SizedBox(width: 5.0),
                 PlayerCard(player: gameState.players[2]),
                 PlayerCard(player: gameState.players[3]),
                 PlayerCard(player: gameState.players[4]),
-                const SizedBox(
-                  width: 5.0,
-                )
+                const SizedBox(width: 5.0)
               ],
             )
           ],

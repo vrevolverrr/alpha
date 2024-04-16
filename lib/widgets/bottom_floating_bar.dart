@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 class AnimatedBottomFloatingBar extends StatefulWidget {
   final bool selected;
   final Widget text;
-  final Widget invalidText;
-  final AnimationController animationController;
+  final Widget? invalidText;
+  final AnimationController? animationController;
   final void Function() onProceed;
 
   const AnimatedBottomFloatingBar(
       {super.key,
       required this.selected,
       required this.text,
-      required this.invalidText,
-      required this.animationController,
+      this.invalidText,
+      this.animationController,
       required this.onProceed});
 
   @override
@@ -24,11 +24,19 @@ class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
     with SingleTickerProviderStateMixin {
   late final Animation<double> offsetAnimation;
 
+  late final AnimationController animationController;
+  late final Widget invalidText;
+
   @override
   void initState() {
+    animationController =
+        widget.animationController ?? AnimationController(vsync: this);
+
+    invalidText = widget.invalidText ?? const SizedBox();
+
     offsetAnimation = Tween(begin: 0.0, end: 24.0)
         .chain(CurveTween(curve: Curves.elasticIn))
-        .animate(widget.animationController)
+        .animate(animationController)
       ..addStatusListener((status) {
         if (status == AnimationStatus.forward) {
           setState(() {});
@@ -41,7 +49,7 @@ class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
         }
 
         if (status == AnimationStatus.completed) {
-          widget.animationController.reverse();
+          animationController.reverse();
         }
       });
 
@@ -68,7 +76,7 @@ class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
                   const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
               alignment: Alignment.centerLeft,
               decoration: BoxDecoration(
-                  color: widget.animationController.isAnimating
+                  color: animationController.isAnimating
                       ? const Color.fromARGB(255, 242, 80, 80)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(15.0),
@@ -82,10 +90,8 @@ class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  !widget.animationController.isAnimating
-                      ? widget.text
-                      : widget.invalidText,
-                  (widget.selected && !widget.animationController.isAnimating)
+                  !animationController.isAnimating ? widget.text : invalidText,
+                  (widget.selected && !animationController.isAnimating)
                       ? GestureDetector(
                           onTap: widget.onProceed,
                           behavior: HitTestBehavior.translucent,

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return Provider(
         // instantiate a GameState that will be accessed by all children
         create: (BuildContext context) => GameState(
             playerNames: ["Bryan", "Alen", "Aaron", "Joyce", "Lisong"]),
@@ -46,6 +46,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return const JobSelectionScreen();
+    return const PlayersMenuScreen();
   }
 }
