@@ -26,6 +26,14 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
     }));
   }
 
+  Widget playerCardFactory(int index) {
+    GameState gameState = context.read<GameState>();
+    return PlayerCard(
+      player: gameState.players[index],
+      onTap: gameState.activePlayerIndex == index ? onTapPlayerCard : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,14 +45,9 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const SizedBox(
-                  width: 150.0,
-                ),
-                PlayerCard(
-                  player: gameState.players[0],
-                  onTap: onTapPlayerCard,
-                ),
-                PlayerCard(player: gameState.players[1]),
+                const SizedBox(width: 150.0),
+                playerCardFactory(0),
+                playerCardFactory(1),
                 const SizedBox(width: 150.0)
               ],
             ),
@@ -53,9 +56,9 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 const SizedBox(width: 5.0),
-                PlayerCard(player: gameState.players[2]),
-                PlayerCard(player: gameState.players[3]),
-                PlayerCard(player: gameState.players[4]),
+                playerCardFactory(2),
+                playerCardFactory(3),
+                playerCardFactory(4),
                 const SizedBox(width: 5.0)
               ],
             )

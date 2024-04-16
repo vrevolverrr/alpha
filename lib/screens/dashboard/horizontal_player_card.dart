@@ -9,8 +9,8 @@ class HorizontalPlayerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 440.0,
-      height: 150.0,
+      width: 460.0,
+      height: 160.0,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15.0),
@@ -45,18 +45,25 @@ class HorizontalPlayerCard extends StatelessWidget {
                 style: const TextStyle(
                     fontSize: 21.0, fontWeight: FontWeight.w500),
               ),
-              const SizedBox(height: 2.0),
+              const SizedBox(height: 6.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
                 children: [
+                  Text(
+                    "💼 ${player.job.jobTitle}",
+                    style: const TextStyle(
+                        fontSize: 18.0, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(width: 20.0),
                   Text(
                     "💵 ${player.savings.toStringAsFixed(2)}",
                     style: const TextStyle(
                         fontSize: 18.0, fontWeight: FontWeight.w400),
                   ),
-                  const SizedBox(width: 30.0),
                 ],
               ),
-              const SizedBox(height: 2.0),
+              const SizedBox(height: 6.0),
               Row(
                 children: [
                   Text(
@@ -77,7 +84,7 @@ class HorizontalPlayerCard extends StatelessWidget {
                         fontSize: 18.0, fontWeight: FontWeight.w400),
                   )
                 ],
-              )
+              ),
             ],
           )
         ],

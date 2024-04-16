@@ -1,8 +1,4 @@
 import 'package:alpha/model/game_state.dart';
-import 'package:alpha/screens/dashboard/screen.dart';
-import 'package:alpha/screens/dice_roll/screen.dart';
-import 'package:alpha/screens/job_selection/screen.dart';
-import 'package:alpha/screens/player_creation/screen.dart';
 import 'package:alpha/screens/players_menu/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

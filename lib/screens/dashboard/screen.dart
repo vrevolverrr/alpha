@@ -2,6 +2,7 @@ import 'package:alpha/model/game_state.dart';
 import 'package:alpha/screens/budgeting/screen.dart';
 import 'package:alpha/screens/dashboard/dashboard_item.dart';
 import 'package:alpha/screens/dashboard/horizontal_player_card.dart';
+import 'package:alpha/screens/players_menu/screen.dart';
 import 'package:alpha/widgets/alpha_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,13 +29,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     print("Businesses");
   }
 
+  void endTurn() {
+    context.read<GameState>().incrementGameState();
+    Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(builder: (context) => const PlayersMenuScreen()),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AlphaAppBar(
         title: "Dashboard",
         action: TextButton(
-          onPressed: () => print("end turn"),
+          onPressed: endTurn,
           child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 5.0),
             child: Text(

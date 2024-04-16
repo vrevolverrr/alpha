@@ -14,6 +14,8 @@ class GameState {
   }
 
   UnmodifiableListView<Player> get players => UnmodifiableListView(_playerList);
+  Player get activePlayer => _playerList[_activePlayerIndex];
+  int get activePlayerIndex => _activePlayerIndex;
 
   Player? getPlayer(int index) {
     if (index >= _playerList.length) return null;
@@ -35,17 +37,13 @@ class GameState {
     return true;
   }
 
-  Player get activePlayer {
-    return _playerList[_activePlayerIndex];
-  }
-
   void updatePlayer(Player player, PlayerUpdates updates) {
     player.update(updates);
   }
 
   int incrementGameState() {
-    // TODO idk
-    return ++_activePlayerIndex;
+    _activePlayerIndex = (_activePlayerIndex + 1) % players.length;
+    return _activePlayerIndex;
   }
 
   int rollDice() {

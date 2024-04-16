@@ -66,9 +66,9 @@ class _PlayerCardState extends State<PlayerCard> {
                   width: 135.0,
                   height: 135.0,
                   decoration: const BoxDecoration(
-                    color: Colors.amber,
                     shape: BoxShape.circle,
                   ),
+                  child: Image.asset("assets/img/users_default.png"),
                 ),
                 const SizedBox(height: 15.0),
                 Text(

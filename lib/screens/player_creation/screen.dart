@@ -1,4 +1,3 @@
-import 'package:alpha/widgets/bottom_floating_bar.dart';
 import 'package:alpha/screens/player_creation/player_creation_card.dart';
 import 'package:alpha/widgets/alpha_app_bar.dart';
 import 'package:flutter/material.dart';

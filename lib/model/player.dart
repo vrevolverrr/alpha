@@ -106,6 +106,7 @@ class Player {
   double get commitments => _commitments;
   int get happiness => _happiness;
   int get time => _time;
+  Job get job => _job;
   Map<Budget, double> get budgets => _budgets;
 
   void update(PlayerUpdates updates) {
