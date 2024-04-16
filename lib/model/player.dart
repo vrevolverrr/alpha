@@ -7,29 +7,59 @@ class PlayerUpdates {
   double _deltaSalary = 0;
   double _deltaCommitments = 0;
   int _deltaHappiness = 0;
+  int _deltaTime = 0;
   bool _incrementEducation = false;
   Map<Budget, double> _deltaBudget = {};
 
   PlayerUpdates(this.player);
 
-  void setDeltaSavings(double delta) => _deltaSavings = delta;
-  void setDeltaSalary(double delta) => _deltaSalary = delta;
-  void setDeltaCommitments(double delta) => _deltaCommitments = delta;
-  void setDeltaHappiness(int delta) => _deltaHappiness = delta;
-  void setIncrementEducation(bool shouldIncrement) =>
-      _incrementEducation = shouldIncrement;
-  void setDeltaBudget(Map<Budget, double> delta) => _deltaBudget = delta;
+  PlayerUpdates setDeltaSavings(double delta) {
+    _deltaSavings = delta;
+    return this;
+  }
+
+  PlayerUpdates setDeltaSalary(double delta) {
+    _deltaSalary = delta;
+    return this;
+  }
+
+  PlayerUpdates setDeltaCommitments(double delta) {
+    _deltaCommitments = delta;
+    return this;
+  }
+
+  PlayerUpdates setDeltaHappiness(int delta) {
+    _deltaHappiness = delta;
+    return this;
+  }
+
+  PlayerUpdates setIncrementEducation(bool shouldIncrement) {
+    _incrementEducation = shouldIncrement;
+    return this;
+  }
+
+  PlayerUpdates setDeltaBudget(Map<Budget, double> delta) {
+    _deltaBudget = delta;
+    return this;
+  }
+
+  PlayerUpdates setDeltaTime(int delta) {
+    _deltaTime = delta;
+    return this;
+  }
 
   double get deltaSavings => _deltaSavings;
   double get deltaSalary => _deltaSalary;
   double get deltaCommitments => _deltaCommitments;
   int get deltaHappiness => _deltaHappiness;
+  int get deltaTime => _deltaTime;
   bool get incrementEducation => _incrementEducation;
 
   double get newSavings => player.savings + _deltaSavings;
   double get newSalary => player.salary + _deltaSalary;
   double get newCommitments => player.commitments + _deltaCommitments;
   int get newHappiness => player.happiness + _deltaHappiness;
+  int get newTime => player.time + _deltaTime;
   Education get newEducation => _incrementEducation
       ? Education
           .values[min(player.education.index + 1, Education.values.length - 1)]
@@ -66,6 +96,7 @@ class Player {
   double _salary = 2400.0;
   double _commitments = 671.0;
   int _happiness = 100;
+  int _time = 500;
 
   final Map<Budget, double> _budgets = {
     Budget.savings: 0.0,
@@ -83,6 +114,7 @@ class Player {
   double get salary => _salary;
   double get commitments => _commitments;
   int get happiness => _happiness;
+  int get time => _time;
   Map<Budget, double> get budgets => _budgets;
 
   void update(PlayerUpdates updates) {
@@ -91,6 +123,7 @@ class Player {
     _commitments = updates.newCommitments;
     _education = updates.newEducation;
     _happiness = updates.newHappiness;
+    _time = updates.newTime;
 
     updates.newBudgets.forEach((key, value) {
       _budgets[key] = value;

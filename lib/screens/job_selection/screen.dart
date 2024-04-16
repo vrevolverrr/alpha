@@ -18,13 +18,40 @@ class JobSelectionScreen extends StatefulWidget {
 }
 
 class _JobSelectionScreenState extends State<JobSelectionScreen>
-    with ChangeNotifier {
+    with SingleTickerProviderStateMixin {
   Job? selectedJob;
-  ValueNotifier<bool> invalid = ValueNotifier(false);
+
+  late final AnimationController animationController;
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 540));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
 
   Column buildJobGrid(Player player) {
     List<Widget> row = [];
     List<Widget> column = [];
+
+    void animateInvalidCallback() {
+      if (!animationController.isAnimating) {
+        animationController.forward();
+      }
+    }
+
+    void updateSelectedJobCallback(Job job) =>
+        setState(() => selectedJob = job);
+
+    void expandJobProgressionCallback(Job job) =>
+        Navigator.of(context).push(CupertinoPageRoute(
+            builder: (BuildContext context) => JobProspectScreen(job: job)));
 
     for (int i = 0; i < 2; i++) {
       for (Job job in Job.values) {
@@ -43,15 +70,10 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
 
         row.add(GestureDetector(
           onTap: player.education.greaterThanOrEqualsTo(job.education)
-              ? () => setState(() => selectedJob = job)
-              : () {
-                  invalid.value = true;
-                  invalid.notifyListeners();
-                },
+              ? () => updateSelectedJobCallback(job)
+              : animateInvalidCallback,
           onLongPress: job.hasProgression
-              ? () => Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (BuildContext context) =>
-                      JobProspectScreen(job: job)))
+              ? () => expandJobProgressionCallback(job)
               : null,
           child: Hero(
             tag: job.jobTitle,
@@ -97,25 +119,17 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
   }
 
   @override
-  void dispose() {
-    invalid.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AlphaAppBar(title: "Select Job"),
       body: Stack(
         children: [
-          Consumer(
-            builder:
-                (BuildContext context, GameState gameState, Widget? child) =>
-                    SingleChildScrollView(
-                        child: buildJobGrid(gameState.activePlayer)),
+          Consumer<GameState>(
+            builder: (context, gameState, child) => SingleChildScrollView(
+                child: buildJobGrid(gameState.activePlayer)),
           ),
           AnimatedBottomFloatingBar(
-              invalidNotifier: invalid,
+              animationController: animationController,
               selected: selectedJob != null,
               text: (() {
                 if (selectedJob == null) {
@@ -146,7 +160,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 17.0,
-                      fontWeight: FontWeight.w600)))
+                      fontWeight: FontWeight.w500)),
+              onProceed: () => print("Hello"))
         ],
       ),
     );

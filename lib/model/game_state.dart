@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:alpha/model/player.dart';
 import 'package:flutter/material.dart';
@@ -47,5 +48,9 @@ class GameState extends ChangeNotifier {
   int incrementGameState() {
     // TODO idk
     return ++_activePlayerIndex;
+  }
+
+  int rollDice() {
+    return Random().nextInt(6) + 1;
   }
 }

@@ -26,9 +26,9 @@ class _BudgetingScreenState extends State<BudgetingScreen> {
       builder: (BuildContext context, GameState gameState, Widget? child) =>
           Scaffold(
               appBar: AlphaAppBar(
-                onTap: () {
-                  PlayerUpdates updates = PlayerUpdates(gameState.activePlayer)
-                    ..setDeltaBudget(budget);
+                onTapBack: () {
+                  PlayerUpdates updates = PlayerUpdates(gameState.activePlayer);
+                  updates.setDeltaBudget(budget);
                   gameState.updatePlayer(updates);
                 },
               ),

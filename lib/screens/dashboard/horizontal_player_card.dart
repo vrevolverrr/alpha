@@ -66,6 +66,12 @@ class HorizontalPlayerCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 15.0),
                   Text(
+                    "🕒 ${player.time}",
+                    style: const TextStyle(
+                        fontSize: 18.0, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(width: 15.0),
+                  Text(
                     "🎓 ${player.education.title}",
                     style: const TextStyle(
                         fontSize: 18.0, fontWeight: FontWeight.w400),

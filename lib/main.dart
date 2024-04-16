@@ -1,17 +1,24 @@
 import 'package:alpha/model/game_state.dart';
 import 'package:alpha/screens/dashboard/screen.dart';
+import 'package:alpha/screens/dice_roll/screen.dart';
 import 'package:alpha/screens/job_selection/screen.dart';
+import 'package:alpha/screens/player_creation/screen.dart';
+import 'package:alpha/screens/players_menu/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
+      .then((_) => runApp(const MyApp()));
+  ;
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -39,6 +46,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return const DashboardScreen();
+    return const JobSelectionScreen();
   }
 }

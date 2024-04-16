@@ -1,16 +1,18 @@
 import 'package:alpha/model/game_state.dart';
+import 'package:alpha/screens/dice_roll/screen.dart';
 import 'package:alpha/screens/players_menu/player_card.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PlayersScreen extends StatefulWidget {
-  const PlayersScreen({super.key});
+class PlayersMenuScreen extends StatefulWidget {
+  const PlayersMenuScreen({super.key});
 
   @override
-  State<PlayersScreen> createState() => _PlayersScreenState();
+  State<PlayersMenuScreen> createState() => _PlayersMenuScreenState();
 }
 
-class _PlayersScreenState extends State<PlayersScreen> {
+class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,10 +27,15 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 const SizedBox(
                   width: 150.0,
                 ),
-                PlayerCard(player: gameState.players[0]),
                 PlayerCard(
-                  player: gameState.players[1],
+                  player: gameState.players[0],
+                  onTap: () => Navigator.of(context)
+                      .push(CupertinoPageRoute(builder: (context) {
+                    int dice = gameState.rollDice();
+                    return DiceRollScreen(dice);
+                  })),
                 ),
+                PlayerCard(player: gameState.players[1]),
                 const SizedBox(
                   width: 150.0,
                 )
@@ -41,9 +48,7 @@ class _PlayersScreenState extends State<PlayersScreen> {
                 const SizedBox(
                   width: 5.0,
                 ),
-                PlayerCard(
-                  player: gameState.players[2],
-                ),
+                PlayerCard(player: gameState.players[2]),
                 PlayerCard(player: gameState.players[3]),
                 PlayerCard(player: gameState.players[4]),
                 const SizedBox(

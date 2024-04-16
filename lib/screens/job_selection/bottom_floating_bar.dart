@@ -4,14 +4,16 @@ class AnimatedBottomFloatingBar extends StatefulWidget {
   final bool selected;
   final Widget text;
   final Widget invalidText;
-  final ValueNotifier<bool> invalidNotifier;
+  final AnimationController animationController;
+  final void Function() onProceed;
 
   const AnimatedBottomFloatingBar(
       {super.key,
       required this.selected,
       required this.text,
       required this.invalidText,
-      required this.invalidNotifier});
+      required this.animationController,
+      required this.onProceed});
 
   @override
   State<AnimatedBottomFloatingBar> createState() =>
@@ -20,39 +22,30 @@ class AnimatedBottomFloatingBar extends StatefulWidget {
 
 class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
     with SingleTickerProviderStateMixin {
-  late final AnimationController animationController;
   late final Animation<double> offsetAnimation;
 
   @override
   void initState() {
-    animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 540));
     offsetAnimation = Tween(begin: 0.0, end: 24.0)
         .chain(CurveTween(curve: Curves.elasticIn))
-        .animate(animationController)
-      ..addListener(() {
-        setState(() {});
-      })
+        .animate(widget.animationController)
       ..addStatusListener((status) {
+        if (status == AnimationStatus.forward) {
+          setState(() {});
+        }
+
+        if (status == AnimationStatus.dismissed) {
+          // on reverse complete, hold for awhile before updating the state
+          Future.delayed(
+              const Duration(milliseconds: 600), () => setState(() {}));
+        }
+
         if (status == AnimationStatus.completed) {
-          animationController.reverse();
+          widget.animationController.reverse();
         }
       });
 
-    widget.invalidNotifier.addListener(() {
-      if (!animationController.isAnimating) {
-        animationController.forward();
-      }
-
-      widget.invalidNotifier.value = false;
-    });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -75,7 +68,7 @@ class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
                   const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
               alignment: Alignment.centerLeft,
               decoration: BoxDecoration(
-                  color: animationController.isAnimating
+                  color: widget.animationController.isAnimating
                       ? const Color.fromARGB(255, 242, 80, 80)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(15.0),
@@ -89,31 +82,35 @@ class _AnimatedBottomFloatingBar extends State<AnimatedBottomFloatingBar>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  !animationController.isAnimating
+                  !widget.animationController.isAnimating
                       ? widget.text
                       : widget.invalidText,
-                  (widget.selected && !animationController.isAnimating)
-                      ? Row(
-                          children: [
-                            const Text(
-                              "Proceed",
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 94, 94, 94),
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(width: 5.0),
-                            Transform.rotate(
-                              angle: 3.14,
-                              child: const Icon(
-                                Icons.arrow_back_ios_rounded,
-                                size: 17.0,
-                                color: Color.fromARGB(255, 94, 94, 94),
+                  (widget.selected && !widget.animationController.isAnimating)
+                      ? GestureDetector(
+                          onTap: widget.onProceed,
+                          behavior: HitTestBehavior.translucent,
+                          child: Row(
+                            children: [
+                              const Text(
+                                "Proceed",
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 94, 94, 94),
+                                    fontSize: 17.0,
+                                    fontWeight: FontWeight.w700),
                               ),
-                            )
-                          ],
+                              const SizedBox(width: 5.0),
+                              Transform.rotate(
+                                angle: 3.14,
+                                child: const Icon(
+                                  Icons.arrow_back_ios_rounded,
+                                  size: 17.0,
+                                  color: Color.fromARGB(255, 94, 94, 94),
+                                ),
+                              )
+                            ],
+                          ),
                         )
-                      : Container()
+                      : const SizedBox()
                 ],
               ),
             )));
