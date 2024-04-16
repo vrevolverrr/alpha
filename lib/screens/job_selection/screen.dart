@@ -6,6 +6,7 @@ import 'package:alpha/utils/helper.dart';
 import 'package:alpha/screens/job_selection/bottom_floating_bar.dart';
 import 'package:alpha/screens/job_selection/job_tile.dart';
 import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:alpha/widgets/selection_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,9 +42,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
     List<Widget> column = [];
 
     void animateInvalidCallback() {
-      if (!animationController.isAnimating) {
-        animationController.forward();
-      }
+      animationController.reset();
+      animationController.forward();
     }
 
     void updateSelectedJobCallback(Job job) =>
@@ -53,6 +53,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
         Navigator.of(context).push(CupertinoPageRoute(
             builder: (BuildContext context) => JobProspectScreen(job: job)));
 
+    // TODO REFACTOR ALL THESE SHITS
     for (int i = 0; i < 2; i++) {
       for (Job job in Job.values) {
         // only render tier 0 jobs
