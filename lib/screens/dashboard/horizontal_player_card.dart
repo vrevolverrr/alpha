@@ -57,7 +57,7 @@ class HorizontalPlayerCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 20.0),
                   Text(
-                    "💵 ${player.savings.toStringAsFixed(2)}",
+                    "💵 ${player.assets.toStringAsFixed(2)}",
                     style: const TextStyle(
                         fontSize: 18.0, fontWeight: FontWeight.w400),
                   ),

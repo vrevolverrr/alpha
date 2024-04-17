@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-        // instantiate a GameState that will be accessed by all children
+        // Instantiate a [GameState] that will be accessed by all children
         create: (BuildContext context) => GameState(
             playerNames: ["Bryan", "Alen", "Aaron", "Joyce", "Lisong"]),
         child: MaterialApp(

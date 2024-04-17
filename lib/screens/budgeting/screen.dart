@@ -50,7 +50,7 @@ class _BudgetingScreenState extends State<BudgetingScreen> {
               ),
               const SizedBox(height: 15.0),
               Text(
-                "💵 ${activePlayer.savings.toStringAsFixed(2)}",
+                "💵 ${activePlayer.assets.toStringAsFixed(2)}",
                 style: const TextStyle(
                     fontSize: 28.0, fontWeight: FontWeight.w700),
               ),
