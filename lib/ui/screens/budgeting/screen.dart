@@ -1,7 +1,7 @@
 import 'package:alpha/model/game_state.dart';
-import 'package:alpha/screens/budgeting/budget_tile.dart';
+import 'package:alpha/ui/screens/budgeting/widgets/budget_tile.dart';
 import 'package:alpha/model/player.dart';
-import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

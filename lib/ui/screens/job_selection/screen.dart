@@ -1,12 +1,12 @@
 import 'package:alpha/model/game_state.dart';
 import 'package:alpha/model/job.dart';
 import 'package:alpha/model/player.dart';
-import 'package:alpha/screens/dashboard/screen.dart';
-import 'package:alpha/screens/job_prospect/screen.dart';
+import 'package:alpha/ui/screens/dashboard/screen.dart';
+import 'package:alpha/ui/screens/job_prospect/screen.dart';
 import 'package:alpha/utils/helper.dart';
-import 'package:alpha/widgets/bottom_floating_bar.dart';
-import 'package:alpha/screens/job_selection/job_tile.dart';
-import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:alpha/ui/common/bottom_floating_bar.dart';
+import 'package:alpha/ui/screens/job_selection/job_tile.dart';
+import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -101,13 +101,13 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
           ),
         ));
 
-        if (row.length >= 3) {
+        if (row.length >= 2) {
           column.add(Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const SizedBox(width: 30.0),
+                const SizedBox(width: 20.0),
                 ...row,
-                const SizedBox(width: 30.0)
+                const SizedBox(width: 20.0)
               ]));
           column.add(const SizedBox(height: 30.0));
           row = [];
@@ -120,9 +120,9 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
     }
 
     column.add(Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      const SizedBox(width: 30.0),
+      const SizedBox(width: 20.0),
       ...row,
-      const SizedBox(width: 30.0)
+      const SizedBox(width: 20.0)
     ]));
 
     return Column(
@@ -166,9 +166,29 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
       appBar: const AlphaAppBar(title: "Select Job"),
       body: Stack(
         children: [
-          Consumer<GameState>(
-            builder: (context, gameState, child) => SingleChildScrollView(
-                child: buildJobGrid(gameState.activePlayer)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Consumer<GameState>(
+                builder: (context, gameState, child) => SingleChildScrollView(
+                    child: buildJobGrid(gameState.activePlayer)),
+              )),
+              Container(
+                width: 500.0,
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.black)),
+                child: InteractiveViewer(
+                    constrained: false,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 1000.0,
+                      width: 1000.0,
+                      child: const Text("Hello"),
+                    )),
+              ),
+              const SizedBox(width: 40.0)
+            ],
           ),
           AnimatedBottomFloatingBar(
               animationController: animationController,

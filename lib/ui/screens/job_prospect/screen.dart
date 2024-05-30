@@ -1,6 +1,6 @@
 import 'package:alpha/model/job.dart';
-import 'package:alpha/screens/job_selection/job_tile.dart';
-import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:alpha/ui/screens/job_selection/job_tile.dart';
+import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class JobProspectScreen extends StatelessWidget {

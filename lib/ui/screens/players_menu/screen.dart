@@ -1,6 +1,6 @@
 import 'package:alpha/model/game_state.dart';
-import 'package:alpha/screens/dice_roll/screen.dart';
-import 'package:alpha/screens/players_menu/player_card.dart';
+import 'package:alpha/ui/screens/dice_roll/screen.dart';
+import 'package:alpha/ui/screens/players_menu/player_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,19 @@ class PlayersMenuScreen extends StatefulWidget {
   State<PlayersMenuScreen> createState() => _PlayersMenuScreenState();
 }
 
-class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
+class _PlayersMenuScreenState extends State<PlayersMenuScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController animationController;
+
+  @override
+  void initState() {
+    animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 900));
+
+    animationController.repeat(reverse: true);
+    super.initState();
+  }
+
   void onTapPlayerCard() {
     /// Callback for tapping the active [PlayerCard]
     /// Rolls the dice and pushes to the [DiceRollScreen]
@@ -26,12 +38,29 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
     }));
   }
 
-  Widget playerCardFactory(int index) {
+  Widget playerCardBuilder(int index) {
     GameState gameState = context.read<GameState>();
-    return PlayerCard(
-      player: gameState.players[index],
-      onTap: gameState.activePlayerIndex == index ? onTapPlayerCard : null,
-    );
+
+    if (gameState.activePlayerIndex != index) {
+      return PlayerCard(
+        player: gameState.players[index],
+        onTap: null,
+      );
+    }
+
+    final scaleAnimation = Tween(begin: 1.0, end: 1.08)
+        .chain(CurveTween(curve: Curves.easeInOut))
+        .animate(animationController);
+
+    // current active [PlayerCard]
+    return AnimatedBuilder(
+        animation: scaleAnimation,
+        builder: (context, child) =>
+            Transform.scale(scale: scaleAnimation.value, child: child!),
+        child: PlayerCard(
+          player: gameState.players[index],
+          onTap: gameState.activePlayerIndex == index ? onTapPlayerCard : null,
+        ));
   }
 
   @override
@@ -46,8 +75,8 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 const SizedBox(width: 150.0),
-                playerCardFactory(0),
-                playerCardFactory(1),
+                playerCardBuilder(0),
+                playerCardBuilder(1),
                 const SizedBox(width: 150.0)
               ],
             ),
@@ -56,9 +85,9 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 const SizedBox(width: 5.0),
-                playerCardFactory(2),
-                playerCardFactory(3),
-                playerCardFactory(4),
+                playerCardBuilder(2),
+                playerCardBuilder(3),
+                playerCardBuilder(4),
                 const SizedBox(width: 5.0)
               ],
             )

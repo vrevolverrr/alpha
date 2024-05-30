@@ -1,10 +1,10 @@
 import 'package:alpha/model/game_state.dart';
 import 'package:alpha/model/game_tiles.dart';
 import 'package:alpha/model/player.dart';
-import 'package:alpha/screens/job_selection/screen.dart';
-import 'package:alpha/widgets/bottom_floating_bar.dart';
-import 'package:alpha/widgets/alpha_app_bar.dart';
-import 'package:alpha/widgets/selection_tile.dart';
+import 'package:alpha/ui/screens/job_selection/screen.dart';
+import 'package:alpha/ui/common/bottom_floating_bar.dart';
+import 'package:alpha/ui/common/alpha_app_bar.dart';
+import 'package:alpha/ui/common/selection_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

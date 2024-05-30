@@ -1,5 +1,5 @@
 import 'package:alpha/model/game_state.dart';
-import 'package:alpha/screens/players_menu/screen.dart';
+import 'package:alpha/ui/screens/players_menu/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,6 @@ void main() {
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
       .then((_) => runApp(const MyApp()));
-  ;
 }
 
 class MyApp extends StatelessWidget {

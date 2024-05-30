@@ -1,9 +1,9 @@
 import 'package:alpha/model/game_state.dart';
-import 'package:alpha/screens/budgeting/screen.dart';
-import 'package:alpha/screens/dashboard/dashboard_item.dart';
-import 'package:alpha/screens/dashboard/horizontal_player_card.dart';
-import 'package:alpha/screens/players_menu/screen.dart';
-import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:alpha/ui/screens/budgeting/screen.dart';
+import 'package:alpha/ui/screens/dashboard/widgets/dashboard_item.dart';
+import 'package:alpha/ui/screens/dashboard/horizontal_player_card.dart';
+import 'package:alpha/ui/screens/players_menu/screen.dart';
+import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

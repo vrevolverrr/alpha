@@ -1,5 +1,5 @@
-import 'package:alpha/screens/gametile_selection/screen.dart';
-import 'package:alpha/widgets/bottom_floating_bar.dart';
+import 'package:alpha/ui/screens/gametile_selection/screen.dart';
+import 'package:alpha/ui/common/bottom_floating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

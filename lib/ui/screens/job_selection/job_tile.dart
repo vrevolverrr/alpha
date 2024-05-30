@@ -87,7 +87,7 @@ class JobTile extends StatelessWidget {
               ),
             ),
             Transform.translate(
-              offset: const Offset(-1, -3),
+              offset: const Offset(-1, -2),
               child: Container(
                 width: 263.0,
                 height: 323.0,

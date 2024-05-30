@@ -1,5 +1,5 @@
-import 'package:alpha/screens/player_creation/player_creation_card.dart';
-import 'package:alpha/widgets/alpha_app_bar.dart';
+import 'package:alpha/ui/screens/player_creation/player_creation_card.dart';
+import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class PlayerCreationScreen extends StatefulWidget {

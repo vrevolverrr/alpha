@@ -64,8 +64,22 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-      - assets/img/dashboard_budgeting.png
-      - assets/img/users_default.png
+      - assets/images/dashboard_budgeting.png
+      - assets/images/users_default.png
+
+  fonts:
+    - family: LexendMega
+      fonts:
+        - asset: assets/fonts/LexendMega/LexendMega-Black.ttf
+          weight: 900
+    - family: MazzardH
+      fonts:
+        - asset: assets/fonts/MazzardH/MazzardH-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/MazzardH/MazzardH-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/MazzardH/MazzardH-Medium.ttf
+          weight: 500
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
