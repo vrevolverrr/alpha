@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+
+class AlphaTitle extends StatelessWidget {
+  final String text;
+  final double? fontSize;
+  final Color? color;
+  final Offset? shadowOffset;
+  final double? strokeWidth;
+
+  final Offset _defaultShadowOffset = const Offset(2.6, 2.6);
+
+  const AlphaTitle(this.text,
+      {super.key,
+      this.color,
+      this.fontSize,
+      this.shadowOffset,
+      this.strokeWidth});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Text(
+          text.toUpperCase(),
+          style: TextStyle(
+              height: 0.0,
+              letterSpacing: 1.8,
+              fontFamily: "LexendMega",
+              fontSize: fontSize ?? 30.0,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = strokeWidth ?? 4.0
+                ..strokeJoin = StrokeJoin.round
+                ..color = const Color(0xff000000),
+              shadows: <Shadow>[
+                Shadow(
+                    color: const Color(0xff000000),
+                    offset: shadowOffset ?? _defaultShadowOffset)
+              ]),
+        ),
+        Text(
+          text.toUpperCase(),
+          style: TextStyle(
+              height: 0.0,
+              letterSpacing: 1.8,
+              fontFamily: "LexendMega",
+              fontSize: fontSize ?? 30.0,
+              color: color ?? const Color(0xffFF6B6B)),
+        )
+      ],
+    );
+  }
+}

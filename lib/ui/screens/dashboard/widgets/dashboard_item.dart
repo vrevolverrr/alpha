@@ -59,7 +59,7 @@ class _DashboardItemState extends State<DashboardItem> {
                         topLeft: Radius.circular(15.0),
                         topRight: Radius.circular(15.0)),
                     child: Image.asset(
-                      "assets/img/dashboard_budgeting.png",
+                      "assets/images/dashboard_budgeting.png",
                       fit: BoxFit.fitWidth,
                     ),
                   )),

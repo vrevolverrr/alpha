@@ -1,8 +1,8 @@
-import 'package:alpha/model/education.dart';
+import 'package:alpha/logic/education.dart';
 import 'dart:math';
 
-import 'package:alpha/model/job.dart';
-import 'package:alpha/model/personal_life.dart';
+import 'package:alpha/logic/job.dart';
+import 'package:alpha/logic/personal_life.dart';
 
 class PlayerUpdates {
   /// Changes to [savings] of [Player] instance

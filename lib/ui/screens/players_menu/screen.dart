@@ -1,5 +1,5 @@
-import 'package:alpha/model/game_state.dart';
-import 'package:alpha/ui/screens/dice_roll/screen.dart';
+import 'package:alpha/logic/game_state.dart';
+import 'package:alpha/ui/screens/dice_roll/dice_roll_screen.dart';
 import 'package:alpha/ui/screens/players_menu/player_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +30,9 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen>
     /// Rolls the dice and pushes to the [DiceRollScreen]
 
     // Read the current [GameState] from global provider
-    GameState gameState = context.read<GameState>();
 
     Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-      int dice = gameState.rollDice();
-      return DiceRollScreen(dice);
+      return const DiceRollScreen();
     }));
   }
 

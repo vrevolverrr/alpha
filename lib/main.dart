@@ -1,11 +1,12 @@
-import 'package:alpha/model/game_state.dart';
-import 'package:alpha/ui/screens/players_menu/screen.dart';
+import 'package:alpha/logic/game_state.dart';
+import 'package:alpha/ui/pages/main_menu_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
       .then((_) => runApp(const MyApp()));
@@ -18,29 +19,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider(
         // Instantiate a [GameState] that will be accessed by all children
-        create: (BuildContext context) => GameState(
-            playerNames: ["Bryan", "Alen", "Aaron", "Joyce", "Lisong"]),
+        create: (BuildContext context) => GameState(),
         child: MaterialApp(
           title: 'Alpha Game',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
+            scaffoldBackgroundColor: const Color(0xffFCF7E8),
             useMaterial3: true,
+            fontFamily: "MazzardH",
           ),
-          home: const HomePage(),
+          home: const MainMenuPage(),
         ));
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return const PlayersMenuScreen();
   }
 }

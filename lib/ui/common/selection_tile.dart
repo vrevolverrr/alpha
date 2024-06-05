@@ -53,7 +53,7 @@ class SelectionTile extends StatelessWidget {
                               topLeft: Radius.circular(12.0),
                               topRight: Radius.circular(12.0)),
                           child: Image.asset(
-                            "assets/img/dashboard_budgeting.png",
+                            "assets/images/dashboard_budgeting.png",
                             fit: BoxFit.fitWidth,
                           ),
                         )),

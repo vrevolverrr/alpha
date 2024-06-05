@@ -1,6 +1,6 @@
-import 'package:alpha/model/game_state.dart';
+import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/ui/screens/budgeting/widgets/budget_tile.dart';
-import 'package:alpha/model/player.dart';
+import 'package:alpha/logic/player.dart';
 import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

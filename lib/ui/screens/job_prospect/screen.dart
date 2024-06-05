@@ -1,5 +1,5 @@
-import 'package:alpha/model/job.dart';
-import 'package:alpha/ui/screens/job_selection/job_tile.dart';
+import 'package:alpha/logic/job.dart';
+import 'package:alpha/ui/screens/job_selection_old/job_tile.dart';
 import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/material.dart';
 

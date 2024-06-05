@@ -1,4 +1,4 @@
-import 'package:alpha/model/player.dart';
+import 'package:alpha/logic/player.dart';
 import 'package:flutter/material.dart';
 
 class HorizontalPlayerCard extends StatelessWidget {

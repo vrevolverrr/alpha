@@ -1,4 +1,4 @@
-import 'package:alpha/model/education.dart';
+import 'package:alpha/logic/education.dart';
 
 enum Job {
   surgeon(

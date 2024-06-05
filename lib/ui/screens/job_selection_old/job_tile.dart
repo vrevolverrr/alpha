@@ -1,4 +1,4 @@
-import 'package:alpha/model/job.dart';
+import 'package:alpha/logic/job.dart';
 import 'package:flutter/material.dart';
 
 class JobTile extends StatelessWidget {
@@ -52,7 +52,7 @@ class JobTile extends StatelessWidget {
                               topLeft: Radius.circular(12.0),
                               topRight: Radius.circular(12.0)),
                           child: Image.asset(
-                            "assets/img/dashboard_budgeting.png",
+                            "assets/images/dashboard_budgeting.png",
                             fit: BoxFit.fitWidth,
                           ),
                         )),

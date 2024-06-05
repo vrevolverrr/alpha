@@ -1,5 +1,5 @@
-import 'package:alpha/model/game_state.dart';
-import 'package:alpha/model/player.dart';
+import 'package:alpha/logic/game_state.dart';
+import 'package:alpha/logic/player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +68,7 @@ class _PlayerCardState extends State<PlayerCard> {
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
-                  child: Image.asset("assets/img/users_default.png"),
+                  child: Image.asset("assets/images/users_default.png"),
                 ),
                 const SizedBox(height: 15.0),
                 Text(

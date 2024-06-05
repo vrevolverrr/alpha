@@ -1,19 +1,16 @@
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:alpha/model/player.dart';
+import 'package:alpha/logic/player.dart';
 
 class GameState {
   final List<Player> _playerList = [];
   int _activePlayerIndex = 0;
 
-  GameState({required List<String> playerNames}) {
-    for (final String player in playerNames) {
-      createPlayer(player);
-    }
-  }
+  GameState();
 
   UnmodifiableListView<Player> get players => UnmodifiableListView(_playerList);
+  int get numPlayers => _playerList.length;
   Player get activePlayer => _playerList[_activePlayerIndex];
   int get activePlayerIndex => _activePlayerIndex;
 

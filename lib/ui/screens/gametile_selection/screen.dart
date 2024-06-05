@@ -1,7 +1,7 @@
-import 'package:alpha/model/game_state.dart';
-import 'package:alpha/model/game_tiles.dart';
-import 'package:alpha/model/player.dart';
-import 'package:alpha/ui/screens/job_selection/screen.dart';
+import 'package:alpha/logic/game_state.dart';
+import 'package:alpha/logic/game_tiles.dart';
+import 'package:alpha/logic/player.dart';
+import 'package:alpha/ui/screens/job_selection_old/screen.dart';
 import 'package:alpha/ui/common/bottom_floating_bar.dart';
 import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:alpha/ui/common/selection_tile.dart';
@@ -39,7 +39,7 @@ class _GameTileSelectionScreenState extends State<GameTileSelectionScreen> {
       row.add(GestureDetector(
         onTap: () => updateSelectedTileCallback(tile),
         child: SelectionTile(
-          image: Image.asset("assets/img/dashboard_budgeting.png"),
+          image: Image.asset("assets/images/dashboard_budgeting.png"),
           eligible: true,
           selected:
               selectedTile != null && selectedTile!.tileName == tile.tileName,

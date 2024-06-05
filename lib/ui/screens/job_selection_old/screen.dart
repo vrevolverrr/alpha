@@ -1,11 +1,11 @@
-import 'package:alpha/model/game_state.dart';
-import 'package:alpha/model/job.dart';
-import 'package:alpha/model/player.dart';
+import 'package:alpha/logic/game_state.dart';
+import 'package:alpha/logic/job.dart';
+import 'package:alpha/logic/player.dart';
 import 'package:alpha/ui/screens/dashboard/screen.dart';
 import 'package:alpha/ui/screens/job_prospect/screen.dart';
 import 'package:alpha/utils/helper.dart';
 import 'package:alpha/ui/common/bottom_floating_bar.dart';
-import 'package:alpha/ui/screens/job_selection/job_tile.dart';
+import 'package:alpha/ui/screens/job_selection_old/job_tile.dart';
 import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
