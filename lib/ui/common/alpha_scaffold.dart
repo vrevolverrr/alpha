@@ -44,12 +44,31 @@ class AlphaScaffold extends StatefulWidget {
   State<AlphaScaffold> createState() => AlphaScaffoldState();
 }
 
-class AlphaScaffoldState extends State<AlphaScaffold> {
+class AlphaScaffoldState extends State<AlphaScaffold>
+    with SingleTickerProviderStateMixin {
   AlphaDialogBuilder _dialogBuilder =
       const AlphaDialogBuilder(title: "", child: SizedBox());
   bool _showAlertDialog = false;
 
-  void showSnackbar() {}
+  late final AnimationController _snackbarController;
+  String _snackbarMessage = "";
+
+  void showSnackbar(
+      {required String message,
+      Duration duration = const Duration(seconds: 1)}) {
+    if (_snackbarController.isAnimating) return;
+
+    setState(() => _snackbarMessage = message);
+
+    _snackbarController.forward();
+    Future.delayed(duration, () => _snackbarController.reverse());
+  }
+
+  void dismissSnackbar() {
+    if (_snackbarController.isCompleted) {
+      _snackbarController.reverse();
+    }
+  }
 
   void showAlphaDialog(AlphaDialogBuilder builder) {
     setState(() {
@@ -60,6 +79,18 @@ class AlphaScaffoldState extends State<AlphaScaffold> {
 
   void dismissAlphaDialog() {
     setState(() => _showAlertDialog = false);
+  }
+
+  @override
+  void initState() {
+    _snackbarController = AnimationController(vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _snackbarController.dispose();
+    super.dispose();
   }
 
   @override
@@ -114,8 +145,10 @@ class AlphaScaffoldState extends State<AlphaScaffold> {
               ))
             ],
           ),
-          const Align(
-              alignment: Alignment.bottomCenter, child: AlphaSnackbar()),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: AlphaSnackbar(
+                  message: _snackbarMessage, controller: _snackbarController)),
           _showAlertDialog
               ? Container(
                   decoration: const BoxDecoration(

@@ -1,3 +1,4 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -31,7 +32,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
 
   List<Widget> _buildChildrenCards() {
     final List<Widget> cards = [];
-    final players = context.read<GameState>().players;
+    final players = context.gameState.players;
 
     for (final player in players) {
       cards.add(PlayerCreationCard(
@@ -52,7 +53,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
 
   void _addPlayer() {
     setState(() {
-      context.read<GameState>().createPlayer("Bryan");
+      context.gameState.createPlayer("Bryan");
       Future.delayed(const Duration(milliseconds: 80), () {
         _pageController.nextPage(
             duration: const Duration(milliseconds: 420),
@@ -61,7 +62,13 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     });
   }
 
-  void _startGame() {
+  void _startGame(BuildContext context) {
+    if (context.gameState.numPlayers < 5) {
+      AlphaScaffold.of(context).showSnackbar(
+          message: "✋🏼 There are not enough players to start the game.");
+      return;
+    }
+
     Navigator.of(context).pushAndRemoveUntil(
         CupertinoPageRoute(builder: (context) => const PlayersMenuScreen()),
         (route) => false);
@@ -73,13 +80,14 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
       title: "Players",
       onTapBack: widget.onTapBack,
       mainAxisAlignment: MainAxisAlignment.center,
-      next: AlphaButton(
-        width: 200.0,
-        height: 70.0,
-        title: "START",
-        disabled: context.read<GameState>().numPlayers < 5,
-        onTap: _startGame,
-      ),
+      next: Builder(
+          builder: (BuildContext context) => AlphaButton(
+                width: 200.0,
+                height: 70.0,
+                title: "START",
+                disabled: context.gameState.numPlayers > 5,
+                onTap: () => _startGame(context),
+              )),
       children: <Widget>[
         SizedBox(
           width: MediaQuery.of(context).size.width,
