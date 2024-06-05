@@ -92,7 +92,6 @@ class AlphaScaffoldState extends State<AlphaScaffold> {
                       fontSize: 40.0,
                     ),
                   ),
-                  const AlphaSnackbar()
                 ],
               ),
               Expanded(
@@ -115,6 +114,8 @@ class AlphaScaffoldState extends State<AlphaScaffold> {
               ))
             ],
           ),
+          const Align(
+              alignment: Alignment.bottomCenter, child: AlphaSnackbar()),
           _showAlertDialog
               ? Container(
                   decoration: const BoxDecoration(

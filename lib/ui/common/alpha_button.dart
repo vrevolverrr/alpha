@@ -43,12 +43,11 @@ class _AlphaButtonState extends State<AlphaButton> {
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xff000000), width: 4.0),
+            border: Border.all(color: Colors.black, width: 4.0),
             borderRadius: BorderRadius.circular(14.0),
             boxShadow: !_hover
                 ? const <BoxShadow>[
-                    BoxShadow(
-                        color: Color(0xff000000), offset: Offset(4.0, 4.0))
+                    BoxShadow(color: Colors.black, offset: Offset(4.0, 4.0))
                   ]
                 : null,
             color: !widget.disabled

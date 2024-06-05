@@ -25,6 +25,17 @@ class _AlphaSnackbarState extends State<AlphaSnackbar>
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox();
+    return Transform.translate(
+      offset: const Offset(0.0, -20.0),
+      child: Container(
+        width: 580.0,
+        height: 55.0,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+    );
   }
 }

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 final BoxDecoration _boxDecoration = BoxDecoration(
     color: Colors.white,
     borderRadius: BorderRadius.circular(20.0),
-    border: Border.all(color: const Color(0xff000000), width: 4.0),
+    border: Border.all(color: Colors.black, width: 4.0),
     boxShadow: const <BoxShadow>[
-      BoxShadow(color: Color(0xff000000), offset: Offset(0.5, 3.0))
+      BoxShadow(color: Colors.black, offset: Offset(0.5, 3.0))
     ]);
 
 class AlphaContainer extends StatelessWidget {

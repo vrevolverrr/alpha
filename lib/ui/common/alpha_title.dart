@@ -31,10 +31,10 @@ class AlphaTitle extends StatelessWidget {
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = strokeWidth ?? 4.0
                 ..strokeJoin = StrokeJoin.round
-                ..color = const Color(0xff000000),
+                ..color = Colors.black,
               shadows: <Shadow>[
                 Shadow(
-                    color: const Color(0xff000000),
+                    color: Colors.black,
                     offset: shadowOffset ?? _defaultShadowOffset)
               ]),
         ),

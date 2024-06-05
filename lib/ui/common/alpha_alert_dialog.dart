@@ -93,9 +93,9 @@ class _AlphaAlertDialogState extends State<AlphaAlertDialog> {
       decoration: BoxDecoration(
           color: const Color(0xffFCF7E8),
           borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(color: const Color(0xff000000), width: 4.0),
+          border: Border.all(color: Colors.black, width: 4.0),
           boxShadow: const <BoxShadow>[
-            BoxShadow(color: Color(0xff000000), offset: Offset(1.0, 5.0))
+            BoxShadow(color: Colors.black, offset: Offset(1.0, 5.0))
           ]),
       child: widget.show
           ? LayoutBuilder(

@@ -40,12 +40,11 @@ class _AlphaTagButtonState extends State<AlphaTagButton> {
           padding: const EdgeInsets.only(left: 15.0, top: 1.0),
           decoration: BoxDecoration(
               color: widget.color ?? Colors.white,
-              border: Border.all(color: const Color(0xff000000), width: 3.0),
+              border: Border.all(color: Colors.black, width: 3.0),
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: !_hover
                   ? const <BoxShadow>[
-                      BoxShadow(
-                          color: Color(0xff000000), offset: Offset(0, 1.5))
+                      BoxShadow(color: Colors.black, offset: Offset(0, 1.5))
                     ]
                   : null),
           child: Text(
