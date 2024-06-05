@@ -29,6 +29,11 @@ class _DiceRollScreenState extends State<DiceRollScreen>
     super.initState();
   }
 
+  void _diceRollInProgress(BuildContext context) {
+    AlphaScaffold.of(context)
+        .showSnackbar(message: "✋🏼 The dice is already rolling");
+  }
+
   void _rollDice(BuildContext context) {
     int dice = context.gameState.rollDice();
 
@@ -75,6 +80,7 @@ class _DiceRollScreenState extends State<DiceRollScreen>
                 icon: Icons.arrow_upward_rounded,
                 onTap: () => _rollDice(context),
                 disabled: _hasRolledDice,
+                onTapDisabled: () => _diceRollInProgress(context),
               ))
     ]);
   }

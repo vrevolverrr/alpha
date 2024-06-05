@@ -62,13 +62,12 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     });
   }
 
-  void _startGame(BuildContext context) {
-    if (context.gameState.numPlayers < 5) {
-      AlphaScaffold.of(context).showSnackbar(
-          message: "✋🏼 There are not enough players to start the game.");
-      return;
-    }
+  void _notEnoughPlayers(BuildContext context) {
+    AlphaScaffold.of(context).showSnackbar(
+        message: "✋🏼 There are not enough players to start the game.");
+  }
 
+  void _startGame() {
     Navigator.of(context).pushAndRemoveUntil(
         CupertinoPageRoute(builder: (context) => const PlayersMenuScreen()),
         (route) => false);
@@ -85,8 +84,9 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
                 width: 200.0,
                 height: 70.0,
                 title: "START",
-                disabled: context.gameState.numPlayers > 5,
-                onTap: () => _startGame(context),
+                onTap: _startGame,
+                disabled: context.gameState.numPlayers < 5,
+                onTapDisabled: () => _notEnoughPlayers(context),
               )),
       children: <Widget>[
         SizedBox(

@@ -7,6 +7,7 @@ class AlphaButton extends StatefulWidget {
   final IconData? icon;
   final bool disabled;
   final void Function()? onTap;
+  final void Function()? onTapDisabled;
 
   const AlphaButton(
       {super.key,
@@ -16,7 +17,8 @@ class AlphaButton extends StatefulWidget {
       this.color,
       this.icon,
       this.disabled = false,
-      this.onTap});
+      this.onTap,
+      this.onTapDisabled});
 
   @override
   State<AlphaButton> createState() => _AlphaButtonState();
@@ -31,7 +33,7 @@ class _AlphaButtonState extends State<AlphaButton> {
       onTapDown: (_) => setState(() => _hover = true),
       onTapCancel: () => setState(() => _hover = false),
       onTapUp: (_) => setState(() => _hover = false),
-      onTap: !widget.disabled ? widget.onTap : null,
+      onTap: !widget.disabled ? widget.onTap : widget.onTapDisabled,
       child: AnimatedSlide(
         duration: const Duration(milliseconds: 80),
         offset: _hover ? const Offset(0.04, 0.04) : const Offset(0, 0),
