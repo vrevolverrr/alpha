@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AlphaContainer extends StatelessWidget {
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry? padding;
+  final Offset? shadowOffset;
   final Widget child;
 
   const AlphaContainer(
       {super.key,
-      required this.width,
-      required this.height,
+      this.width,
+      this.height,
+      this.padding,
+      this.shadowOffset,
       required this.child});
 
   @override
@@ -16,12 +20,15 @@ class AlphaContainer extends StatelessWidget {
     return Container(
       width: width,
       height: height,
+      padding: padding,
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(color: Colors.black, width: 4.0),
-          boxShadow: const <BoxShadow>[
-            BoxShadow(color: Colors.black, offset: Offset(0.5, 3.0))
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.black,
+                offset: shadowOffset ?? const Offset(0.5, 3.0))
           ]),
       child: child,
     );
@@ -31,15 +38,15 @@ class AlphaContainer extends StatelessWidget {
 class AlphaAnimatedContainer extends AlphaContainer {
   final Duration duration;
   final Curve curve;
-  final Offset? offset;
 
   const AlphaAnimatedContainer(
       {super.key,
       this.duration = const Duration(milliseconds: 120),
       this.curve = Curves.linear,
-      this.offset,
-      required super.width,
-      required super.height,
+      super.width,
+      super.height,
+      super.shadowOffset = const Offset(0.5, 3.0),
+      super.padding,
       required super.child});
 
   @override
@@ -55,7 +62,8 @@ class AlphaAnimatedContainer extends AlphaContainer {
             border: Border.all(color: Colors.black, width: 4.0),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Colors.black, offset: offset ?? const Offset(0.5, 3.0))
+                  color: Colors.black,
+                  offset: shadowOffset ?? const Offset(0.5, 3.0))
             ]),
         child: child);
   }

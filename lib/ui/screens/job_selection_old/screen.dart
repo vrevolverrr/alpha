@@ -2,7 +2,6 @@ import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/logic/job.dart';
 import 'package:alpha/logic/player.dart';
 import 'package:alpha/ui/screens/dashboard/screen.dart';
-import 'package:alpha/ui/screens/job_prospect/screen.dart';
 import 'package:alpha/utils.dart';
 import 'package:alpha/ui/common/bottom_floating_bar.dart';
 import 'package:alpha/ui/screens/job_selection_old/job_tile.dart';
@@ -64,9 +63,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen>
     void updateSelectedJobCallback(Job job) =>
         setState(() => selectedJob = job);
 
-    void expandJobProgressionCallback(Job job) =>
-        Navigator.of(context).push(CupertinoPageRoute(
-            builder: (BuildContext context) => JobProspectScreen(job: job)));
+    void expandJobProgressionCallback(Job job) => Navigator.of(context).push(
+        CupertinoPageRoute(builder: (BuildContext context) => Container()));
 
     // TODO REFACTOR ALL THESE SHITS
     for (int i = 0; i < 2; i++) {

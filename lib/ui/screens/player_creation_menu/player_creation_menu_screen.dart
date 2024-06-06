@@ -64,7 +64,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
   }
 
   void _startGame() {
-    context.navigateTo(const PlayersMenuScreen());
+    context.navigateAndPopTo(const PlayersMenuScreen());
   }
 
   @override

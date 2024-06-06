@@ -7,7 +7,8 @@ class AlphaTitle extends StatelessWidget {
   final Offset? shadowOffset;
   final double? strokeWidth;
 
-  final Offset _defaultShadowOffset = const Offset(2.6, 2.6);
+  final Offset _defaultShadowOffset = const Offset(3.0, 3.0);
+  final double _defaultStrokeWidth = 4.5;
 
   const AlphaTitle(this.text,
       {super.key,
@@ -29,7 +30,7 @@ class AlphaTitle extends StatelessWidget {
               fontSize: fontSize ?? 30.0,
               foreground: Paint()
                 ..style = PaintingStyle.stroke
-                ..strokeWidth = strokeWidth ?? 4.0
+                ..strokeWidth = strokeWidth ?? _defaultStrokeWidth
                 ..strokeJoin = StrokeJoin.round
                 ..color = Colors.black,
               shadows: <Shadow>[

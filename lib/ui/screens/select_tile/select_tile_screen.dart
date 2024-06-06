@@ -1,5 +1,7 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/ui/common/alpha_next_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/job_selection/job_selection_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
 import 'package:flutter/material.dart';
 
@@ -23,13 +25,43 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
     );
   }
 
-  void _confirmSelectedTile() {}
+  void _noTileSelected(BuildContext context) {
+    context.showAlphaSnackbar(
+        message: "✋🏼 Please select a game tile to proceed");
+  }
+
+  void _confirmSelectedTile(BuildContext context) {
+    late Widget nextScreen;
+
+    switch (_selectedIndex) {
+      case 0:
+        break;
+      case 1:
+        nextScreen = const JobSelectionScreen();
+        break;
+      case 2:
+        break;
+      case 3:
+        break;
+      case 4:
+        break;
+      case 5:
+        break;
+      default:
+        _noTileSelected(context);
+        return;
+    }
+
+    context.navigateTo(nextScreen);
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlphaScaffold(
         title: "Select Tile",
-        next: AlphaNextButton(onTap: _confirmSelectedTile),
+        next: Builder(
+            builder: (BuildContext context) =>
+                AlphaNextButton(onTap: () => _confirmSelectedTile(context))),
         children: <Widget>[
           const SizedBox(height: 30.0),
           const Text(

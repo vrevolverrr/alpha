@@ -4,7 +4,8 @@ class ImagePaths {
 
 enum AlphaAssets {
   bgLandingCities(path: "${ImagePaths.root}/bg_landing_cities.png"),
-  playerDefault(path: "${ImagePaths.root}/player_default.png");
+  playerDefault(path: "${ImagePaths.root}/player_default.png"),
+  jobProgrammer(path: "${ImagePaths.root}/job_programmer.png");
 
   const AlphaAssets({required this.path});
 

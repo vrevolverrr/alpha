@@ -30,7 +30,7 @@ class _GameTileSelectionCardState extends State<GameTileSelectionCard> {
             height: 250.0,
             duration: _animDuration,
             curve: _animCurve,
-            offset: widget.selected ? const Offset(4.0, 5.0) : null,
+            shadowOffset: widget.selected ? const Offset(4.0, 5.0) : null,
             child: Center(
               child: Text(
                 widget.title,

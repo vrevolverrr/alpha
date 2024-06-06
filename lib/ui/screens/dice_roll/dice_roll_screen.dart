@@ -44,8 +44,8 @@ class _DiceRollScreenState extends State<DiceRollScreen>
             width: 440.0,
             title: "I have moved my piece",
             onTap: () {
-              context.dismissAlphaDialog();
-              context.navigateTo(const TileSelectionScreen());
+              context.dismissDialog();
+              context.navigateAndPopTo(const TileSelectionScreen());
             }),
         child: Column(
           children: <Widget>[
@@ -65,7 +65,7 @@ class _DiceRollScreenState extends State<DiceRollScreen>
     setState(() {
       _hasRolledDice = true;
       _animController.reset();
-      _animController.forward().then((_) => context.showAlphaDialog(dialog));
+      _animController.forward().then((_) => context.showDialog(dialog));
     });
   }
 

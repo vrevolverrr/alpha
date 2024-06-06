@@ -41,7 +41,7 @@ class AlphaScaffold extends StatefulWidget {
 
 class AlphaScaffoldState extends State<AlphaScaffold>
     with SingleTickerProviderStateMixin {
-  /// Placeholder dialog builder, will be replaced when showAlphaDialog() is called.
+  /// Placeholder dialog builder, will be replaced when showDialog() is called.
   AlphaDialogBuilder _dialogBuilder =
       const AlphaDialogBuilder(title: "", child: SizedBox());
 
@@ -70,14 +70,14 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     }
   }
 
-  void showAlphaDialog(AlphaDialogBuilder builder) {
+  void showDialog(AlphaDialogBuilder builder) {
     setState(() {
       _dialogBuilder = builder;
       _showAlphaDialog = true;
     });
   }
 
-  void dismissAlphaDialog() {
+  void dismissDialog() {
     setState(() => _showAlphaDialog = false);
   }
 
