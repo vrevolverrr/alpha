@@ -4,6 +4,9 @@ import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_dialog.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dice_roll/widgets/dice_roll_anim.dart';
+import 'package:alpha/ui/screens/gametile_selection_old/screen.dart';
+import 'package:alpha/ui/screens/select_tile/select_tile_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DiceRollScreen extends StatefulWidget {
@@ -39,21 +42,28 @@ class _DiceRollScreenState extends State<DiceRollScreen>
 
     AlphaDialogBuilder dialog = AlphaDialogBuilder(
         title: "DICE ROLL",
-        next: AlertButtonData(
+        next: DialogButtonData(
             width: 440.0,
             title: "I have moved my piece",
-            onTap: () => context.dismissAlphaDialog()),
-        child: const Column(
+            onTap: () {
+              context.dismissAlphaDialog();
+              Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                      builder: (BuildContext context) =>
+                          const TileSelectionScreen()),
+                  (route) => false);
+            }),
+        child: Column(
           children: <Widget>[
-            Text(
+            const Text(
               "You rolled a",
               style: TextStyle(fontSize: 22.0),
             ),
             SizedBox(
                 height: 150.0,
                 child: Text(
-                  "6",
-                  style: TextStyle(fontSize: 130.0, height: 0.0),
+                  dice.toString(),
+                  style: const TextStyle(fontSize: 130.0, height: 0.0),
                 ))
           ],
         ));

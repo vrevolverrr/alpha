@@ -1,7 +1,7 @@
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
-import 'package:alpha/ui/common/alpha_dialog.dart';
 import 'package:alpha/ui/common/alpha_snackbar.dart';
 import 'package:alpha/ui/common/alpha_title.dart';
+import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
 
 class AlphaScaffold extends StatefulWidget {
@@ -28,11 +28,6 @@ class AlphaScaffold extends StatefulWidget {
         ErrorSummary(
           'AlphaScaffold.of() called with a context that does not contain a AlphaScaffold.',
         ),
-        ErrorDescription(
-          'No AlphaScaffold ancestor could be found starting from the context that was passed to AlphaScaffold.of(). '
-          'This usually happens when the context provided is from the same StatefulWidget as that '
-          'whose build function actually creates the Scaffold widget being sought.',
-        ),
         context.describeElement('The context used was'),
       ]);
     }
@@ -48,7 +43,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     with SingleTickerProviderStateMixin {
   AlphaDialogBuilder _dialogBuilder =
       const AlphaDialogBuilder(title: "", child: SizedBox());
-  bool _showAlertDialog = false;
+  bool _showAlphaDialog = false;
 
   late final AnimationController _snackbarController;
   String _snackbarMessage = "";
@@ -73,12 +68,12 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   void showAlphaDialog(AlphaDialogBuilder builder) {
     setState(() {
       _dialogBuilder = builder;
-      _showAlertDialog = true;
+      _showAlphaDialog = true;
     });
   }
 
   void dismissAlphaDialog() {
-    setState(() => _showAlertDialog = false);
+    setState(() => _showAlphaDialog = false);
   }
 
   @override
@@ -101,74 +96,140 @@ class AlphaScaffoldState extends State<AlphaScaffold>
           Column(
             children: <Widget>[
               const SizedBox(height: 35.0),
-              Stack(
-                children: <Widget>[
-                  widget.onTapBack != null
-                      ? Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 20.0),
-                            child: GestureDetector(
-                              onTap: widget.onTapBack,
-                              child: const Icon(Icons.arrow_back_rounded,
-                                  size: 38.0),
-                            ),
-                          ),
-                        )
-                      : const SizedBox(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: AlphaTitle(
-                      widget.title,
-                      fontSize: 40.0,
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                  child: Stack(
-                children: [
-                  SizedBox.expand(
-                    child: Column(
-                      mainAxisAlignment:
-                          widget.mainAxisAlignment ?? MainAxisAlignment.start,
-                      children: widget.children,
-                    ),
-                  ),
-                  Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                          padding:
-                              const EdgeInsets.only(right: 50.0, bottom: 50.0),
-                          child: widget.next)),
-                ],
-              ))
+              _AlphaScaffoldAppBar(
+                  title: widget.title, onTapBack: widget.onTapBack),
+              _AlphaScaffoldContents(
+                  mainAxisAlignment: widget.mainAxisAlignment,
+                  next: widget.next,
+                  children: widget.children)
             ],
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: AlphaSnackbar(
-                  message: _snackbarMessage, controller: _snackbarController)),
-          _showAlertDialog
-              ? Container(
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(120, 86, 86, 86)),
-                )
-              : const SizedBox(),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 80.0),
-            child: Align(
-              alignment: Alignment.center,
-              child: AlphaAlertDialog(
-                title: _dialogBuilder.title,
-                show: _showAlertDialog,
-                next: _dialogBuilder.next,
-                cancel: _dialogBuilder.cancel,
-                child: _dialogBuilder.child,
-              ),
-            ),
-          ),
+          _AlphaScaffoldSnackbar(
+              snackbarMessage: _snackbarMessage,
+              snackbarController: _snackbarController),
+          RenderIfTrue(
+              condition: _showAlphaDialog,
+              child: Container(color: const Color.fromARGB(120, 86, 86, 86))),
+          _AlphaScaffoldAlphaDialog(
+              showAlphaDialog: _showAlphaDialog, dialogBuilder: _dialogBuilder),
         ],
+      ),
+    );
+  }
+}
+
+class _AlphaScaffoldAppBar extends StatelessWidget {
+  final String title;
+  final void Function()? onTapBack;
+
+  const _AlphaScaffoldAppBar({required this.title, required this.onTapBack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        RenderIfNotNull(
+            nullable: onTapBack,
+            child: _AlphaScaffoldTapBack(onTapBack: onTapBack)),
+        Align(
+          alignment: Alignment.center,
+          child: AlphaTitle(
+            title,
+            fontSize: 40.0,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AlphaScaffoldTapBack extends StatelessWidget {
+  final void Function()? onTapBack;
+  const _AlphaScaffoldTapBack({required this.onTapBack});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20.0),
+        child: GestureDetector(
+          onTap: onTapBack,
+          child: const Icon(Icons.arrow_back_rounded, size: 38.0),
+        ),
+      ),
+    );
+  }
+}
+
+class _AlphaScaffoldContents extends StatelessWidget {
+  final MainAxisAlignment? mainAxisAlignment;
+  final Widget? next;
+  final List<Widget> children;
+
+  const _AlphaScaffoldContents(
+      {required this.mainAxisAlignment,
+      required this.children,
+      required this.next});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: Stack(
+      children: [
+        // The SizedBox.expand will give constraints to the Column
+        SizedBox.expand(
+          child: Column(
+            mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+            children: children,
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+                padding: const EdgeInsets.only(right: 50.0, bottom: 50.0),
+                child: next)),
+      ],
+    ));
+  }
+}
+
+class _AlphaScaffoldSnackbar extends StatelessWidget {
+  final String snackbarMessage;
+  final AnimationController snackbarController;
+
+  const _AlphaScaffoldSnackbar(
+      {required this.snackbarMessage, required this.snackbarController});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: AlphaSnackbar(
+            message: snackbarMessage, controller: snackbarController));
+  }
+}
+
+class _AlphaScaffoldAlphaDialog extends StatelessWidget {
+  final AlphaDialogBuilder dialogBuilder;
+  final bool showAlphaDialog;
+
+  const _AlphaScaffoldAlphaDialog(
+      {required this.showAlphaDialog, required this.dialogBuilder});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 80.0),
+      child: Align(
+        alignment: Alignment.center,
+        child: AlphaAlertDialog(
+          title: dialogBuilder.title,
+          show: showAlphaDialog,
+          next: dialogBuilder.next,
+          cancel: dialogBuilder.cancel,
+          child: dialogBuilder.child,
+        ),
       ),
     );
   }
@@ -177,8 +238,8 @@ class AlphaScaffoldState extends State<AlphaScaffold>
 class AlphaDialogBuilder {
   final String title;
   final Widget child;
-  final AlertButtonData? next;
-  final AlertButtonData? cancel;
+  final DialogButtonData? next;
+  final DialogButtonData? cancel;
 
   const AlphaDialogBuilder(
       {required this.title, required this.child, this.next, this.cancel});

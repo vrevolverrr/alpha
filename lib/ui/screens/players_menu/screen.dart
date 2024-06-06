@@ -25,6 +25,12 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
   void onTapPlayerCard() {
     /// Callback for tapping the active [PlayerCard]
     /// Rolls the dice and pushes to the [DiceRollScreen]

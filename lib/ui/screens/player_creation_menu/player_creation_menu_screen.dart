@@ -1,11 +1,9 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/player_creation_menu/widgets/player_creation_card.dart';
 import 'package:alpha/ui/screens/players_menu/screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
 class PlayerCreationMenuScreen extends StatefulWidget {
   final void Function()? onTapBack;
@@ -35,17 +33,12 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     final players = context.gameState.players;
 
     for (final player in players) {
-      cards.add(PlayerCreationCard(
-        name: player.name,
-      ));
+      cards.add(PlayerCreationCard(name: player.name));
     }
 
     if (players.length < 5) {
-      cards.add(PlayerCreationCard(
-        name: "_",
-        isAddCard: true,
-        onTap: _addPlayer,
-      ));
+      cards.add(
+          PlayerCreationCard(name: "_", isAddCard: true, onTap: _addPlayer));
     }
 
     return cards;

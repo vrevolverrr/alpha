@@ -1,24 +1,100 @@
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:flutter/material.dart';
 
-class AlertButtonData {
+class DialogButtonData {
+  /// Helper class to encapsulate the properties of the
   final String title;
   final double width;
   final double height;
   final void Function()? onTap;
 
-  const AlertButtonData(
+  const DialogButtonData(
       {required this.title,
       this.width = 280.0,
       this.height = 60.0,
       this.onTap});
 }
 
-class AlphaAlertDialog extends StatefulWidget {
+class _AlertDialogContents extends StatelessWidget {
+  /// Creates a widget for the contents of the [AlphaAlertDialog].
+
+  /// The top title of the dialog.
   final String title;
+
+  /// The properties of the "next" and cancel buttons of the dialog.
+  final DialogButtonData? next;
+  final DialogButtonData? cancel;
+
+  /// The child to display below the title.
   final Widget child;
-  final AlertButtonData? next;
-  final AlertButtonData? cancel;
+
+  const _AlertDialogContents(
+      {required this.title, this.next, this.cancel, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text(
+          title.toUpperCase(),
+          style: const TextStyle(
+              fontFamily: "LexendMega",
+              fontWeight: FontWeight.w700,
+              fontSize: 34.0),
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+          height: 3.0,
+          width: 300.0,
+          decoration: BoxDecoration(
+              color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
+        ),
+        const SizedBox(height: 20.0),
+        child,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            cancel != null
+                ? AlphaButton(
+                    width: cancel!.width,
+                    height: cancel!.height,
+                    title: cancel!.title,
+                    onTap: cancel!.onTap,
+                  )
+                : const SizedBox(),
+            (next != null && cancel != null)
+                ? const SizedBox(width: 20.0)
+                : const SizedBox(),
+            next != null
+                ? AlphaButton(
+                    width: next!.width,
+                    height: next!.height,
+                    title: next!.title,
+                    color: const Color.fromARGB(255, 164, 211, 151),
+                    onTap: next!.onTap,
+                  )
+                : const SizedBox()
+          ],
+        )
+      ],
+    );
+  }
+}
+
+class AlphaAlertDialog extends StatefulWidget {
+  /// The main widget that defines the custom alert dialog
+
+  /// The top title of the dialog.
+  final String title;
+
+  /// The properties of the "next" and cancel buttons of the dialog.
+  final DialogButtonData? next;
+  final DialogButtonData? cancel;
+
+  /// The child to display below the title.
+  final Widget child;
+
+  /// Whether or not to show the dialog.
   final bool show;
 
   const AlphaAlertDialog(
@@ -34,59 +110,13 @@ class AlphaAlertDialog extends StatefulWidget {
 }
 
 class _AlphaAlertDialogState extends State<AlphaAlertDialog> {
-  Widget _buildContents() {
-    return Column(
-      children: <Widget>[
-        Text(
-          widget.title.toUpperCase(),
-          style: const TextStyle(
-              fontFamily: "LexendMega",
-              fontWeight: FontWeight.w700,
-              fontSize: 34.0),
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-          height: 3.0,
-          width: 300.0,
-          decoration: BoxDecoration(
-              color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
-        ),
-        const SizedBox(height: 20.0),
-        widget.child,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            widget.cancel != null
-                ? AlphaButton(
-                    width: widget.cancel!.width,
-                    height: widget.cancel!.height,
-                    title: widget.cancel!.title,
-                    onTap: widget.cancel!.onTap,
-                  )
-                : const SizedBox(),
-            (widget.next != null && widget.cancel != null)
-                ? const SizedBox(width: 20.0)
-                : const SizedBox(),
-            widget.next != null
-                ? AlphaButton(
-                    width: widget.next!.width,
-                    height: widget.next!.height,
-                    title: widget.next!.title,
-                    color: const Color.fromARGB(255, 164, 211, 151),
-                    onTap: widget.next!.onTap,
-                  )
-                : const SizedBox()
-          ],
-        )
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Durations.medium4,
       curve: Curves.decelerate,
+
+      /// animates the dialog expanding and closing
       width: widget.show ? 650.0 : 0.0,
       height: widget.show ? 380.0 : 0.0,
       padding: const EdgeInsets.all(20.0),
@@ -97,15 +127,17 @@ class _AlphaAlertDialogState extends State<AlphaAlertDialog> {
           boxShadow: const <BoxShadow>[
             BoxShadow(color: Colors.black, offset: Offset(1.0, 5.0))
           ]),
+
+      /// scale the contents of the dialog as it expands and closes
       child: widget.show
-          ? LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                if (constraints.maxHeight < 380.0 &&
-                    constraints.maxWidth < 590.0) {
-                  return const SizedBox();
-                }
-                return _buildContents();
-              },
+          ? FittedBox(
+              fit: BoxFit.contain,
+              child: _AlertDialogContents(
+                title: widget.title,
+                next: widget.next,
+                cancel: widget.cancel,
+                child: widget.child,
+              ),
             )
           : null,
     );

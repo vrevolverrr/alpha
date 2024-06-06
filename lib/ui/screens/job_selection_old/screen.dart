@@ -3,7 +3,7 @@ import 'package:alpha/logic/job.dart';
 import 'package:alpha/logic/player.dart';
 import 'package:alpha/ui/screens/dashboard/screen.dart';
 import 'package:alpha/ui/screens/job_prospect/screen.dart';
-import 'package:alpha/utils/helper.dart';
+import 'package:alpha/utils.dart';
 import 'package:alpha/ui/common/bottom_floating_bar.dart';
 import 'package:alpha/ui/screens/job_selection_old/job_tile.dart';
 import 'package:alpha/ui/common/alpha_app_bar.dart';
