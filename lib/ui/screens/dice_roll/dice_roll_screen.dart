@@ -45,11 +45,7 @@ class _DiceRollScreenState extends State<DiceRollScreen>
             title: "I have moved my piece",
             onTap: () {
               context.dismissAlphaDialog();
-              Navigator.of(context).pushAndRemoveUntil(
-                  CupertinoPageRoute(
-                      builder: (BuildContext context) =>
-                          const TileSelectionScreen()),
-                  (route) => false);
+              context.navigateTo(const TileSelectionScreen());
             }),
         child: Column(
           children: <Widget>[

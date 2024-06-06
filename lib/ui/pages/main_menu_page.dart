@@ -40,7 +40,7 @@ class _MainMenuPageState extends State<MainMenuPage> {
       children: <Widget>[
         LandingScreen(onTapNext: _incrementPage),
         PlayerCreationMenuScreen(onTapBack: _decrementPage),
-        PlayerCreationScreen()
+        const PlayerCreationScreen()
       ],
     );
   }

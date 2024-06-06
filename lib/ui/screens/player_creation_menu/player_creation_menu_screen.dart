@@ -4,7 +4,6 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/player_creation_menu/widgets/player_creation_card.dart';
 import 'package:alpha/ui/screens/players_menu/screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class PlayerCreationMenuScreen extends StatefulWidget {
   final void Function()? onTapBack;
@@ -65,9 +64,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
   }
 
   void _startGame() {
-    Navigator.of(context).pushAndRemoveUntil(
-        CupertinoPageRoute(builder: (context) => const PlayersMenuScreen()),
-        (route) => false);
+    context.navigateTo(const PlayersMenuScreen());
   }
 
   @override
