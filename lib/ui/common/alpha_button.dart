@@ -36,7 +36,7 @@ class _AlphaButtonState extends State<AlphaButton> {
       onTap: !widget.disabled ? widget.onTap : widget.onTapDisabled,
       child: AnimatedSlide(
         duration: const Duration(milliseconds: 80),
-        offset: _hover ? const Offset(0.04, 0.04) : const Offset(0, 0),
+        offset: _hover ? const Offset(0.04, 0.04) : Offset.zero,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 80),
           // transform:

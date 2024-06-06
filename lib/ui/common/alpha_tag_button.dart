@@ -31,7 +31,7 @@ class _AlphaTagButtonState extends State<AlphaTagButton> {
       onTap: widget.onTap,
       child: AnimatedSlide(
         duration: const Duration(milliseconds: 40),
-        offset: _hover ? const Offset(0, 0.08) : const Offset(0, 0),
+        offset: _hover ? const Offset(0, 0.08) : Offset.zero,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 40),
           alignment: Alignment.centerLeft,

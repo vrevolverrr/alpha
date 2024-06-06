@@ -22,7 +22,7 @@ class HorizontalPlayerCard extends StatelessWidget {
                 blurRadius: 3.0),
             BoxShadow(
                 color: Color.fromRGBO(27, 31, 35, 0.15),
-                offset: Offset(0, 0),
+                offset: Offset.zero,
                 spreadRadius: 0,
                 blurRadius: 1.0)
           ]),
