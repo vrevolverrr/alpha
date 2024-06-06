@@ -41,11 +41,16 @@ class AlphaScaffold extends StatefulWidget {
 
 class AlphaScaffoldState extends State<AlphaScaffold>
     with SingleTickerProviderStateMixin {
+  /// Placeholder dialog builder, will be replaced when showAlphaDialog() is called.
   AlphaDialogBuilder _dialogBuilder =
       const AlphaDialogBuilder(title: "", child: SizedBox());
+
+  /// setState will be called on this flag to expand and close the dialog.
   bool _showAlphaDialog = false;
 
   late final AnimationController _snackbarController;
+
+  /// Placeholder message for the snackbar, will be replaced when showSnackbar() is called.
   String _snackbarMessage = "";
 
   void showSnackbar(

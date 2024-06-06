@@ -20,7 +20,7 @@ class _PlayerCreationCardState extends State<PlayerCreationCard> {
     return Column(
       children: <Widget>[
         Container(
-          width: double.infinity,
+          width: 400.0,
           height: 280.0,
           decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
@@ -34,14 +34,14 @@ class _PlayerCreationCardState extends State<PlayerCreationCard> {
           "Bryan",
           style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 15.0),
         const AlphaTagButton(
           width: 220.0,
           height: 45.0,
           color: Color(0xffB5D2AD),
           title: "🔨 Modify Player",
         ),
-        const SizedBox(height: 12.0),
+        const SizedBox(height: 15.0),
         const AlphaTagButton(
           width: 220.0,
           height: 45.0,
@@ -79,8 +79,8 @@ class _PlayerCreationCardState extends State<PlayerCreationCard> {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: AlphaAnimatedContainer(
-          width: 380.0,
-          height: 480.0,
+          width: 400.0,
+          height: 520.0,
           child: widget.isAddCard
               ? _buildAddPlayerCard(context)
               : _buildPlayerCreationCard(context),

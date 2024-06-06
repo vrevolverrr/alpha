@@ -25,7 +25,7 @@ class _AlphaTagButtonState extends State<AlphaTagButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (_) => setState(() => _hover = true),
+      onPanDown: (_) => setState(() => _hover = true),
       onTapCancel: () => setState(() => _hover = false),
       onTapUp: (_) => setState(() => _hover = false),
       onTap: widget.onTap,

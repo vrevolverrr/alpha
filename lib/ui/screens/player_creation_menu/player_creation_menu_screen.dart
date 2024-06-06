@@ -4,6 +4,7 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/player_creation_menu/widgets/player_creation_card.dart';
 import 'package:alpha/ui/screens/players_menu/screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class PlayerCreationMenuScreen extends StatefulWidget {
   final void Function()? onTapBack;
@@ -15,8 +16,7 @@ class PlayerCreationMenuScreen extends StatefulWidget {
 }
 
 class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
-  final PageController _pageController =
-      PageController(viewportFraction: 0.4, initialPage: 0);
+  late final PageController _pageController;
 
   void _updateScroll() {
     // debugPrint(_pageController.offset.toString());
@@ -24,21 +24,25 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
 
   @override
   void initState() {
+    _pageController = PageController(viewportFraction: 0.4, initialPage: 0);
     _pageController.addListener(_updateScroll);
     super.initState();
   }
 
-  List<Widget> _buildChildrenCards() {
+  List<Widget> _buildPlayerCards() {
     final List<Widget> cards = [];
     final players = context.gameState.players;
 
     for (final player in players) {
-      cards.add(PlayerCreationCard(name: player.name));
+      cards.add(UnconstrainedBox(
+        child: PlayerCreationCard(name: player.name),
+      ));
     }
 
     if (players.length < 5) {
-      cards.add(
-          PlayerCreationCard(name: "_", isAddCard: true, onTap: _addPlayer));
+      cards.add(UnconstrainedBox(
+          child: PlayerCreationCard(
+              name: "_", isAddCard: true, onTap: _addPlayer)));
     }
 
     return cards;
@@ -71,7 +75,6 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     return AlphaScaffold(
       title: "Players",
       onTapBack: widget.onTapBack,
-      mainAxisAlignment: MainAxisAlignment.center,
       next: Builder(
           builder: (BuildContext context) => AlphaButton(
                 width: 200.0,
@@ -82,13 +85,14 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
                 onTapDisabled: () => _notEnoughPlayers(context),
               )),
       children: <Widget>[
+        const SizedBox(height: 50.0),
         SizedBox(
           width: MediaQuery.of(context).size.width,
-          height: 500.0,
+          height: 580.0,
           child: PageView(
             controller: _pageController,
             physics: const ClampingScrollPhysics(),
-            children: _buildChildrenCards(),
+            children: _buildPlayerCards(),
           ),
         ),
         const SizedBox(height: 50.0)
