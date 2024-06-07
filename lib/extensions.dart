@@ -19,7 +19,7 @@ extension ShowdismissDialog on BuildContext {
 }
 
 extension ShowDismissAlphaSnackbar on BuildContext {
-  void showAlphaSnackbar(
+  void showSnackbar(
           {required String message,
           Duration duration = const Duration(seconds: 1)}) =>
       AlphaScaffold.of(this).showSnackbar(message: message, duration: duration);

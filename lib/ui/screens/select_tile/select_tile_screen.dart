@@ -26,8 +26,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
   }
 
   void _noTileSelected(BuildContext context) {
-    context.showAlphaSnackbar(
-        message: "✋🏼 Please select a game tile to proceed");
+    context.showSnackbar(message: "✋🏼 Please select a game tile to proceed");
   }
 
   void _confirmSelectedTile(BuildContext context) {

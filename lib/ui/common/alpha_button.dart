@@ -12,7 +12,7 @@ class AlphaButton extends StatefulWidget {
   const AlphaButton(
       {super.key,
       required this.width,
-      required this.height,
+      this.height = 70.0,
       required this.title,
       this.color,
       this.icon,

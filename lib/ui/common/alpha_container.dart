@@ -5,6 +5,7 @@ class AlphaContainer extends StatelessWidget {
   final double? height;
   final EdgeInsetsGeometry? padding;
   final Offset? shadowOffset;
+  final Color? borderColor;
   final Widget child;
 
   const AlphaContainer(
@@ -13,6 +14,7 @@ class AlphaContainer extends StatelessWidget {
       this.height,
       this.padding,
       this.shadowOffset,
+      this.borderColor,
       required this.child});
 
   @override
@@ -24,10 +26,10 @@ class AlphaContainer extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(color: Colors.black, width: 4.0),
+          border: Border.all(color: borderColor ?? Colors.black, width: 4.0),
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: Colors.black,
+                color: borderColor ?? Colors.black,
                 offset: shadowOffset ?? const Offset(0.5, 3.0))
           ]),
       child: child,
@@ -46,6 +48,7 @@ class AlphaAnimatedContainer extends AlphaContainer {
       super.width,
       super.height,
       super.shadowOffset = const Offset(0.5, 3.0),
+      super.borderColor,
       super.padding,
       required super.child});
 
@@ -59,10 +62,10 @@ class AlphaAnimatedContainer extends AlphaContainer {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
-            border: Border.all(color: Colors.black, width: 4.0),
+            border: Border.all(color: borderColor ?? Colors.black, width: 4.0),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Colors.black,
+                  color: borderColor ?? Colors.black,
                   offset: shadowOffset ?? const Offset(0.5, 3.0))
             ]),
         child: child);

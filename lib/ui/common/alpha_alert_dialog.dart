@@ -1,3 +1,4 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,12 @@ class DialogButtonData {
   final double width;
   final double height;
   final void Function()? onTap;
+
+  static DialogButtonData cancel(BuildContext context) =>
+      DialogButtonData(title: "Cancel", onTap: () => context.dismissDialog());
+
+  static DialogButtonData confirm({void Function()? onTap}) =>
+      DialogButtonData(title: "Confirm", onTap: onTap);
 
   const DialogButtonData(
       {required this.title,
@@ -53,6 +60,7 @@ class _AlertDialogContents extends StatelessWidget {
         child,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             cancel != null
                 ? AlphaButton(
@@ -113,8 +121,9 @@ class _AlphaAlertDialogState extends State<AlphaAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Durations.medium4,
-      curve: Curves.decelerate,
+      duration:
+          widget.show ? const Duration(milliseconds: 800) : Durations.short4,
+      curve: widget.show ? Curves.elasticOut : Curves.decelerate,
 
       /// animates the dialog expanding and closing
       width: widget.show ? 650.0 : 0.0,

@@ -1,77 +1,140 @@
 import 'package:alpha/assets.dart';
+import 'package:alpha/logic/job.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
+import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
 
-class JobSelectionCard extends StatelessWidget {
-  const JobSelectionCard({super.key});
+class JobSelectionCard extends StatefulWidget {
+  final Job job;
+  final bool eligible;
+  final bool selected;
+  const JobSelectionCard(
+      {super.key,
+      required this.job,
+      this.eligible = true,
+      this.selected = false});
+
+  @override
+  State<StatefulWidget> createState() => _JobSelectionCardState();
+}
+
+class _JobSelectionCardState extends State<JobSelectionCard> {
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSlide(
+      duration: const Duration(milliseconds: 120),
+      offset: !widget.selected ? Offset.zero : const Offset(0.0, -0.03),
+      child: AnimatedScale(
+        scale: !widget.selected ? 1.0 : 1.03,
+        duration: const Duration(milliseconds: 120),
+        child: Stack(
+          children: <Widget>[
+            AlphaAnimatedContainer(
+                duration: const Duration(milliseconds: 120),
+                shadowOffset: !widget.selected
+                    ? const Offset(0.5, 3.0)
+                    : const Offset(5.0, 6.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: 200.0,
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(15.0),
+                              topRight: Radius.circular(15.0)),
+                          color: widget.eligible
+                              ? const Color(0xffFEA079)
+                              : const Color(0xffBDBDBD)),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          widget.job.jobTitle,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 25.0),
+                        ),
+                        const SizedBox(height: 13.0),
+                        JobDescriptionTagCollection(
+                            job: widget.job, eligible: widget.eligible)
+                      ],
+                    )
+                  ],
+                )),
+            _JobHeroImage(
+                asset: widget.eligible ? widget.job.asset : widget.job.assetBW,
+                eligible: widget.eligible),
+            RenderIfFalse(
+                condition: widget.eligible, child: _IneligibleBanner())
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _JobHeroImage extends StatelessWidget {
+  final AlphaAssets asset;
+  final bool eligible;
+
+  const _JobHeroImage({required this.asset, required this.eligible});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        AlphaAnimatedContainer(
-            child: Column(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              height: 200.0,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15.0),
-                      topRight: Radius.circular(15.0)),
-                  color: Color(0xffFEA079)),
-            ),
-            const SizedBox(height: 20.0),
-            const Column(
-              children: <Widget>[
-                Text(
-                  "Programmer",
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25.0),
-                ),
-                SizedBox(height: 13.0),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Wrap(
-                    spacing: 8.0,
-                    runSpacing: 15.0,
-                    alignment: WrapAlignment.center,
-                    verticalDirection: VerticalDirection.up,
-                    children: <Widget>[
-                      _JobDescriptionTag(title: "💵 \$4300"),
-                      _JobDescriptionTag(title: "🕒 135"),
-                      _JobDescriptionTag(title: "🎓 Bachelors"),
-                    ],
-                  ),
-                )
-              ],
-            )
-          ],
-        )),
-        Transform.translate(
-          offset: const Offset(0.0, -20.0),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Image.asset(
-              AlphaAssets.jobProgrammer.path,
-              height: 220.0,
-            ),
-          ),
+    return Transform.translate(
+      offset: const Offset(0.0, -20.0),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Image.asset(
+          asset.path,
+          height: 220.0,
         ),
-      ],
+      ),
     );
+  }
+}
+
+class _IneligibleBanner extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+        alignment: Alignment.center,
+        child: Container(
+          alignment: Alignment.center,
+          transformAlignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..translate(0.0, -45.0)
+            ..scale(1.06, 1.06, 1.0),
+          width: 320.0,
+          height: 45.0,
+          padding: const EdgeInsets.only(top: 4.0),
+          decoration: BoxDecoration(
+              color: const Color(0xffEC5757),
+              border: Border.all(color: Colors.black, width: 2.5),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: const <BoxShadow>[
+                BoxShadow(color: Colors.black, offset: Offset(1.0, 3.0))
+              ]),
+          child: const Text(
+            "Ineligible",
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+          ),
+        ));
   }
 }
 
 class _JobDescriptionTag extends StatelessWidget {
   final String title;
-  const _JobDescriptionTag({required this.title});
+  final bool eligible;
+  const _JobDescriptionTag({required this.title, this.eligible = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 3.0),
       decoration: BoxDecoration(
-          color: const Color(0xffB5D2AD),
+          color: eligible ? const Color(0xffB5D2AD) : const Color(0xffBDBDBD),
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(color: Colors.black, width: 2.5),
           boxShadow: const <BoxShadow>[
@@ -80,6 +143,40 @@ class _JobDescriptionTag extends StatelessWidget {
       child: Text(
         title,
         style: const TextStyle(fontSize: 16.0),
+      ),
+    );
+  }
+}
+
+class JobDescriptionTagCollection extends StatelessWidget {
+  final Job job;
+  final bool eligible;
+  const JobDescriptionTagCollection(
+      {super.key, required this.job, required this.eligible});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Wrap(
+        spacing: 8.0,
+        runSpacing: 15.0,
+        alignment: WrapAlignment.center,
+        verticalDirection: VerticalDirection.up,
+        children: <Widget>[
+          _JobDescriptionTag(
+            title: "💵 \$${job.jobSalary.toStringAsFixed(0)}",
+            eligible: eligible,
+          ),
+          _JobDescriptionTag(
+            title: "🕒 ${job.timeConsumed}",
+            eligible: eligible,
+          ),
+          _JobDescriptionTag(
+            title: "🎓 ${job.education.title}",
+            eligible: eligible,
+          ),
+        ],
       ),
     );
   }

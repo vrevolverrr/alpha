@@ -1,3 +1,4 @@
+import 'package:alpha/assets.dart';
 import 'package:alpha/logic/education.dart';
 
 enum Job {
@@ -68,6 +69,8 @@ enum Job {
       timeConsumed: 135,
       hasProgression: true,
       tier: 0,
+      asset: AlphaAssets.jobProgrammer,
+      assetBW: AlphaAssets.jobProgrammerBW,
       nextJob: programmerSenior),
 
   programmerSenior(
@@ -125,7 +128,7 @@ enum Job {
       education: Education.uneducated,
       timeConsumed: 0,
       hasProgression: false,
-      tier: 0);
+      tier: -1);
 
   const Job(
       {required this.jobTitle,
@@ -134,6 +137,8 @@ enum Job {
       required this.timeConsumed,
       required this.hasProgression,
       required this.tier,
+      this.asset = AlphaAssets.jobProgrammer,
+      this.assetBW = AlphaAssets.jobProgrammerBW,
       this.nextJob});
 
   final String jobTitle;
@@ -142,5 +147,7 @@ enum Job {
   final int timeConsumed;
   final bool hasProgression;
   final int tier;
+  final AlphaAssets asset;
+  final AlphaAssets assetBW;
   final Job? nextJob;
 }
