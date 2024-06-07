@@ -1,7 +1,7 @@
 import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/ui/screens/budgeting/screen.dart';
-import 'package:alpha/ui/screens/dashboard/widgets/dashboard_item.dart';
-import 'package:alpha/ui/screens/dashboard/horizontal_player_card.dart';
+import 'package:alpha/ui/screens/dashboard_old/widgets/dashboard_item.dart';
+import 'package:alpha/ui/screens/dashboard_old/horizontal_player_card.dart';
 import 'package:alpha/ui/screens/players_menu/screen.dart';
 import 'package:alpha/ui/common/alpha_app_bar.dart';
 import 'package:flutter/cupertino.dart';

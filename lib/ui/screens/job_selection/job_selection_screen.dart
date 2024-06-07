@@ -1,10 +1,9 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/logic/job.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/screens/dashboard/screen.dart';
+import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/job_selection/widget/job_selection_card.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
