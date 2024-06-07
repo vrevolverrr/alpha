@@ -1,8 +1,10 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/game_state.dart';
 import 'package:alpha/logic/job.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/dashboard/screen.dart';
 import 'package:alpha/ui/screens/job_selection/widget/job_selection_card.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,9 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   final GlobalKey<AlphaScaffoldState> key = GlobalKey<AlphaScaffoldState>();
   Job _selectdJob = Job.unemployed;
 
+  /// This function maps each Job to a [JobSelectionCard] widget and computes
+  /// the eligibility and whether or not the card has been selected
+  /// This function is called on each build()
   List<JobSelectionCard> _mapJobCards() => Job.values
       // TODO optimise performance by only sorting once during initState
       .where((job) => job.tier == 0) // only show entry-level jobs
@@ -41,6 +46,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
     });
 
   void _confirmJobSelection(BuildContext context) {
+    /// This function maps to the action of the CONFIRM button of the screen
     final AlphaDialogBuilder dialog = AlphaDialogBuilder(
         title: "Confirm Job",
         child: Column(
@@ -57,19 +63,29 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           ],
         ),
         cancel: DialogButtonData.cancel(context),
-        next: DialogButtonData.confirm());
+        next: DialogButtonData.confirm(onTap: _confirmJobInDialog));
+
     context.showDialog(dialog);
   }
 
+  void _confirmJobInDialog() {
+    // This function maps to the CONFIRM button of the alert dialog
+    context.gameState.activePlayer.updateJob(_selectdJob);
+    context.navigateAndPopTo(const DashboardScreen());
+  }
+
   void _showIneligibleMessage(BuildContext context) {
+    /// This function is called when an ineligible card is pressed
     context.showSnackbar(
         message: "✋🏼 Your education level is not qualified for that job.");
   }
 
   @override
   void initState() {
-    /// Display snackbar on state initialisaiton, find alternative that does not
-    /// use GlobalKey if possible
+    super.initState();
+
+    /// Display snackbar on state initialisaiton, find alternative that
+    /// do not use GlobalKey if possible
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(
           const Duration(milliseconds: 500),
@@ -77,8 +93,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
               message: "🎯 Choose a career you would like to pursue",
               duration: const Duration(seconds: 3)));
     });
-
-    super.initState();
   }
 
   @override

@@ -127,6 +127,12 @@ class Player {
 
   Map<Budget, double> get budgets => _budgets;
 
+  void updateJob(Job newJob) {
+    // Update the player's [Job]
+    _job = newJob;
+    _salary = newJob.jobSalary;
+  }
+
   void update(PlayerUpdates updates) {
     /// Apply changes to [savings] and [commitments]
     _assets += updates.deltaAssets;
