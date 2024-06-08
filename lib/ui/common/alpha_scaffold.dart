@@ -4,12 +4,40 @@ import 'package:alpha/ui/common/alpha_title.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
 
+/// Creates a widget that acts as the scaffolding for each screen of the game.
+///
+/// This widget is built on top of a [Scaffold], with custom implementations of \
+/// [AlertDialog] using [AlphaAlertDialog] and [Snackbar] using [AlphaSnackbar].
+///
+/// To display the [AlphaAlertDialog] or [AlphaSnackbar], obtain
+/// the [AlphaScaffoldState] for the current [BuildContext] via
+/// [AlphaScaffold.of] and use [AlphaScaffoldState.showDialog] and
+/// [AlphaScaffoldState.showSnackbar] methods respectively.
+///
+/// To obtain the [AlphaScaffoldState] from the [BuildContext] of the build
+/// method in which the [AlphaScaffold] is being built, wrap the widget in a
+/// [Builder] instead and access the new context from the [Builder].
 class AlphaScaffold extends StatefulWidget {
+  /// The top title to be displayed.
   final String title;
+
+  /// The alignment used for the [Column] of the contents.
   final MainAxisAlignment? mainAxisAlignment;
+
+  /// The function that is called when the back button is pressed.\
+  /// Note that the back button is not showed if `onTapBack` is null.
   final void Function()? onTapBack;
+
+  /// The button that is shown at the bottom right corner of the screen.\
+  /// Typically an [AlphaButton] is used.
   final Widget? next;
+
+  /// The [AlphaSnackbar] message to show when the screen is first rendered.\
+  /// The animation is played after a fixed delay after
+  /// calling [AlphaScaffoldState.initState].
   final String? landingMessage;
+
+  /// The children to be spreaded in the [Column] of the contents.
   final List<Widget> children;
 
   const AlphaScaffold(
@@ -21,6 +49,10 @@ class AlphaScaffold extends StatefulWidget {
       this.landingMessage,
       required this.children});
 
+  /// Finds the [AlphaScaffoldState] from the closest of this class that
+  /// encloses the given [BuildContext].
+  /// Call this method to obtain an [AlphaScaffoldState] to
+  /// display [AlphaAlertDialog] and [AlphaSnackbar].
   static AlphaScaffoldState of(BuildContext context) {
     AlphaScaffoldState? result =
         context.findAncestorStateOfType<AlphaScaffoldState>();

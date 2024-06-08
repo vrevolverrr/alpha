@@ -29,6 +29,17 @@ class AlphaButton extends StatefulWidget {
       this.onTap,
       this.onTapDisabled});
 
+  /// Creates a default [AlphaButton] for the next action.
+  static AlphaButton next({void Function()? onTap}) {
+    return AlphaButton(
+      width: 185.0,
+      height: 70.0,
+      title: "Next",
+      icon: Icons.arrow_back_rounded,
+      onTap: onTap,
+    );
+  }
+
   @override
   State<AlphaButton> createState() => _AlphaButtonState();
 }

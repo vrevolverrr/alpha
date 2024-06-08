@@ -1,5 +1,5 @@
 import 'package:alpha/assets.dart';
-import 'package:alpha/ui/common/alpha_next_button.dart';
+import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_title.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,7 @@ class LandingScreen extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: Padding(
                   padding: const EdgeInsets.only(right: 50.0, bottom: 50.0),
-                  child: AlphaNextButton(
+                  child: AlphaButton.next(
                     onTap: onTapNext,
                   ))),
           Column(

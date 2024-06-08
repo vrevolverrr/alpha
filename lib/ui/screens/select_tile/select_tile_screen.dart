@@ -1,5 +1,5 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/ui/common/alpha_next_button.dart';
+import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/education_selection/education_selection_screen.dart';
 import 'package:alpha/ui/screens/job_selection/job_selection_screen.dart';
@@ -62,7 +62,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         title: "Select Tile",
         next: Builder(
             builder: (BuildContext context) =>
-                AlphaNextButton(onTap: () => _confirmSelectedTile(context))),
+                AlphaButton.next(onTap: () => _confirmSelectedTile(context))),
         children: <Widget>[
           const SizedBox(height: 30.0),
           const Text(

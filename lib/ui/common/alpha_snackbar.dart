@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
+/// Creates a custom snackbar widget in the style of the game.\
+/// This widget should only be used by [AlphaScaffold] and not be
+/// created anywhere else.
 class AlphaSnackbar extends StatefulWidget {
+  /// The message to display in the snackbar.
   final String message;
+
+  /// The [AnimationController] handling the animation of the snackbar.
   final AnimationController controller;
+
   const AlphaSnackbar(
       {super.key, required this.message, required this.controller});
 
@@ -14,16 +21,17 @@ class _AlphaSnackbarState extends State<AlphaSnackbar>
     with SingleTickerProviderStateMixin {
   late final Animation<double> _snackAnimation;
 
-  void _initAnimation() {
+  @override
+  void initState() {
+    /// The default time the snackbar takes to animate in or out.
     widget.controller.duration = const Duration(milliseconds: 1200);
+
+    /// The animation basically translates the snackbar vertically between
+    /// +65.0 (offscren) and -45.0 (in view), to show and hide the snackbar
     _snackAnimation = Tween<double>(begin: 65.0, end: -40.0)
         .chain(CurveTween(curve: Curves.elasticOut))
         .animate(widget.controller);
-  }
 
-  @override
-  void initState() {
-    _initAnimation();
     super.initState();
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Creates a widget for the title text in the style of the game.
 class AlphaTitle extends StatelessWidget {
   final String text;
   final double? fontSize;
