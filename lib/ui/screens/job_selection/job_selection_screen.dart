@@ -16,7 +16,6 @@ class JobSelectionScreen extends StatefulWidget {
 }
 
 class _JobSelectionScreenState extends State<JobSelectionScreen> {
-  final GlobalKey<AlphaScaffoldState> key = GlobalKey<AlphaScaffoldState>();
   Job _selectedJob = Job.unemployed;
 
   /// This function maps each Job to a [JobSelectionCard] widget and computes
@@ -85,26 +84,11 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    /// Display snackbar on state initialisaiton, find alternative that
-    /// do not use GlobalKey if possible
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(
-          const Duration(milliseconds: 500),
-          () => key.currentState!.showSnackbar(
-              message: "🎯 Choose a career you would like to pursue",
-              duration: const Duration(seconds: 3)));
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AlphaScaffold(
-        key: key,
         title: "Choose a Job",
         onTapBack: () => Navigator.of(context).pop(),
+        landingMessage: "🎯 Choose a career you would like to pursue",
         next: Builder(
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,

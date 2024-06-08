@@ -1,6 +1,7 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/ui/common/alpha_next_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/education_selection/education_selection_screen.dart';
 import 'package:alpha/ui/screens/job_selection/job_selection_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
 
     switch (_selectedIndex) {
       case 0:
+        nextScreen = const EducationSelectionScreen();
         break;
       case 1:
         nextScreen = const JobSelectionScreen();

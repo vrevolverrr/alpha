@@ -9,6 +9,7 @@ class AlphaScaffold extends StatefulWidget {
   final MainAxisAlignment? mainAxisAlignment;
   final void Function()? onTapBack;
   final Widget? next;
+  final String? landingMessage;
   final List<Widget> children;
 
   const AlphaScaffold(
@@ -17,6 +18,7 @@ class AlphaScaffold extends StatefulWidget {
       this.mainAxisAlignment,
       this.onTapBack,
       this.next,
+      this.landingMessage,
       required this.children});
 
   static AlphaScaffoldState of(BuildContext context) {
@@ -84,6 +86,14 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   @override
   void initState() {
     _snackbarController = AnimationController(vsync: this);
+
+    if (widget.landingMessage != null) {
+      Future.delayed(
+          const Duration(milliseconds: 500),
+          () => showSnackbar(
+              message: widget.landingMessage!,
+              duration: const Duration(seconds: 3)));
+    }
     super.initState();
   }
 
