@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 class StockMarket {
@@ -32,7 +33,7 @@ class StockMarket {
   double S;
 
   // historical prices
-  late final List<double> sp;
+  late List<double> historicPrices = [];
 
   double _nextGaussion() {
     /// This function generates a normally distributed (gaussian) random number
@@ -60,47 +61,66 @@ class StockMarket {
   }
 
   double getNextPrice() {
+    historicPrices.add(double.parse(S.toStringAsFixed(2)));
     final double dW = sqrt(dt) * _nextGaussion();
     S *= exp((mu - 0.5 * sigma * sigma) * dt + sigma * dW);
-    sp[i + 1] = S;
 
-    return sp[i++];
+    return historicPrices.last;
   }
 
   double generatePrices({int N = 1}) {
     /// Generate N stock prices from the current price and return the
     /// latest price
-    double sp = 0.0;
+    double historicPrices = 0.0;
 
     for (int i = 0; i < N; i++) {
-      sp = getNextPrice();
+      historicPrices = getNextPrice();
     }
 
-    return sp;
+    return historicPrices;
   }
 }
 
 class Stock {
+  final String name;
+  final String code;
   final double initialPrice;
   final double percentDrift;
   final double percentVolatility;
+  final int start;
 
-  late final StockMarket _market;
-  double _unitPrice;
+  late final StockMarket market;
 
-  double get unitPrice => _unitPrice;
+  UnmodifiableListView<double> get history =>
+      UnmodifiableListView(market.historicPrices);
+
+  double get price => market.historicPrices.last;
+
+  double percentPriceChange() {
+    final int n = market.historicPrices.length;
+    final double percentChange =
+        market.historicPrices[n - 1] / market.historicPrices[n - 2] - 1.0;
+
+    return percentChange;
+  }
 
   Stock(
-      {required this.initialPrice,
+      {required this.name,
+      required this.code,
+      required this.initialPrice,
       required this.percentDrift,
-      required this.percentVolatility})
-      : _unitPrice = initialPrice {
-    _market = StockMarket(
+      required this.percentVolatility,
+      this.start = 30}) {
+    market = StockMarket(
         s0: initialPrice, mu: percentDrift, sigma: percentVolatility);
+
+    /// Generate 10 prices to plot the price graph, essentially the game starts
+    /// with the stock market at t = start days
+    market.generatePrices(N: start);
   }
 
   void updatePrice() {
     /// This function should be called after every turn/round to update the stock price
-    _unitPrice = _market.getNextPrice();
+    market.getNextPrice();
   }
 }

@@ -17,7 +17,7 @@ class JobSelectionScreen extends StatefulWidget {
 
 class _JobSelectionScreenState extends State<JobSelectionScreen> {
   final GlobalKey<AlphaScaffoldState> key = GlobalKey<AlphaScaffoldState>();
-  Job _selectdJob = Job.unemployed;
+  Job _selectedJob = Job.unemployed;
 
   /// This function maps each Job to a [JobSelectionCard] widget and computes
   /// the eligibility and whether or not the card has been selected
@@ -28,7 +28,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
       .map((job) => JobSelectionCard(
           // map each [Job] enum to a [JobSelectionCard] widget
           job: job,
-          selected: job == _selectdJob,
+          selected: job == _selectedJob,
           eligible: context.gameState.activePlayer.education
               .greaterThanOrEqualsTo(job
                   .education))) // eliglbe iff player meets education requirements
@@ -46,18 +46,23 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   void _confirmJobSelection(BuildContext context) {
     /// This function maps to the action of the CONFIRM button of the screen
+    if (_selectedJob == Job.unemployed) {
+      context.showSnackbar(message: "✋🏼 Please select a job to continue");
+      return;
+    }
+
     final AlphaDialogBuilder dialog = AlphaDialogBuilder(
         title: "Confirm Job",
         child: Column(
           children: <Widget>[
             Text(
-              "You have chosen to work as ${singularArticle(_selectdJob.jobTitle)}.",
+              "You have chosen to work as ${singularArticle(_selectedJob.jobTitle)}.",
               style: const TextStyle(fontSize: 22.0),
             ),
             const SizedBox(height: 2.0),
             const Text("Are you sure?", style: TextStyle(fontSize: 22.0)),
             const SizedBox(height: 25.0),
-            JobDescriptionTagCollection(job: _selectdJob, eligible: true),
+            JobDescriptionTagCollection(job: _selectedJob, eligible: true),
             const SizedBox(height: 50.0),
           ],
         ),
@@ -69,7 +74,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   void _confirmJobInDialog() {
     // This function maps to the CONFIRM button of the alert dialog
-    context.gameState.activePlayer.updateJob(_selectdJob);
+    context.gameState.activePlayer.updateJob(_selectedJob);
     context.navigateAndPopTo(const DashboardScreen());
   }
 
@@ -119,7 +124,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
                 children: _mapJobCards()
                     .map((JobSelectionCard card) => GestureDetector(
                           onTap: card.eligible
-                              ? () => setState(() => _selectdJob = card.job)
+                              ? () => setState(() => _selectedJob = card.job)
                               : () => _showIneligibleMessage(context),
                           child: card,
                         ))

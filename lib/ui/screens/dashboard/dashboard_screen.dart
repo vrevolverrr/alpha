@@ -1,5 +1,7 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/investments/investments_screen.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -7,9 +9,14 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AlphaScaffold(
+    return AlphaScaffold(
         title: "Dashboard",
-        next: AlphaButton(width: 235.0, title: "End Turn"),
-        children: <Widget>[]);
+        mainAxisAlignment: MainAxisAlignment.center,
+        next: AlphaButton(
+          width: 235.0,
+          title: "End Turn",
+          onTap: () => context.navigateTo(const InvestmentsScreen()),
+        ),
+        children: const <Widget>[]);
   }
 }

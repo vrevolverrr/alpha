@@ -1,9 +1,11 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:alpha/logic/financial_market.dart';
 import 'package:alpha/logic/player.dart';
 
 class GameState {
+  final FinancialMarket financialMarket = FinancialMarket();
   final List<Player> _playerList = [];
   int _activePlayerIndex = 0;
 

@@ -59,6 +59,7 @@ class AlphaAnimatedContainer extends AlphaContainer {
         curve: curve,
         width: width,
         height: height,
+        padding: padding,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
