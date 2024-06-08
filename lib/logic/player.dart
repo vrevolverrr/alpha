@@ -127,6 +127,10 @@ class Player {
 
   Map<Budget, double> get budgets => _budgets;
 
+  Education getNextEducation() {
+    return Education.values[(education.index + 1) % Education.values.length];
+  }
+
   void updateJob(Job newJob) {
     // Update the player's [Job]
     _job = newJob;

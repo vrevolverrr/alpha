@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+/// Creates a [Container] that matches the default style of the the game.
 class AlphaContainer extends StatelessWidget {
   final double? width;
   final double? height;
   final EdgeInsetsGeometry? padding;
+
+  /// The [Offset] to use for the [BoxShadow] of the container.
   final Offset? shadowOffset;
-  final Color? borderColor;
-  final Widget child;
+
+  final Widget? child;
 
   const AlphaContainer(
       {super.key,
@@ -14,8 +17,7 @@ class AlphaContainer extends StatelessWidget {
       this.height,
       this.padding,
       this.shadowOffset,
-      this.borderColor,
-      required this.child});
+      this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +28,10 @@ class AlphaContainer extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(color: borderColor ?? Colors.black, width: 4.0),
+          border: Border.all(color: Colors.black, width: 4.0),
           boxShadow: <BoxShadow>[
             BoxShadow(
-                color: borderColor ?? Colors.black,
+                color: Colors.black,
                 offset: shadowOffset ?? const Offset(0.5, 3.0))
           ]),
       child: child,
@@ -37,8 +39,12 @@ class AlphaContainer extends StatelessWidget {
   }
 }
 
+/// Animated version [AlphaContainer] that uses an [AnimatedContainer].
 class AlphaAnimatedContainer extends AlphaContainer {
+  /// The duration over which to animate the parameters of this container.
   final Duration duration;
+
+  /// The curve to apply when animating the parameters of this container.
   final Curve curve;
 
   const AlphaAnimatedContainer(
@@ -48,7 +54,6 @@ class AlphaAnimatedContainer extends AlphaContainer {
       super.width,
       super.height,
       super.shadowOffset = const Offset(0.5, 3.0),
-      super.borderColor,
       super.padding,
       required super.child});
 
@@ -63,10 +68,10 @@ class AlphaAnimatedContainer extends AlphaContainer {
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
-            border: Border.all(color: borderColor ?? Colors.black, width: 4.0),
+            border: Border.all(color: Colors.black, width: 4.0),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: borderColor ?? Colors.black,
+                  color: Colors.black,
                   offset: shadowOffset ?? const Offset(0.5, 3.0))
             ]),
         child: child);

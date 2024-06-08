@@ -4,7 +4,7 @@ import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
 
-class JobSelectionCard extends StatefulWidget {
+class JobSelectionCard extends StatelessWidget {
   final Job job;
   final bool eligible;
   final bool selected;
@@ -15,25 +15,19 @@ class JobSelectionCard extends StatefulWidget {
       this.selected = false});
 
   @override
-  State<StatefulWidget> createState() => _JobSelectionCardState();
-}
-
-class _JobSelectionCardState extends State<JobSelectionCard> {
-  @override
   Widget build(BuildContext context) {
     return AnimatedSlide(
       duration: const Duration(milliseconds: 120),
-      offset: !widget.selected ? Offset.zero : const Offset(0.0, -0.03),
+      offset: !selected ? Offset.zero : const Offset(0.0, -0.03),
       child: AnimatedScale(
-        scale: !widget.selected ? 1.0 : 1.03,
+        scale: !selected ? 1.0 : 1.03,
         duration: const Duration(milliseconds: 120),
         child: Stack(
           children: <Widget>[
             AlphaAnimatedContainer(
                 duration: const Duration(milliseconds: 120),
-                shadowOffset: !widget.selected
-                    ? const Offset(0.5, 3.0)
-                    : const Offset(5.0, 6.0),
+                shadowOffset:
+                    !selected ? const Offset(0.5, 3.0) : const Offset(5.0, 6.0),
                 child: Column(
                   children: <Widget>[
                     Container(
@@ -43,7 +37,7 @@ class _JobSelectionCardState extends State<JobSelectionCard> {
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(15.0),
                               topRight: Radius.circular(15.0)),
-                          color: widget.eligible
+                          color: eligible
                               ? const Color(0xffFEA079)
                               : const Color(0xffBDBDBD)),
                     ),
@@ -51,22 +45,20 @@ class _JobSelectionCardState extends State<JobSelectionCard> {
                     Column(
                       children: <Widget>[
                         Text(
-                          widget.job.jobTitle,
+                          job.jobTitle,
                           style: const TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 25.0),
                         ),
                         const SizedBox(height: 13.0),
                         JobDescriptionTagCollection(
-                            job: widget.job, eligible: widget.eligible)
+                            job: job, eligible: eligible)
                       ],
                     )
                   ],
                 )),
             _JobHeroImage(
-                asset: widget.eligible ? widget.job.asset : widget.job.assetBW,
-                eligible: widget.eligible),
-            RenderIfFalse(
-                condition: widget.eligible, child: _IneligibleBanner())
+                asset: eligible ? job.asset : job.assetBW, eligible: eligible),
+            RenderIfFalse(condition: eligible, child: _IneligibleBanner())
           ],
         ),
       ),
@@ -75,6 +67,7 @@ class _JobSelectionCardState extends State<JobSelectionCard> {
 }
 
 class _JobHeroImage extends StatelessWidget {
+  /// Widget for the hero image on each job card
   final AlphaAssets asset;
   final bool eligible;
 
@@ -96,6 +89,7 @@ class _JobHeroImage extends StatelessWidget {
 }
 
 class _IneligibleBanner extends StatelessWidget {
+  ///
   @override
   Widget build(BuildContext context) {
     return Align(
