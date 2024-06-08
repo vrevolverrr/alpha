@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 
+/// Creates an animated button in the style of the game.
 class AlphaButton extends StatefulWidget {
   final double width, height;
   final String title;
   final Color? color;
   final IconData? icon;
+
+  /// Whether or not the button is disabled.\
+  /// The button turns grey when disabled and [onTapDisabled] is called instead
+  /// of [onTap] when the button is tapped.
   final bool disabled;
+
+  /// The function called when the button is tapped while `disabled` is false.
   final void Function()? onTap;
+
+  /// The function called when the button is tapped while `disabled` is true.
   final void Function()? onTapDisabled;
 
   const AlphaButton(
