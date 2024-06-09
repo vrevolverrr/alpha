@@ -179,7 +179,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
           RenderIfTrue(
               condition: _showAlphaDialog,
               child: Container(color: const Color.fromARGB(120, 86, 86, 86))),
-          _AlphaScaffoldAlphaDialog(
+          _AlphaScaffoldDialog(
               showAlphaDialog: _showAlphaDialog, dialogBuilder: _dialogBuilder),
         ],
       ),
@@ -187,6 +187,10 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   }
 }
 
+/// Creates a widget for the top app bar containing a back button and the
+/// screen title in the [AlphaScaffold].
+///
+/// This widget should only be used by [AlphaScaffold].
 class _AlphaScaffoldAppBar extends StatelessWidget {
   final String title;
   final void Function()? onTapBack;
@@ -212,6 +216,10 @@ class _AlphaScaffoldAppBar extends StatelessWidget {
   }
 }
 
+/// Creates a widget for the back button in [_AlphaScaffoldAppBar] in the
+/// [AlphaScaffold]
+///
+/// This widget should only be used by [AlphaScaffold].
 class _AlphaScaffoldTapBack extends StatelessWidget {
   final void Function()? onTapBack;
   const _AlphaScaffoldTapBack({required this.onTapBack});
@@ -263,6 +271,9 @@ class _AlphaScaffoldContents extends StatelessWidget {
   }
 }
 
+/// Creates a widget for the [AlphaSnackbar] in the [AlphaScaffold].
+///
+/// This widget should only be used by [AlphaScaffold].
 class _AlphaScaffoldSnackbar extends StatelessWidget {
   final String snackbarMessage;
   final AnimationController snackbarController;
@@ -279,11 +290,14 @@ class _AlphaScaffoldSnackbar extends StatelessWidget {
   }
 }
 
-class _AlphaScaffoldAlphaDialog extends StatelessWidget {
+/// Creates a widget for the [AlphaAlertDialog] in the [AlphaScaffold].
+///
+/// This widget should only be used by [AlphaScaffold].
+class _AlphaScaffoldDialog extends StatelessWidget {
   final AlphaDialogBuilder dialogBuilder;
   final bool showAlphaDialog;
 
-  const _AlphaScaffoldAlphaDialog(
+  const _AlphaScaffoldDialog(
       {required this.showAlphaDialog, required this.dialogBuilder});
 
   @override
@@ -304,6 +318,7 @@ class _AlphaScaffoldAlphaDialog extends StatelessWidget {
   }
 }
 
+/// Helper class to build an [AlphaAlertDialog].
 class AlphaDialogBuilder {
   final String title;
   final Widget child;
