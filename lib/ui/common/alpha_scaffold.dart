@@ -73,6 +73,10 @@ class AlphaScaffold extends StatefulWidget {
   State<AlphaScaffold> createState() => AlphaScaffoldState();
 }
 
+/// State for a [AlphaScaffold].
+///
+/// Can display [AlphaAlertDialog]s and [AlphaSnackbar]s. Retrieve a
+/// [AlphaScaffoldState] from the current [BuildContext] using [Scaffold.of].
 class AlphaScaffoldState extends State<AlphaScaffold>
     with SingleTickerProviderStateMixin {
   /// Placeholder dialog builder, will be replaced when showDialog() is called.
@@ -87,6 +91,10 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   /// Placeholder message for the snackbar, will be replaced when showSnackbar() is called.
   String _snackbarMessage = "";
 
+  /// Shows the [AlphaSnackbar] with the message given.
+  ///
+  /// This method updates the [message] of the current [AlphaSnackbar] using
+  /// [setState] and begin the [AlphaSnackbar]'s animation.
   void showSnackbar(
       {required String message,
       Duration duration = const Duration(seconds: 1)}) {
@@ -98,20 +106,32 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     Future.delayed(duration, () => _snackbarController.reverse());
   }
 
+  /// Dismisses the [AlphaSnackbar] if it is being animated.
   void dismissSnackbar() {
-    if (_snackbarController.isCompleted) {
+    if (_snackbarController.isCompleted || _snackbarController.isAnimating) {
       _snackbarController.reverse();
     }
   }
 
+  /// Builds an [AlphaAlertDialog] from the [AlphaDialogBuilder] provided and
+  /// shows the dialog.
+  ///
+  /// The existing [AlphaAlertDialog] is replaced by the new [AlphaAlertDialog]
+  /// built based on [builder] provided.
   void showDialog(AlphaDialogBuilder builder) {
     setState(() {
       _dialogBuilder = builder;
+
+      /// _showAlphaDialog is set to `true` which triggers
+      /// the dialog to implicitly animate and show.
       _showAlphaDialog = true;
     });
   }
 
+  /// Dismisses the current [AlphaAlertDialog].
   void dismissDialog() {
+    /// _showAlphaDialog is set to `false` which triggers
+    /// the dialog to implicitly animate and close.
     setState(() => _showAlphaDialog = false);
   }
 
@@ -119,6 +139,8 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   void initState() {
     _snackbarController = AnimationController(vsync: this);
 
+    /// Shows the landing message via the [AlphaSnackbar] after a 500ms delay,
+    /// if not null.
     if (widget.landingMessage != null) {
       Future.delayed(
           const Duration(milliseconds: 500),
