@@ -133,25 +133,25 @@ class _AlertDialogContents extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            RenderIfNotNull(
-                nullable: cancel,
-                child: AlphaButton(
-                  width: cancel!.width,
-                  height: cancel!.height,
-                  title: cancel!.title,
-                  onTap: cancel!.onTap,
-                )),
+            cancel != null
+                ? AlphaButton(
+                    width: cancel!.width,
+                    height: cancel!.height,
+                    title: cancel!.title,
+                    onTap: cancel!.onTap,
+                  )
+                : const SizedBox(),
             RenderIfAllNotNull(
                 nullables: [next, cancel], child: const SizedBox(width: 20.0)),
-            RenderIfNotNull(
-                nullable: next,
-                child: AlphaButton(
-                  width: next!.width,
-                  height: next!.height,
-                  title: next!.title,
-                  color: const Color.fromARGB(255, 164, 211, 151),
-                  onTap: next!.onTap,
-                ))
+            next != null
+                ? AlphaButton(
+                    width: next!.width,
+                    height: next!.height,
+                    title: next!.title,
+                    color: const Color.fromARGB(255, 164, 211, 151),
+                    onTap: next!.onTap,
+                  )
+                : const SizedBox()
           ],
         )
       ],

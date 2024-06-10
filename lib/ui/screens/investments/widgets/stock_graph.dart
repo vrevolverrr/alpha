@@ -2,12 +2,16 @@ import 'dart:math';
 
 import 'package:alpha/logic/stocks.dart';
 import 'package:alpha/ui/screens/investments/widgets/line_graph_painter.dart';
+import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 
 class StockGraph extends StatelessWidget {
   final double width;
   final double height;
   final Stock stock;
+
+  late final double yMax;
+  late final double yMin;
 
   static const _priceHistoryDuration = 20;
 
@@ -25,8 +29,8 @@ class StockGraph extends StatelessWidget {
 
     /// Calculate scale
     final double dx = width / StockGraph._priceHistoryDuration;
-    final double yMax = prices.reduce(max);
-    final double yMin = prices.reduce(min);
+    yMax = prices.reduce(max);
+    yMin = prices.reduce(min);
     final double dy = height / (yMax - yMin);
 
     /// Scale the prices to fit the points
@@ -36,7 +40,7 @@ class StockGraph extends StatelessWidget {
       //          = canvasHeight - (y - yMin) * dy
       // the height * factor term is to add some padding below the line
       final Point<double> point =
-          Point(i * dx, height - (prices[i] - yMin) * dy - height * 0.15);
+          Point(i * dx, height - (prices[i] - yMin) * dy - height * 0.1);
       points[i] = point;
     }
   }
@@ -46,9 +50,39 @@ class StockGraph extends StatelessWidget {
     return CustomPaint(
       size: Size(width, height),
       painter: LineGraphPainter(points,
-          color: stock.percentPriceChange() <= 0
-              ? const Color(0xffE15353)
-              : const Color(0xff3AB59E)),
+          color: stock.percentPriceChange() == 0
+              ? const Color(0xFF5B5B5B)
+              : (stock.percentPriceChange() < 0
+                  ? const Color(0xffE15353)
+                  : const Color(0xff3AB59E))),
+    );
+  }
+}
+
+class LargeStockGraph extends StockGraph {
+  late final List<int> xLabel;
+  late final List<int> yLabel;
+
+  LargeStockGraph(
+      {super.key,
+      required super.width,
+      required super.height,
+      required super.stock});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(width, height),
+      painter: LineGraphPainter(points,
+          hasGrid: true,
+          xLabel: List.generate(10, (index) => index + 1),
+          yLabel: List.generate(5, (index) => 70 + index * 10),
+          strokeWidth: 5.0,
+          color: stock.percentPriceChange() == 0
+              ? const Color(0xFF5B5B5B)
+              : (stock.percentPriceChange() < 0
+                  ? const Color(0xffE15353)
+                  : const Color(0xff3AB59E))),
     );
   }
 }

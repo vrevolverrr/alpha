@@ -1,5 +1,5 @@
 import 'package:alpha/assets.dart';
-import 'package:alpha/logic/education.dart';
+import 'package:alpha/logic/enums/education.dart';
 
 enum Job {
   surgeon(

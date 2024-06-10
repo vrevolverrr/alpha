@@ -1,5 +1,5 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/job.dart';
+import 'package:alpha/logic/enums/job.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -74,6 +74,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   void _confirmJobInDialog() {
     // This function maps to the CONFIRM button of the alert dialog
     context.gameState.activePlayer.updateJob(_selectedJob);
+    // TODO change this
+    context.gameState.activePlayer.creditSalary();
     context.navigateAndPopTo(const DashboardScreen());
   }
 

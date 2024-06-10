@@ -78,7 +78,7 @@ class _PlayerCardState extends State<PlayerCard> {
                 ),
                 const SizedBox(height: 6.0),
                 Text(
-                  "💵 ${widget.player.assets}",
+                  "💵 ${widget.player.savings}",
                   style: const TextStyle(
                       fontSize: 20.0, fontWeight: FontWeight.w500),
                 ),

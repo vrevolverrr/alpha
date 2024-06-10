@@ -1,5 +1,5 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/education.dart';
+import 'package:alpha/logic/enums/education.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';

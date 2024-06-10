@@ -35,10 +35,9 @@ class StockMarket {
   // historical prices
   late List<double> historicPrices = [];
 
+  /// This function generates a normally distributed (gaussian) random number
+  /// using the Box-Muller transform.
   double _nextGaussion() {
-    /// This function generates a normally distributed (gaussian) random number
-    /// using the Box-Muller transform
-
     // Generate two independent samples from the uniform distribution
     double u1 = rand.nextDouble();
     double u2 = rand.nextDouble();
@@ -51,15 +50,14 @@ class StockMarket {
       {required this.s0,
       required this.mu,
       required this.sigma,
-      // default 20 years
-      this.T = 20.0,
-      // default 365 * 2 = 730 steps, so one step is 10 days
-      this.N = 730})
+      this.T = 10.0,
+      this.N = 400})
       : dt = T / N,
         S = s0 {
     rand = Random();
   }
 
+  /// Calculate the s_t+1 stock price and return s_t price
   double getNextPrice() {
     historicPrices.add(double.parse(S.toStringAsFixed(2)));
     final double dW = sqrt(dt) * _nextGaussion();
@@ -68,9 +66,8 @@ class StockMarket {
     return historicPrices.last;
   }
 
+  /// Generate N stock prices from the current step and return the latest price
   double generatePrices({int N = 1}) {
-    /// Generate N stock prices from the current price and return the
-    /// latest price
     double historicPrices = 0.0;
 
     for (int i = 0; i < N; i++) {
@@ -96,12 +93,20 @@ class Stock {
 
   double get price => market.historicPrices.last;
 
+  double priceChange() {
+    final int n = market.historicPrices.length;
+    final double priceChange =
+        market.historicPrices[n - 1] - market.historicPrices[n - 2];
+
+    return priceChange;
+  }
+
   double percentPriceChange() {
     final int n = market.historicPrices.length;
     final double percentChange =
         market.historicPrices[n - 1] / market.historicPrices[n - 2] - 1.0;
 
-    return percentChange;
+    return double.parse(percentChange.toStringAsFixed(2));
   }
 
   Stock(

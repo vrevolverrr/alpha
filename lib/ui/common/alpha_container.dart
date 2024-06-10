@@ -5,6 +5,7 @@ class AlphaContainer extends StatelessWidget {
   final double? width;
   final double? height;
   final EdgeInsetsGeometry? padding;
+  final Color? color;
 
   /// The [Offset] to use for the [BoxShadow] of the container.
   final Offset? shadowOffset;
@@ -16,6 +17,7 @@ class AlphaContainer extends StatelessWidget {
       this.width,
       this.height,
       this.padding,
+      this.color,
       this.shadowOffset,
       this.child});
 
@@ -26,7 +28,7 @@ class AlphaContainer extends StatelessWidget {
       height: height,
       padding: padding,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: color ?? Colors.white,
           borderRadius: BorderRadius.circular(20.0),
           border: Border.all(color: Colors.black, width: 4.0),
           boxShadow: <BoxShadow>[
@@ -53,6 +55,7 @@ class AlphaAnimatedContainer extends AlphaContainer {
       this.curve = Curves.linear,
       super.width,
       super.height,
+      super.color,
       super.shadowOffset = const Offset(0.5, 3.0),
       super.padding,
       required super.child});
@@ -66,7 +69,7 @@ class AlphaAnimatedContainer extends AlphaContainer {
         height: height,
         padding: padding,
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: color ?? Colors.white,
             borderRadius: BorderRadius.circular(20.0),
             border: Border.all(color: Colors.black, width: 4.0),
             boxShadow: <BoxShadow>[

@@ -4,6 +4,7 @@ import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_entry.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:flutter/material.dart';
 
 class InvestmentsScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class InvestmentsScreen extends StatefulWidget {
 
 class _InvestmentsScreenState extends State<InvestmentsScreen> {
   int _stockUnits = 10;
-  late final Stock _selectedStock;
+  late Stock _selectedStock;
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
         title: "Investments",
         onTapBack: () => Navigator.of(context).pop(),
         children: <Widget>[
-          const SizedBox(height: 25.0),
+          const SizedBox(height: 30.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -46,13 +47,22 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                   ),
                   const SizedBox(height: 5.0),
                   SizedBox(
-                    height: 600.0,
+                    height: 640.0,
+                    width: 360.0,
                     child: SingleChildScrollView(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: context.gameState.financialMarket.stocks
                             .map((stock) => Padding(
                                   padding: const EdgeInsets.only(bottom: 15.0),
-                                  child: StockMarketEntry(stock: stock),
+                                  child: GestureDetector(
+                                    onTap: () =>
+                                        setState(() => _selectedStock = stock),
+                                    child: StockMarketEntry(
+                                      stock: stock,
+                                      selected: _selectedStock == stock,
+                                    ),
+                                  ),
                                 ))
                             .toList(),
                       ),
@@ -62,13 +72,171 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               ),
               Column(
                 children: <Widget>[
-                  const Row(
+                  Row(
                     children: <Widget>[
                       AlphaContainer(
-                          width: 400.0, height: 390.0, child: SizedBox()),
-                      SizedBox(width: 30.0),
+                          width: 410.0,
+                          height: 450.0,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // const SizedBox(height: 175.0)
+                              Text(
+                                _selectedStock.name,
+                                style: const TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              const SizedBox(height: 2.0),
+                              Text(
+                                _selectedStock.code,
+                                style: const TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(children: <Widget>[
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    const Text(
+                                      "Share Price",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16.0),
+                                    ),
+                                    SizedBox(
+                                        width: 120.0,
+                                        child: Text(
+                                          "\$${_selectedStock.price.toStringAsFixed(2)}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 22.0),
+                                        ))
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    const Text(
+                                      "Total Shares",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16.0),
+                                    ),
+                                    SizedBox(
+                                      width: 130.0,
+                                      child: Text(
+                                        "\$${(_selectedStock.price * 10).toStringAsFixed(2)}",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 22.0),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      "Owned Shares",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16.0),
+                                    ),
+                                    Text(
+                                      "10 units",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 22.0),
+                                    )
+                                  ],
+                                ),
+                              ]),
+                              const SizedBox(height: 40.0),
+                              Center(
+                                child: LargeStockGraph(
+                                  width: 350.0,
+                                  height: 200.0,
+                                  stock: _selectedStock,
+                                ),
+                              )
+                            ],
+                          )),
+                      const SizedBox(width: 30.0),
                       AlphaContainer(
-                          width: 320.0, height: 390.0, child: SizedBox())
+                          width: 310.0,
+                          height: 450.0,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18.0, vertical: 15.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              const Text(
+                                "Investment Account",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22.0),
+                              ),
+                              const SizedBox(height: 5.0),
+                              Text(
+                                "\$${context.gameState.activePlayer.investments.toStringAsFixed(2)}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 35.0),
+                              ),
+                              const SizedBox(height: 10.0),
+                              const Text(
+                                "Total Returns",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0),
+                              ),
+                              const SizedBox(height: 5.0),
+                              const Text(
+                                "\$234.54",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 32.0),
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Transform.translate(
+                                    offset: const Offset(0.0, -2.5),
+                                    child: Transform.rotate(
+                                      angle: 1.571,
+                                      child: const Icon(
+                                        Icons.arrow_back_rounded,
+                                        color: Color(0xff3AB59E),
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2.0),
+                                  const Text(
+                                    "6.82% since last turn",
+                                    style: TextStyle(
+                                        color: Color(0xff3AB59E),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20.0),
+                              Expanded(
+                                  child: ListView(
+                                children: const <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[Text("GLO"), Text("30")],
+                                  )
+                                ],
+                              ))
+                            ],
+                          ))
                     ],
                   ),
                   const SizedBox(height: 25.0),

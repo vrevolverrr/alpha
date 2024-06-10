@@ -3,61 +3,176 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class LineGraphPainter extends CustomPainter {
+  final bool hasGrid;
   final double strokeWidth;
   final Color color;
+  final int startNumber;
+
+  final List<int>? xLabel;
+  final List<int>? yLabel;
+
   final List<Point<double>> points;
 
+  static const translateX = 20.0;
+  static const kGridNumLines = 5;
+
   LineGraphPainter(this.points,
-      {this.strokeWidth = 2.5, this.color = const Color(0xffDF4141)});
+      {this.hasGrid = false,
+      this.strokeWidth = 2.5,
+      this.startNumber = 1,
+      this.xLabel,
+      this.yLabel,
+      this.color = const Color(0xffDF4141)});
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (points.isEmpty) return;
+  void _drawGrid(Canvas canvas, Size size) {
+    final Paint gridPaint = Paint()
+      ..color = const Color(0xFFA9A9A9).withOpacity(0.3)
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.0;
 
-    final linePaint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
+    for (int i = 0; i < kGridNumLines; i++) {
+      final dy = i * (size.height / (kGridNumLines - 1));
+      canvas.drawLine(Offset(20.0, dy), Offset(size.width, dy), gridPaint);
 
-    final fillPaint = Paint()
+      // double x = 0.0;
+      /*
+      while (x < size.width) {
+        canvas.drawLine(Offset(x, dy), Offset(x + kDashLength, dy), gridPaint);
+        x += kDashLength + kDashSpacing;
+      }
+      */
+    }
+  }
+
+  void _drawLineFill(Canvas canvas, Size size) {
+    final Paint fillPaint = Paint()
       // ..color = const Color(0xffDF4141).withOpacity(0.2)
       ..shader = LinearGradient(colors: [
-        color.withOpacity(0.6),
-        color.withOpacity(0.1),
-      ], stops: const [
-        0.0,
-        0.6
+        color.withOpacity(0.5),
+        color.withOpacity(0.01),
       ], transform: const GradientRotation(1.571))
           .createShader(Rect.fromPoints(Offset(points.first.x, points.first.y),
               Offset(points.last.x, points.last.y)))
       ..style = PaintingStyle.fill;
 
     final Path path = Path();
-    path.moveTo(points.first.x - 1.5, size.height);
+    path.moveTo(points.first.x - 1.5 + translateX, size.height);
     for (final point in points) {
       /// Offset the first and last points to account for the stroke width and
       /// rounded edges
       if (point == points.first) {
-        path.lineTo(point.x - 1.5, point.y);
+        path.lineTo(point.x - 1.5 + translateX, point.y);
         continue;
       }
 
       if (point == points.last) {
-        path.lineTo(point.x + 1.5, point.y);
+        path.lineTo(point.x + 1.5 + translateX, point.y);
         continue;
       }
-      path.lineTo(point.x, point.y);
+      path.lineTo(point.x + translateX, point.y);
     }
 
-    path.lineTo(points.last.x + 1.5, size.height);
+    path.lineTo(points.last.x + 1.5 + translateX, size.height);
     path.close();
     canvas.drawPath(path, fillPaint);
+  }
+
+  void _drawPriceLine(Canvas canvas) {
+    final Paint linePaint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
 
     for (int i = 0; i < points.length - 1; i++) {
-      final p1 = Offset(points[i].x, points[i].y);
-      final p2 = Offset(points[i + 1].x, points[i + 1].y);
+      final p1 = Offset(points[i].x + translateX, points[i].y);
+      final p2 = Offset(points[i + 1].x + translateX, points[i + 1].y);
       canvas.drawLine(p1, p2, linePaint);
     }
+  }
+
+  void _drawPriceLineShadow(Canvas canvas) {
+    final Paint linePaint = Paint()
+      ..color = Colors.black
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    const Offset shadowOffset = Offset(0.0, 20.0);
+
+    for (int i = 0; i < points.length - 1; i++) {
+      final p1 =
+          Offset(points[i].x + shadowOffset.dx, points[i].y + shadowOffset.dy);
+      final p2 = Offset(
+          points[i + 1].x + shadowOffset.dx, points[i + 1].y + shadowOffset.dy);
+      canvas.drawLine(p1, p2, linePaint);
+    }
+  }
+
+  void _drawXLabels(Canvas canvas, Size size) {
+    const style = TextStyle(
+        color: Color.fromARGB(255, 156, 156, 156),
+        fontSize: 12.0,
+        fontFamily: "MazzardH",
+        fontWeight: FontWeight.w700);
+
+    final TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+
+    for (int i = 0; i < points.length / 2; i++) {
+      painter.text = TextSpan(text: xLabel![i].toString(), style: style);
+      painter.layout();
+
+      final Offset offset = Offset(
+          i * size.width / (points.length / 2.05) + translateX,
+          size.height + 10.0);
+      painter.paint(canvas, offset);
+    }
+
+    final TextPainter labelPainter = TextPainter(
+        text: const TextSpan(text: "Game Round", style: style),
+        textDirection: TextDirection.ltr);
+
+    labelPainter.layout();
+    labelPainter.paint(canvas,
+        Offset((size.width - labelPainter.width) / 2, size.height + 35.0));
+  }
+
+  void _drawYLabels(Canvas canvas, Size size) {
+    const style = TextStyle(
+        color: Color.fromARGB(255, 156, 156, 156),
+        fontSize: 12.0,
+        fontFamily: "MazzardH",
+        fontWeight: FontWeight.w700);
+
+    final TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
+
+    for (int i = 0; i < kGridNumLines; i++) {
+      painter.text = TextSpan(
+          text: yLabel![kGridNumLines - i - 1].toString(), style: style);
+      painter.layout();
+
+      final Offset offset =
+          Offset(-10.0, i * (size.height / (kGridNumLines - 1)) - 5.0);
+      painter.paint(canvas, offset);
+    }
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (points.isEmpty) return;
+
+    if (hasGrid) {
+      _drawGrid(canvas, size);
+
+      if (xLabel != null) {
+        _drawXLabels(canvas, size);
+      }
+
+      if (yLabel != null) {
+        _drawYLabels(canvas, size);
+      }
+    }
+    _drawLineFill(canvas, size);
+
+    _drawPriceLine(canvas);
   }
 
   @override

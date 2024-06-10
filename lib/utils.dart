@@ -16,3 +16,7 @@ String singularArticle(String subject, {bool capitalize = false}) {
 
   return "$article $subject";
 }
+
+int roundDown(double value, int nearest) => (value / nearest).floor() * nearest;
+
+int roundUp(double value, int nearest) => (value / nearest).ceil() * nearest;

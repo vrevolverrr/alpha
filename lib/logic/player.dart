@@ -1,176 +1,219 @@
-import 'package:alpha/logic/education.dart';
-import 'dart:math';
+import 'package:alpha/logic/enums/education.dart';
+import 'package:alpha/logic/enums/budget.dart';
+import 'package:alpha/logic/enums/job.dart';
+import 'package:alpha/logic/enums/personal_life.dart';
+import 'package:alpha/logic/stocks.dart';
+import 'package:flutter/material.dart';
 
-import 'package:alpha/logic/job.dart';
-import 'package:alpha/logic/personal_life.dart';
-
-class PlayerUpdates {
-  /// Changes to [savings] of [Player] instance
-  double _deltaAssets = 0;
-
-  /// Changes to [commitments] of [Player] instance
-  double _deltaCommitments = 0;
-
-  /// Changes to [time] of [Player] instance
-  int _deltaTime = 0;
-
-  /// Should increment [education] of [Player] instance
-  bool _incrementEducation = false;
-
-  /// Changes to [budgets] of [Player] instance
-  Map<Budget, double> _deltaBudget = {};
-
-  /// Changes to [job] of [Player] instance
-  Job? _newJob;
-
-  /// Changes to [personalLife] of [Player] instance
-  PersonalLife? _newPersonalLife;
-
-  PlayerUpdates();
-
-  PlayerUpdates setDeltaSavings(double delta) {
-    _deltaAssets = delta;
-    return this;
-  }
-
-  PlayerUpdates setDeltaCommitments(double delta) {
-    _deltaCommitments = delta;
-    return this;
-  }
-
-  PlayerUpdates setIncrementEducation(bool shouldIncrement) {
-    _incrementEducation = shouldIncrement;
-    return this;
-  }
-
-  PlayerUpdates setDeltaBudget(Map<Budget, double> delta) {
-    _deltaBudget = delta;
-    return this;
-  }
-
-  PlayerUpdates setDeltaTime(int delta) {
-    _deltaTime = delta;
-    return this;
-  }
-
-  PlayerUpdates setJob(Job job) {
-    _newJob = job;
-    return this;
-  }
-
-  PlayerUpdates setPersonalLife(PersonalLife personalLife) {
-    _newPersonalLife = personalLife;
-    return this;
-  }
-
-  double get deltaAssets => _deltaAssets;
-  double get deltaCommitments => _deltaCommitments;
-  int get deltaTime => _deltaTime;
-  bool get incrementEducation => _incrementEducation;
-  Job? get newJob => _newJob;
-  PersonalLife? get newPersonalLife => _newPersonalLife;
-  Map<Budget, double> get deltaBudget => _deltaBudget;
-}
-
-enum Budget {
-  savings("Savings"),
-  dailyExpenses("Daily Expenses"),
-  investments("Investment"),
-  recreational("Recreational"),
-  selfImprovement("Self Improvement");
-
-  final String title;
-
-  const Budget(this.title);
-}
-
-class Player {
+class Player extends ChangeNotifier {
+  /// Configurations
   static const int kMaxTime = 500;
   static const int kBaseHappiness = 100;
 
   final String _name;
 
-  Education _education = Education.bachelors;
-  Job _job = Job.unemployed;
-  PersonalLife _personalLife = PersonalLife.single;
-
-  double _assets = 2000.0;
-  double _salary = 0;
-  double _commitments = 671.0;
-
-  int _happiness = Player.kBaseHappiness;
-  int _time = Player.kMaxTime;
-
-  final Map<Budget, double> _budgets = {
-    Budget.savings: 0.0,
-    Budget.dailyExpenses: 0.0,
-    Budget.investments: 0.0,
-    Budget.recreational: 0.0,
-    Budget.selfImprovement: 0.0
-  };
-
   Player(this._name);
 
+  /// Player Events ///
+
+  //////
+
+  /// Player stats ///
+  int _happiness = Player.kBaseHappiness;
+  int _time = Player.kMaxTime;
+  PersonalLife _personalLife = PersonalLife.single;
+
+  void updateHappiness(int delta) {
+    _happiness += delta;
+  }
+
+  void updateTime(int delta) {
+    _time += delta;
+  }
+
   String get name => _name;
-
-  Job get job => _job;
-  Education get education => _education;
-  PersonalLife get personalLife => _personalLife;
-
-  double get assets => _assets;
-
-  double get salary => _salary;
-  double get commitments => _commitments;
-
-  int get happiness => _happiness;
   int get time => _time;
+  int get happiness => _happiness;
+  /////////
 
-  Map<Budget, double> get budgets => _budgets;
+  /// Financial ///
+  double _savings = 2000.0; // savings account
+  double _investments = 500.0; // investment account
 
+  // Maps stock does to units owned
+  final Map<String, int> _ownedShares = {};
+
+  double get savings => _savings;
+  double get investments => _investments;
+  double get commitments => 671.0;
+  double get disposable => salary - commitments;
+  double get totalAssets => _savings + _investments;
+  Map<String, int> get ownedShares => _ownedShares;
+
+  void addSavings(double amt) {
+    _savings += amt;
+  }
+
+  bool deductSavings(double amt) {
+    if (amt > _savings) {
+      return false;
+    }
+
+    _savings -= amt;
+    return true;
+  }
+
+  void addInvestmentAcc(double amt) {
+    _investments += amt;
+  }
+
+  bool deductInvestmentAcc(double amt) {
+    if (amt > _investments) {
+      return false;
+    }
+
+    _investments -= amt;
+    return true;
+  }
+
+  bool purchaseShare(Stock stock, int units) {
+    final double totalPrice = stock.price * units;
+    final bool status = deductInvestmentAcc(totalPrice);
+
+    if (status) {
+      /// Add to stock count if present else set as `units`
+      ownedShares.update(stock.code, (owned) => owned + units,
+          ifAbsent: () => units);
+    }
+
+    // true if enough cash in investment account to purchase else false
+    return status;
+  }
+
+  bool sellShare(Stock stock, int units) {
+    final int ownedUnits = _ownedShares[stock.code] ?? 0;
+
+    if (ownedUnits < units) {
+      /// Player does not have sufficient units to sell.
+      return false;
+    }
+
+    final double totalPrice = stock.price * units;
+    addInvestmentAcc(totalPrice);
+    return true;
+  }
+  /////////
+
+  /// Budgets ///
+  double _unbudgetedSalary = 0.0;
+  Map<Budget, int> get budgets => _budgets;
+
+  final Map<Budget, int> _budgets = {
+    Budget.dailyExpenses: 2,
+    Budget.selfImprovement: 2,
+    Budget.recreational: 2,
+    Budget.investments: 2,
+    Budget.savings: 2,
+  };
+
+  bool get hasUnbudgetedSalary => _unbudgetedSalary > 0;
+
+  bool get hasValidBudget =>
+      _budgets.values.reduce((value, acc) => value + acc) == 10;
+
+  void applyBudget() {
+    // TODO apply to all fields
+    addSavings((_budgets[Budget.savings]! / 10) * _unbudgetedSalary);
+    addInvestmentAcc((_budgets[Budget.investments]! / 10) * _unbudgetedSalary);
+
+    _unbudgetedSalary = 0;
+    notifyListeners();
+  }
+
+  Map<Budget, int> updateBudget(Budget budget, int value) {
+    _budgets[budget] = value;
+
+    final int proportionSum =
+        _budgets.values.reduce((value, acc) => value + acc);
+
+    if (proportionSum > 10) {
+      // If sum of proportions greater than 10, decrement the least priority
+      // budget by the exceeded amount.
+      int excess = proportionSum - 10;
+      final List<Budget> sortedBudgets = List.from(Budget.values)
+        ..sort((a, b) => a.priority - b.priority);
+
+      for (final b in sortedBudgets) {
+        if (b == budget) {
+          continue;
+        }
+
+        if (excess <= 0) {
+          break;
+        }
+
+        if (_budgets[b]! <= 0) {
+          continue;
+        }
+
+        final int newBudget = _budgets[b]! - excess;
+        excess -= _budgets[b]! - newBudget;
+        _budgets[b] = newBudget >= 0 ? newBudget : 0;
+      }
+    }
+
+    return _budgets;
+  }
+
+  bool incrementBudget(Budget budget) {
+    if (_budgets[budget]! >= 10) return false;
+
+    updateBudget(budget, _budgets[budget]! + 1);
+    return true;
+  }
+
+  bool decrementBudget(Budget budget) {
+    if (_budgets[budget]! <= 0) return false;
+
+    updateBudget(budget, _budgets[budget]! - 1);
+    return true;
+  }
+  /////////
+
+  /// Education ///
+  Education _education = Education.bachelors;
+
+  Education get education => _education;
+
+  /// Get the next level of [Education] of the player.
   Education getNextEducation() {
     return Education.values[(education.index + 1) % Education.values.length];
   }
 
+  /// Increment the level of [Education] of the player.
+  void incrementEducation() {
+    _education = getNextEducation();
+  }
+  /////////
+
+  /// Job ///
+  Job _job = Job.unemployed;
+
+  Job get job => _job;
+  double get salary => _job.jobSalary;
+  bool get hasJob => _job != Job.unemployed;
+
+  // Update the player's [Job] value.
   void updateJob(Job newJob) {
-    // Update the player's [Job]
     _job = newJob;
-    _salary = newJob.jobSalary;
   }
 
-  void update(PlayerUpdates updates) {
-    /// Apply changes to [savings] and [commitments]
-    _assets += updates.deltaAssets;
-    _commitments += updates.deltaCommitments;
-
-    /// Apply changes to [job] if required
-    if (updates.newJob != null) {
-      _job = updates.newJob as Job;
-    }
-
-    /// Apply changes to [salary] based on current assigned [job]
-    _salary = _job.jobSalary;
-
-    /// Apply changes to [personalLife] if required
-    if (updates.newPersonalLife != null) {
-      _personalLife = updates.newPersonalLife as PersonalLife;
-    }
-
-    /// Increment [education] if required, capped by max [Education] level
-    _education = updates.incrementEducation
-        ? Education
-            .values[min(education.index + 1, Education.values.length - 1)]
-        : education;
-
-    /// Apply changes to [budget]
-    updates.deltaBudget.forEach((key, value) {
-      _budgets[key] = value;
-    });
-
-    /// Apply changes to [time] based on current assigned [job] and
-    /// [personalLife]
-    _time = Player.kMaxTime - _job.timeConsumed - _personalLife.timeConsumed;
-
-    // Apply changes to [happiness] based on current assigned [personalLife]
-    _happiness = Player.kBaseHappiness + _personalLife.happiness;
+  void creditSalary() {
+    _unbudgetedSalary += job.jobSalary;
   }
+  /////////
+
+  /// Personal Life ///
+  PersonalLife get personalLife => _personalLife;
+  /////////
 }

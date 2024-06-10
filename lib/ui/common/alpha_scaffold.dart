@@ -49,8 +49,8 @@ class AlphaScaffold extends StatefulWidget {
       this.landingMessage,
       required this.children});
 
-  /// Finds the [AlphaScaffoldState] from the closest of this class that
-  /// encloses the given [BuildContext].
+  /// Finds the [AlphaScaffoldState] from the closest instance of this class
+  /// that encloses the given [BuildContext].
   /// Call this method to obtain an [AlphaScaffoldState] to
   /// display [AlphaAlertDialog] and [AlphaSnackbar].
   static AlphaScaffoldState of(BuildContext context) {
@@ -230,9 +230,14 @@ class _AlphaScaffoldTapBack extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.only(left: 20.0),
-        child: GestureDetector(
-          onTap: onTapBack,
-          child: const Icon(Icons.arrow_back_rounded, size: 38.0),
+        child: Stack(
+          children: [
+            const Icon(Icons.arrow_back_rounded, size: 38.0),
+            GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: onTapBack,
+                child: const SizedBox(width: 55.0, height: 50.0)),
+          ],
         ),
       ),
     );
