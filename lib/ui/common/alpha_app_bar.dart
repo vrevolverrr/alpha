@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AlphaAppBar extends StatelessWidget implements PreferredSizeWidget {
+class AlphaAppBar extends StatelessWidget {
   final String? title;
   final void Function()? onTapBack;
   final bool hasBack;
@@ -47,7 +47,4 @@ class AlphaAppBar extends StatelessWidget implements PreferredSizeWidget {
           : null,
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(60.0);
 }

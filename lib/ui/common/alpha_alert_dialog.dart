@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 /// Creates a custom alert dialog widget in the style of the game.\
 /// This widget should only be used by [AlphaScaffold] and not be
 /// created anywhere else.
-class AlphaAlertDialog extends StatefulWidget {
+class AlphaAlertDialog extends StatelessWidget {
   /// The top title of the dialog.
   final String title;
 
@@ -29,21 +29,15 @@ class AlphaAlertDialog extends StatefulWidget {
       this.show = false});
 
   @override
-  State<AlphaAlertDialog> createState() => _AlphaAlertDialogState();
-}
-
-class _AlphaAlertDialogState extends State<AlphaAlertDialog> {
-  @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration:
-          widget.show ? const Duration(milliseconds: 800) : Durations.short4,
-      curve: widget.show ? Curves.elasticOut : Curves.decelerate,
+      duration: show ? const Duration(milliseconds: 800) : Durations.short4,
+      curve: show ? Curves.elasticOut : Curves.decelerate,
 
       /// Animates the dialog expanding and closing, when the
       /// widget's `show` property changes
-      width: widget.show ? 650.0 : 0.0,
-      height: widget.show ? 380.0 : 0.0,
+      width: show ? 650.0 : 0.0,
+      height: show ? 380.0 : 0.0,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
           color: const Color(0xffFCF7E8),
@@ -55,14 +49,14 @@ class _AlphaAlertDialogState extends State<AlphaAlertDialog> {
 
       /// Scale the contents of the dialog as it expands and closes.
       child: RenderIfTrue(
-        condition: widget.show,
+        condition: show,
         child: FittedBox(
           fit: BoxFit.contain,
           child: _AlertDialogContents(
-            title: widget.title,
-            next: widget.next,
-            cancel: widget.cancel,
-            child: widget.child,
+            title: title,
+            next: next,
+            cancel: cancel,
+            child: child,
           ),
         ),
       ),

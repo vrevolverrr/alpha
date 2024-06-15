@@ -59,8 +59,6 @@ class _AlphaButtonState extends State<AlphaButton> {
         offset: _hover ? const Offset(0.04, 0.04) : Offset.zero,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 80),
-          // transform:
-          //  _hover ? (Matrix4.identity()..translate(2.0, 2.0, 0.0)) : null,
           padding: const EdgeInsets.fromLTRB(30.0, 5.0, 22.0, 5.0),
           width: widget.width,
           height: widget.height,

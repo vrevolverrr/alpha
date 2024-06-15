@@ -33,6 +33,7 @@ class _AlphaTagButtonState extends State<AlphaTagButton> {
         duration: const Duration(milliseconds: 40),
         offset: _hover ? const Offset(0, 0.08) : Offset.zero,
         child: AnimatedContainer(
+          transformAlignment: Alignment.center,
           duration: const Duration(milliseconds: 40),
           alignment: Alignment.centerLeft,
           width: widget.width,
