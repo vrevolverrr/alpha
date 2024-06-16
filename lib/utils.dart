@@ -20,3 +20,9 @@ String singularArticle(String subject, {bool capitalize = false}) {
 int roundDown(double value, int nearest) => (value / nearest).floor() * nearest;
 
 int roundUp(double value, int nearest) => (value / nearest).ceil() * nearest;
+
+T sum<T extends num>(Iterable<T> items) {
+  if (items.isEmpty) return 0 as T;
+
+  return items.reduce((T value, T acc) => value + acc as T);
+}
