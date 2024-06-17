@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/main.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -9,15 +10,10 @@ import 'package:alpha/ui/screens/players_menu/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
-  @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
-
-class _DashboardScreenState extends State<DashboardScreen> {
-  void _endTurn(BuildContext context) {
+  void _handleEndTurn(BuildContext context) {
     gameManager.nextTurn();
     context.navigateAndPopTo(const PlayersMenuScreen());
   }
@@ -30,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           builder: (context) => AlphaButton(
             width: 235.0,
             title: "End Turn",
-            onTap: () => _endTurn(context),
+            onTap: () => _handleEndTurn(context),
             onTapDisabled: () => context.showSnackbar(
                 message:
                     "✋🏼 Plan your unallocated budgets before ending the turn"),
@@ -63,33 +59,23 @@ class _DashboardContents extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 30.0),
         child: Column(
           children: <Widget>[
-            const Text(
-              "❗ WORK IN PROGRESS ❗",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
-            ),
-            const Text(
-              "Savings Account",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
-            ),
+            const Text("❗ WORK IN PROGRESS ❗", style: TextStyles.bold24),
+            const Text("Savings Account", style: TextStyles.bold24),
             Text(
               "\$${activePlayer.savings.toStringAsFixed(2)}",
-              style: const TextStyle(fontSize: 20.0),
+              style: TextStyles.medium20,
             ),
             const SizedBox(height: 10.0),
-            const Text(
-              "Investment Account",
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.0),
-            ),
+            const Text("Investment Account", style: TextStyles.bold24),
             Text(
               "\$${activePlayer.investments.toStringAsFixed(2)}",
-              style: const TextStyle(fontSize: 20.0),
+              style: TextStyles.medium20,
             ),
             const SizedBox(height: 30.0),
             const Text(
-              "to show other relevant stats like knowledge,\nhealth, happiness etc etc",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
-            ),
+                "to show other relevant stats like knowledge,\nhealth, happiness etc etc",
+                textAlign: TextAlign.center,
+                style: TextStyles.bold18),
           ],
         ));
   }
@@ -110,7 +96,7 @@ class _DashboardActionButtions extends StatelessWidget {
                   width: 330.0,
                   title: "Budgeting",
                   color: const Color(0xffFFBFCA),
-                  onTap: () => context.navigateTo(const BudgetingScreen()),
+                  onTap: () => context.navigateTo(BudgetingScreen()),
                   onTapDisabled: () => context.showSnackbar(
                       message: "✋🏼 You have no unallocated budgets"),
                 )),

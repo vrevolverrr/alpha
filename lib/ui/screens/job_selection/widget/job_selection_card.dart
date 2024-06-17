@@ -1,5 +1,5 @@
 import 'package:alpha/assets.dart';
-import 'package:alpha/logic/enums/job.dart';
+import 'package:alpha/logic/data/job.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';

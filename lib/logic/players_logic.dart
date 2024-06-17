@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:alpha/logic/enums/education.dart';
-import 'package:alpha/logic/enums/budget.dart';
-import 'package:alpha/logic/enums/job.dart';
+import 'package:alpha/logic/data/education.dart';
+import 'package:alpha/logic/data/budget.dart';
+import 'package:alpha/logic/data/job.dart';
 import 'package:alpha/logic/stocks.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -205,7 +205,7 @@ class Player {
 }
 
 class BudgetAllocationNotifier extends ChangeNotifier {
-  late final Map<Budget, int> _budgets;
+  late Map<Budget, int> _budgets;
   final valid = ValueNotifier<bool>(true);
 
   BudgetAllocationNotifier({UnmodifiableMapView<Budget, int>? budgets}) {
