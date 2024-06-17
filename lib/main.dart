@@ -32,10 +32,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-GameManager get gameManager => GetIt.I.get<GameManager>();
-PlayerManager get playerManager => GetIt.I.get<GameManager>().playerManager;
-Player get activePlayer =>
-    GetIt.I.get<GameManager>().playerManager.getActivePlayer();
-FinancialMarketManager get marketManager =>
-    GetIt.I.get<GameManager>().marketManager;

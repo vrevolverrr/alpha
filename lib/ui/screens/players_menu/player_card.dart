@@ -1,5 +1,6 @@
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/main.dart';
+import 'package:alpha/services.dart';
 import 'package:flutter/material.dart';
 
 class PlayerCard extends StatefulWidget {
