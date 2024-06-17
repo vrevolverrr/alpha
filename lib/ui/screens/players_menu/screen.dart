@@ -1,4 +1,4 @@
-import 'package:alpha/logic/game_state.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/ui/screens/dice_roll/dice_roll_screen.dart';
 import 'package:alpha/ui/screens/players_menu/player_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,11 +43,9 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen>
   }
 
   Widget playerCardBuilder(int index) {
-    GameState gameState = context.read<GameState>();
-
-    if (gameState.activePlayerIndex != index) {
+    if (gameManager.turn != index) {
       return PlayerCard(
-        player: gameState.players[index],
+        player: playerManager.getAllPlayers()[index],
         onTap: null,
       );
     }
@@ -62,41 +60,39 @@ class _PlayersMenuScreenState extends State<PlayersMenuScreen>
         builder: (context, child) =>
             Transform.scale(scale: scaleAnimation.value, child: child!),
         child: PlayerCard(
-          player: gameState.players[index],
-          onTap: gameState.activePlayerIndex == index ? onTapPlayerCard : null,
+          player: playerManager.getAllPlayers()[index],
+          onTap: gameManager.turn == index ? onTapPlayerCard : null,
         ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<GameState>(
-        builder: (context, gameState, child) => Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const SizedBox(width: 150.0),
-                playerCardBuilder(0),
-                playerCardBuilder(1),
-                const SizedBox(width: 150.0)
-              ],
-            ),
-            const SizedBox(height: 50.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                const SizedBox(width: 5.0),
-                playerCardBuilder(2),
-                playerCardBuilder(3),
-                playerCardBuilder(4),
-                const SizedBox(width: 5.0)
-              ],
-            )
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const SizedBox(width: 150.0),
+              playerCardBuilder(0),
+              playerCardBuilder(1),
+              const SizedBox(width: 150.0)
+            ],
+          ),
+          const SizedBox(height: 50.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const SizedBox(width: 5.0),
+              playerCardBuilder(2),
+              playerCardBuilder(3),
+              playerCardBuilder(4),
+              const SizedBox(width: 5.0)
+            ],
+          )
+        ],
       ),
     );
   }

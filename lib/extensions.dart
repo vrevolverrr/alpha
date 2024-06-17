@@ -1,13 +1,5 @@
-import 'package:alpha/logic/game_state.dart';
-import 'package:alpha/logic/player.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-
-extension GetGameState on BuildContext {
-  GameState get gameState => read<GameState>();
-  Player get activePlayer => read<GameState>().activePlayer;
-}
 
 extension GetScreenDimensions on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;

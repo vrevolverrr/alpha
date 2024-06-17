@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/enums/education.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -18,11 +19,9 @@ class EducationSelectionScreen extends StatefulWidget {
 class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   bool _selectedEducation = true;
 
-  Education getNextDegree() =>
-      context.gameState.activePlayer.getNextEducation();
+  Education getNextDegree() => activePlayer.getNextEducation();
 
-  Education getCurrentDegree() =>
-      context.gameState.activePlayer.getNextEducation();
+  Education getCurrentDegree() => activePlayer.getNextEducation();
 
   void _confirmSelectionInDialog() {
     // TODO update education

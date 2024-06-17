@@ -1,7 +1,6 @@
-import 'package:alpha/logic/game_state.dart';
-import 'package:alpha/logic/player.dart';
+import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class PlayerCard extends StatefulWidget {
   final Player player;
@@ -18,19 +17,13 @@ class _PlayerCardState extends State<PlayerCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GameState>(
-      builder: (context, gameState, child) {
-        return Container(
-          foregroundDecoration:
-              (gameState.activePlayer.name != widget.player.name)
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: Colors.grey,
-                      backgroundBlendMode: BlendMode.saturation)
-                  : null,
-          child: child!,
-        );
-      },
+    return Container(
+      foregroundDecoration: (activePlayer.name != widget.player.name)
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: Colors.grey,
+              backgroundBlendMode: BlendMode.saturation)
+          : null,
       child: AnimatedScale(
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeOut,

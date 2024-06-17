@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/enums/job.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -28,7 +29,9 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           // map each [Job] enum to a [JobSelectionCard] widget
           job: job,
           selected: job == _selectedJob,
-          eligible: context.gameState.activePlayer.education
+          eligible: playerManager
+              .getActivePlayer()
+              .education
               .greaterThanOrEqualsTo(job
                   .education))) // eliglbe iff player meets education requirements
       .toList()
@@ -73,9 +76,9 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   void _confirmJobInDialog() {
     // This function maps to the CONFIRM button of the alert dialog
-    context.gameState.activePlayer.updateJob(_selectedJob);
+    activePlayer.updateJob(_selectedJob);
     // TODO change this
-    context.gameState.activePlayer.creditSalary();
+    // activePlayer.creditSalary();
     context.navigateAndPopTo(const DashboardScreen());
   }
 

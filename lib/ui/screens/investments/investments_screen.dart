@@ -1,5 +1,5 @@
-import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/stocks.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -20,7 +20,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
   @override
   void initState() {
-    _selectedStock = context.gameState.financialMarket.stocks[0];
+    _selectedStock = marketManager.stocks[0];
     super.initState();
   }
 
@@ -52,7 +52,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: context.gameState.financialMarket.stocks
+                        children: marketManager.stocks
                             .map((stock) => Padding(
                                   padding: const EdgeInsets.only(bottom: 15.0),
                                   child: GestureDetector(
@@ -182,7 +182,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                               ),
                               const SizedBox(height: 5.0),
                               Text(
-                                "\$${context.gameState.activePlayer.investments.toStringAsFixed(2)}",
+                                "\$${activePlayer.investments.toStringAsFixed(2)}",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 35.0),

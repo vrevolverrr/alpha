@@ -1,4 +1,5 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -29,13 +30,33 @@ class _DiceRollScreenState extends State<DiceRollScreen>
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return AlphaScaffold(title: "Dice Roll", children: <Widget>[
+      Transform.translate(
+          offset: const Offset(0, -40.0),
+          child: DiceRollAnimation(controller: _animController)),
+      const SizedBox(height: 30.0),
+      Builder(
+          builder: (BuildContext context) => AlphaButton(
+                width: 240.0,
+                height: 70.0,
+                title: "ROLL DICE",
+                icon: Icons.arrow_upward_rounded,
+                onTap: () => _handleRollDice(context),
+                disabled: _hasRolledDice,
+                onTapDisabled: () => _diceRollInProgress(context),
+              ))
+    ]);
+  }
+
   void _diceRollInProgress(BuildContext context) {
     AlphaScaffold.of(context)
         .showSnackbar(message: "✋🏼 The dice is already rolling");
   }
 
-  void _rollDice(BuildContext context) {
-    int dice = context.gameState.rollDice();
+  void _handleRollDice(BuildContext context) {
+    int dice = gameManager.rollDice();
 
     AlphaDialogBuilder dialog = AlphaDialogBuilder(
         title: "DICE ROLL",
@@ -66,25 +87,5 @@ class _DiceRollScreenState extends State<DiceRollScreen>
       _animController.reset();
       _animController.forward().then((_) => context.showDialog(dialog));
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlphaScaffold(title: "Dice Roll", children: <Widget>[
-      Transform.translate(
-          offset: const Offset(0, -40.0),
-          child: DiceRollAnimation(controller: _animController)),
-      const SizedBox(height: 30.0),
-      Builder(
-          builder: (BuildContext context) => AlphaButton(
-                width: 240.0,
-                height: 70.0,
-                title: "ROLL DICE",
-                icon: Icons.arrow_upward_rounded,
-                onTap: () => _rollDice(context),
-                disabled: _hasRolledDice,
-                onTapDisabled: () => _diceRollInProgress(context),
-              ))
-    ]);
   }
 }

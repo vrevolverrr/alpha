@@ -1,4 +1,5 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/player_creation_menu/widgets/player_creation_card.dart';
@@ -28,9 +29,46 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return AlphaScaffold(
+      title: "Players",
+      onTapBack: widget.onTapBack,
+      next: ListenableBuilder(
+          listenable: playerManager.playersList, builder: _nextBtnBuilder),
+      children: <Widget>[
+        const SizedBox(height: 50.0),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: 580.0,
+          child: ListenableBuilder(
+              listenable: playerManager.playersList,
+              builder: _playersPageBuilder),
+        ),
+        const SizedBox(height: 50.0)
+      ],
+    );
+  }
+
+  /// Widget Builders
+  Widget _nextBtnBuilder(BuildContext context, Widget? child) => AlphaButton(
+        width: 200.0,
+        height: 70.0,
+        title: "START",
+        onTap: _handleStartBtn,
+        disabled: playerManager.getPlayerCount() < 5,
+        onTapDisabled: () => _handleNotEnoughPlayers(context),
+      );
+
+  Widget _playersPageBuilder(BuildContext context, Widget? child) => PageView(
+        controller: _pageController,
+        physics: const ClampingScrollPhysics(),
+        children: _buildPlayerCards(),
+      );
+
   List<Widget> _buildPlayerCards() {
     final List<Widget> cards = [];
-    final players = context.gameState.players;
+    final players = playerManager.getAllPlayers();
 
     for (final player in players) {
       cards.add(UnconstrainedBox(
@@ -41,59 +79,29 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     if (players.length < 5) {
       cards.add(UnconstrainedBox(
           child: PlayerCreationCard(
-              name: "_", isAddCard: true, onTap: _addPlayer)));
+              name: "_", isAddCard: true, onTap: _handleAddPlayerBtn)));
     }
 
     return cards;
   }
 
-  void _addPlayer() {
-    setState(() {
-      context.gameState.createPlayer("Bryan");
-      Future.delayed(const Duration(milliseconds: 80), () {
-        _pageController.nextPage(
-            duration: const Duration(milliseconds: 420),
-            curve: Curves.decelerate);
-      });
+  /// Event Handlers
+  void _handleAddPlayerBtn() {
+    playerManager.createPlayer("Bryan");
+
+    Future.delayed(const Duration(milliseconds: 80), () {
+      _pageController.nextPage(
+          duration: const Duration(milliseconds: 420),
+          curve: Curves.decelerate);
     });
   }
 
-  void _notEnoughPlayers(BuildContext context) {
+  void _handleNotEnoughPlayers(BuildContext context) {
     AlphaScaffold.of(context).showSnackbar(
         message: "✋🏼 There are not enough players to start the game.");
   }
 
-  void _startGame() {
+  void _handleStartBtn() {
     context.navigateAndPopTo(const PlayersMenuScreen());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlphaScaffold(
-      title: "Players",
-      onTapBack: widget.onTapBack,
-      next: Builder(
-          builder: (BuildContext context) => AlphaButton(
-                width: 200.0,
-                height: 70.0,
-                title: "START",
-                onTap: _startGame,
-                disabled: context.gameState.numPlayers < 5,
-                onTapDisabled: () => _notEnoughPlayers(context),
-              )),
-      children: <Widget>[
-        const SizedBox(height: 50.0),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 580.0,
-          child: PageView(
-            controller: _pageController,
-            physics: const ClampingScrollPhysics(),
-            children: _buildPlayerCards(),
-          ),
-        ),
-        const SizedBox(height: 50.0)
-      ],
-    );
   }
 }
