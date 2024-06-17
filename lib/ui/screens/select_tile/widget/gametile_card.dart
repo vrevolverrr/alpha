@@ -1,3 +1,4 @@
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
 
@@ -35,8 +36,7 @@ class _GameTileSelectionCardState extends State<GameTileSelectionCard> {
               child: Text(
                 widget.title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontSize: 30.0, fontWeight: FontWeight.w700),
+                style: TextStyles.bold30,
               ),
             )),
       ),

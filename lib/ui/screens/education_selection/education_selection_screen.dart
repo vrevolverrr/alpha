@@ -2,6 +2,7 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/main.dart';
 import 'package:alpha/services.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -20,9 +21,9 @@ class EducationSelectionScreen extends StatefulWidget {
 class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   bool _selectedEducation = true;
 
-  Education getNextDegree() => activePlayer.getNextEducation();
+  EducationDegree getNextDegree() => activePlayer.education.getNext();
 
-  Education getCurrentDegree() => activePlayer.getNextEducation();
+  EducationDegree getCurrentDegree() => activePlayer.education.getNext();
 
   void _confirmSelectionInDialog() {
     // TODO update education
@@ -36,13 +37,15 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
           children: <Widget>[
             Text(
               "You have chosen to pursue your ${getNextDegree().title} degree.",
-              style: const TextStyle(fontSize: 22.0),
+              style: TextStyles.medium22,
             ),
             const SizedBox(height: 2.0),
-            const Text("The degree will be awarded after 4 turns.",
-                style: TextStyle(fontSize: 22.0)),
+            const Text(
+              "The degree will be awarded after 4 turns.",
+              style: TextStyles.medium22,
+            ),
             const SizedBox(height: 8.0),
-            const Text("Are you sure?", style: TextStyle(fontSize: 22.0)),
+            const Text("Are you sure?", style: TextStyles.medium22),
             const SizedBox(height: 40.0),
           ],
         ),

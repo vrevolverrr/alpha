@@ -95,6 +95,7 @@ class TextStyles {
   static const bold38 = TextStyle(fontWeight: FontWeight.w700, fontSize: 38.0);
   static const bold39 = TextStyle(fontWeight: FontWeight.w700, fontSize: 39.0);
   static const bold40 = TextStyle(fontWeight: FontWeight.w700, fontSize: 40.0);
+  static const bold45 = TextStyle(fontWeight: FontWeight.w700, fontSize: 45.0);
 
   static const black10 = TextStyle(fontWeight: FontWeight.w900, fontSize: 10.0);
   static const black11 = TextStyle(fontWeight: FontWeight.w900, fontSize: 11.0);

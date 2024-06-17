@@ -1,17 +1,17 @@
-enum Education {
+enum EducationDegree {
   uneducated("Uneducated"),
   diploma("Diploma"),
   bachelors("Bachelors"),
   masters("Masters"),
   phd("PhD");
 
-  const Education(this.title);
+  const EducationDegree(this.title);
 
   final String title;
 
-  bool greaterThan(Education other) => index > other.index;
-  bool greaterThanOrEqualsTo(Education other) => index >= other.index;
-  bool lessThan(Education other) => index < other.index;
-  bool lessThanOrEqualsTo(Education other) => index <= other.index;
-  bool equalsTo(Education other) => index == other.index;
+  bool greaterThan(EducationDegree other) => index > other.index;
+  bool greaterThanOrEqualsTo(EducationDegree other) => index >= other.index;
+  bool lessThan(EducationDegree other) => index < other.index;
+  bool lessThanOrEqualsTo(EducationDegree other) => index <= other.index;
+  bool equalsTo(EducationDegree other) => index == other.index;
 }

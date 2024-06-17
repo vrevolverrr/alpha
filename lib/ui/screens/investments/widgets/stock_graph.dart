@@ -1,8 +1,7 @@
 import 'dart:math';
 
-import 'package:alpha/logic/stocks.dart';
+import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/ui/screens/investments/widgets/line_graph_painter.dart';
-import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 
 class StockGraph extends StatelessWidget {

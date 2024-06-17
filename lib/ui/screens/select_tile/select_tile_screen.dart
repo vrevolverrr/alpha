@@ -1,4 +1,5 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/education_selection/education_selection_screen.dart';
@@ -67,7 +68,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
           const SizedBox(height: 30.0),
           const Text(
             "Choose the tile that you have landed on",
-            style: TextStyle(fontSize: 20.0),
+            style: TextStyles.medium20,
           ),
           const SizedBox(height: 35.0),
           Padding(

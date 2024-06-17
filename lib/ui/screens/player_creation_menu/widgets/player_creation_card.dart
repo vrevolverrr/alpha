@@ -1,4 +1,5 @@
 import 'package:alpha/assets.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_tag_button.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class _PlayerCreationCardContents extends StatelessWidget {
           const SizedBox(height: 20.0),
           Text(
             name,
-            style: const TextStyle(fontSize: 30.0, fontWeight: FontWeight.w700),
+            style: TextStyles.bold30,
           ),
           const SizedBox(height: 15.0),
           const AlphaTagButton(

@@ -1,6 +1,6 @@
 import 'package:alpha/logic/players_logic.dart';
-import 'package:alpha/main.dart';
 import 'package:alpha/services.dart';
+import 'package:alpha/styles.dart';
 import 'package:flutter/material.dart';
 
 class PlayerCard extends StatefulWidget {
@@ -67,20 +67,17 @@ class _PlayerCardState extends State<PlayerCard> {
                 const SizedBox(height: 15.0),
                 Text(
                   widget.player.name,
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.w700),
+                  style: TextStyles.bold20,
                 ),
                 const SizedBox(height: 6.0),
                 Text(
                   "💵 ${widget.player.savings}",
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.w500),
+                  style: TextStyles.medium20,
                 ),
                 const SizedBox(height: 5.0),
                 Text(
-                  "🩷 ${widget.player.happiness}",
-                  style: const TextStyle(
-                      fontSize: 20.0, fontWeight: FontWeight.w500),
+                  "🩷 ${widget.player.stats.happiness}",
+                  style: TextStyles.medium20,
                 )
               ],
             ),

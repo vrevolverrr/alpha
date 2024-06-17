@@ -5,7 +5,7 @@ enum Job {
   surgeon(
       jobTitle: "Surgeon",
       jobSalary: 12000.0,
-      education: Education.phd,
+      education: EducationDegree.phd,
       timeConsumed: 240,
       hasProgression: true,
       tier: 0,
@@ -14,7 +14,7 @@ enum Job {
   surgeonChief(
       jobTitle: "Chief Surgeon",
       jobSalary: 20000.0,
-      education: Education.phd,
+      education: EducationDegree.phd,
       timeConsumed: 350,
       hasProgression: false,
       tier: 1),
@@ -22,7 +22,7 @@ enum Job {
   doctor(
       jobTitle: "Doctor",
       jobSalary: 8000.0,
-      education: Education.masters,
+      education: EducationDegree.masters,
       timeConsumed: 200,
       hasProgression: true,
       tier: 0,
@@ -31,7 +31,7 @@ enum Job {
   doctorSpecialist(
       jobTitle: "Specialist",
       jobSalary: 15000.0,
-      education: Education.phd,
+      education: EducationDegree.phd,
       timeConsumed: 200,
       hasProgression: true,
       tier: 1),
@@ -39,7 +39,7 @@ enum Job {
   engineer(
       jobTitle: "Engineer",
       jobSalary: 4500.0,
-      education: Education.bachelors,
+      education: EducationDegree.bachelors,
       timeConsumed: 140,
       hasProgression: true,
       tier: 0,
@@ -48,7 +48,7 @@ enum Job {
   engineerSenior(
       jobTitle: "Senior Engineer",
       jobSalary: 5700.0,
-      education: Education.bachelors,
+      education: EducationDegree.bachelors,
       timeConsumed: 160,
       hasProgression: true,
       tier: 1,
@@ -57,7 +57,7 @@ enum Job {
   engineerLead(
       jobTitle: "Lead Engineer",
       jobSalary: 7400.0,
-      education: Education.masters,
+      education: EducationDegree.masters,
       timeConsumed: 165,
       hasProgression: false,
       tier: 2),
@@ -65,7 +65,7 @@ enum Job {
   programmer(
       jobTitle: "Programmer",
       jobSalary: 4300.0,
-      education: Education.bachelors,
+      education: EducationDegree.bachelors,
       timeConsumed: 135,
       hasProgression: true,
       tier: 0,
@@ -76,7 +76,7 @@ enum Job {
   programmerSenior(
       jobTitle: "Senior Programmer",
       jobSalary: 5400.0,
-      education: Education.bachelors,
+      education: EducationDegree.bachelors,
       timeConsumed: 140,
       hasProgression: true,
       tier: 1,
@@ -85,7 +85,7 @@ enum Job {
   programmerLead(
       jobTitle: "Lead Programmer",
       jobSalary: 7000.0,
-      education: Education.bachelors,
+      education: EducationDegree.bachelors,
       timeConsumed: 150,
       hasProgression: false,
       tier: 2),
@@ -93,7 +93,7 @@ enum Job {
   electrician(
       jobTitle: "Electrician",
       jobSalary: 4200.0,
-      education: Education.bachelors,
+      education: EducationDegree.bachelors,
       timeConsumed: 130,
       hasProgression: false,
       tier: 0),
@@ -101,7 +101,7 @@ enum Job {
   mechanic(
       jobTitle: "Mechanic",
       jobSalary: 4100.0,
-      education: Education.diploma,
+      education: EducationDegree.diploma,
       timeConsumed: 140,
       hasProgression: false,
       tier: 0),
@@ -109,7 +109,7 @@ enum Job {
   pumbler(
       jobTitle: "Pumbler",
       jobSalary: 3900.0,
-      education: Education.diploma,
+      education: EducationDegree.diploma,
       timeConsumed: 130,
       hasProgression: false,
       tier: 0),
@@ -117,7 +117,7 @@ enum Job {
   waiter(
       jobTitle: "Waiter",
       jobSalary: 2500.0,
-      education: Education.uneducated,
+      education: EducationDegree.uneducated,
       timeConsumed: 100,
       hasProgression: false,
       tier: 0),
@@ -125,7 +125,7 @@ enum Job {
   unemployed(
       jobTitle: "Unemployed",
       jobSalary: 0.0,
-      education: Education.uneducated,
+      education: EducationDegree.uneducated,
       timeConsumed: 0,
       hasProgression: false,
       tier: -1);
@@ -143,7 +143,7 @@ enum Job {
 
   final String jobTitle;
   final double jobSalary;
-  final Education education;
+  final EducationDegree education;
   final int timeConsumed;
   final bool hasProgression;
   final int tier;

@@ -1,4 +1,5 @@
-import 'package:alpha/logic/stocks.dart';
+import 'package:alpha/logic/financial_market_logic.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
@@ -29,8 +30,7 @@ class StockMarketEntry extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     stock.code,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 24.0),
+                    style: TextStyles.bold24,
                   ),
                   const SizedBox(width: 10.0),
                   Text(
@@ -73,7 +73,7 @@ class StockMarketEntry extends StatelessWidget {
               ),
               Text(
                 stock.name,
-                style: const TextStyle(fontSize: 15.0),
+                style: TextStyles.medium15,
               ),
               const SizedBox(height: 7.0),
               Row(
@@ -83,8 +83,7 @@ class StockMarketEntry extends StatelessWidget {
                     children: <Widget>[
                       const Text(
                         "Total Shares",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 14.0),
+                        style: TextStyles.bold14,
                       ),
                       const SizedBox(height: 2.0),
                       SizedBox(
@@ -92,8 +91,7 @@ class StockMarketEntry extends StatelessWidget {
                         child: Text(
                           // TODO add own stocks
                           "\$${(stock.price * 10).toStringAsFixed(2)}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 25.0),
+                          style: TextStyles.bold25,
                         ),
                       )
                     ],
@@ -103,14 +101,12 @@ class StockMarketEntry extends StatelessWidget {
                     children: <Widget>[
                       const Text(
                         "Share Price",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 14.0),
+                        style: TextStyles.bold14,
                       ),
                       const SizedBox(height: 2.0),
                       Text(
                         "\$${stock.price.toStringAsFixed(2)}",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 25.0),
+                        style: TextStyles.bold25,
                       )
                     ],
                   )

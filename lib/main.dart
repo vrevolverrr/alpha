@@ -1,5 +1,5 @@
 import 'package:alpha/logic/financial_market_logic.dart';
-import 'package:alpha/logic/game_manager.dart';
+import 'package:alpha/logic/game_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/ui/pages/main_menu_page.dart';
 import 'package:flutter/material.dart';

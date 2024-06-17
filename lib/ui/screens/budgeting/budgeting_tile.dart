@@ -1,3 +1,4 @@
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
 
@@ -39,20 +40,16 @@ class BudgetingTile extends StatelessWidget {
             children: <Widget>[
               Text(
                 title,
-                style: const TextStyle(
-                    fontWeight: FontWeight.w700, fontSize: 19.0),
+                style: TextStyles.bold19,
               ),
-              Text("${proportion * 10}%",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 45.0)),
+              Text("${proportion * 10}%", style: TextStyles.bold45),
               TweenAnimationBuilder(
                 tween: Tween<double>(begin: 0.0, end: amount),
                 duration: Durations.medium3,
                 builder: (BuildContext context, double value, Widget? child) =>
                     Text(
                   "\$${value.toStringAsFixed(2)}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 30.0),
+                  style: TextStyles.bold30,
                 ),
               )
             ],

@@ -1,5 +1,6 @@
-import 'package:alpha/logic/stocks.dart';
+import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/services.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -41,8 +42,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                     padding: EdgeInsets.only(left: 8.0),
                     child: Text(
                       "Stock Market",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 22.0),
+                      style: TextStyles.bold22,
                     ),
                   ),
                   const SizedBox(height: 5.0),
@@ -85,16 +85,12 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                               // const SizedBox(height: 175.0)
                               Text(
                                 _selectedStock.name,
-                                style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w700),
+                                style: TextStyles.bold20,
                               ),
                               const SizedBox(height: 2.0),
                               Text(
                                 _selectedStock.code,
-                                style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.w500),
+                                style: TextStyles.medium18,
                               ),
                               const SizedBox(height: 8.0),
                               Row(children: <Widget>[
@@ -103,17 +99,13 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                                   children: <Widget>[
                                     const Text(
                                       "Share Price",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16.0),
+                                      style: TextStyles.bold16,
                                     ),
                                     SizedBox(
                                         width: 120.0,
                                         child: Text(
                                           "\$${_selectedStock.price.toStringAsFixed(2)}",
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 22.0),
+                                          style: TextStyles.bold22,
                                         ))
                                   ],
                                 ),
@@ -122,17 +114,13 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                                   children: <Widget>[
                                     const Text(
                                       "Total Shares",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16.0),
+                                      style: TextStyles.bold16,
                                     ),
                                     SizedBox(
                                       width: 130.0,
                                       child: Text(
                                         "\$${(_selectedStock.price * 10).toStringAsFixed(2)}",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 22.0),
+                                        style: TextStyles.bold22,
                                       ),
                                     )
                                   ],
@@ -142,16 +130,9 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                                   children: <Widget>[
                                     Text(
                                       "Owned Shares",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16.0),
+                                      style: TextStyles.bold16,
                                     ),
-                                    Text(
-                                      "10 units",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 22.0),
-                                    )
+                                    Text("10 units", style: TextStyles.bold22)
                                   ],
                                 ),
                               ]),
@@ -176,30 +157,22 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                             children: <Widget>[
                               const Text(
                                 "Investment Account",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22.0),
+                                style: TextStyles.bold22,
                               ),
                               const SizedBox(height: 5.0),
                               Text(
-                                "\$${activePlayer.investments.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 35.0),
+                                "\$${activePlayer.investments.sBalance}",
+                                style: TextStyles.bold35,
                               ),
                               const SizedBox(height: 10.0),
                               const Text(
                                 "Total Returns",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0),
+                                style: TextStyles.bold20,
                               ),
                               const SizedBox(height: 5.0),
                               const Text(
                                 "\$234.54",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 32.0),
+                                style: TextStyles.bold32,
                               ),
                               Row(
                                 children: <Widget>[
@@ -256,9 +229,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                                   padding: EdgeInsets.only(left: 5.0),
                                   child: Text(
                                     "Units",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 20.0),
+                                    style: TextStyles.bold20,
                                   )),
                               const SizedBox(height: 5.0),
                               AlphaContainer(

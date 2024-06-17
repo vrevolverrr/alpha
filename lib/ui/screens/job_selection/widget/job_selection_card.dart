@@ -1,5 +1,6 @@
 import 'package:alpha/assets.dart';
 import 'package:alpha/logic/data/job.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,7 @@ class JobSelectionCard extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           job.jobTitle,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 25.0),
+                          style: TextStyles.bold25,
                         ),
                         const SizedBox(height: 13.0),
                         JobDescriptionTagCollection(
@@ -112,7 +112,7 @@ class _IneligibleBanner extends StatelessWidget {
               ]),
           child: const Text(
             "Ineligible",
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+            style: TextStyles.bold20,
           ),
         ));
   }
@@ -136,7 +136,7 @@ class _JobDescriptionTag extends StatelessWidget {
           ]),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 16.0),
+        style: TextStyles.medium16,
       ),
     );
   }

@@ -63,13 +63,13 @@ class _DashboardContents extends StatelessWidget {
             const Text("❗ WORK IN PROGRESS ❗", style: TextStyles.bold24),
             const Text("Savings Account", style: TextStyles.bold24),
             Text(
-              "\$${activePlayer.savings.toStringAsFixed(2)}",
+              "\$${activePlayer.savings.sBalance}",
               style: TextStyles.medium20,
             ),
             const SizedBox(height: 10.0),
             const Text("Investment Account", style: TextStyles.bold24),
             Text(
-              "\$${activePlayer.investments.toStringAsFixed(2)}",
+              "\$${activePlayer.investments.sBalance}",
               style: TextStyles.medium20,
             ),
             const SizedBox(height: 30.0),

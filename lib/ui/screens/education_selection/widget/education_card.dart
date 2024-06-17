@@ -1,3 +1,4 @@
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
@@ -46,11 +47,7 @@ class EducationCard extends StatelessWidget {
                     const SizedBox(height: 25.0),
                     Column(
                       children: <Widget>[
-                        Text(
-                          title,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 25.0),
-                        ),
+                        Text(title, style: TextStyles.bold25),
                         const SizedBox(height: 10.0),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -95,7 +92,7 @@ class _UnaffordableBanner extends StatelessWidget {
               ]),
           child: const Text(
             "Cannot Afford",
-            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+            style: TextStyles.bold20,
           ),
         ));
   }

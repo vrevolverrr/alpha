@@ -2,6 +2,7 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/job.dart';
 import 'package:alpha/main.dart';
 import 'package:alpha/services.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -33,6 +34,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           eligible: playerManager
               .getActivePlayer()
               .education
+              .level
               .greaterThanOrEqualsTo(job
                   .education))) // eliglbe iff player meets education requirements
       .toList()
@@ -60,10 +62,10 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           children: <Widget>[
             Text(
               "You have chosen to work as ${singularArticle(_selectedJob.jobTitle)}.",
-              style: const TextStyle(fontSize: 22.0),
+              style: TextStyles.medium22,
             ),
             const SizedBox(height: 2.0),
-            const Text("Are you sure?", style: TextStyle(fontSize: 22.0)),
+            const Text("Are you sure?", style: TextStyles.medium22),
             const SizedBox(height: 25.0),
             JobDescriptionTagCollection(job: _selectedJob, eligible: true),
             const SizedBox(height: 50.0),
@@ -77,7 +79,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   void _confirmJobInDialog() {
     // This function maps to the CONFIRM button of the alert dialog
-    activePlayer.updateJob(_selectedJob);
+    activePlayer.career.set(_selectedJob);
     // TODO change this
     // activePlayer.creditSalary();
     context.navigateAndPopTo(const DashboardScreen());

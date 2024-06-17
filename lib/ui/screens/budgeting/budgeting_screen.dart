@@ -1,7 +1,6 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/budget_logic.dart';
 import 'package:alpha/logic/data/budget.dart';
-import 'package:alpha/logic/players_logic.dart';
-import 'package:alpha/main.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
@@ -10,7 +9,7 @@ import 'package:alpha/ui/screens/budgeting/budgeting_tile.dart';
 import 'package:flutter/material.dart';
 
 class BudgetingScreen extends StatelessWidget {
-  final tempBudget = BudgetAllocationNotifier(budgets: activePlayer.budgets);
+  final tempBudget = BudgetAllocation(budgets: activePlayer.budgets.value);
 
   BudgetingScreen({super.key});
 
@@ -25,7 +24,7 @@ class BudgetingScreen extends StatelessWidget {
   }
 
   void _handleConfirmBudget(BuildContext context) {
-    activePlayer.setBudget(tempBudget);
+    activePlayer.budgets.apply(tempBudget);
     Navigator.of(context).pop();
   }
 
@@ -42,7 +41,7 @@ class BudgetingScreen extends StatelessWidget {
           const SizedBox(height: 25.0),
           const Text("Disposable Income", style: TextStyles.bold35),
           Text(
-            "(\$${activePlayer.salary.toStringAsFixed(2)} minus commitments \$${activePlayer.commitments.toStringAsFixed(2)})",
+            "(\$${activePlayer.career.sSalary} minus commitments \$${activePlayer.commitments.toStringAsFixed(2)})",
             style: TextStyles.bold18,
           ),
           const SizedBox(height: 10.0),
