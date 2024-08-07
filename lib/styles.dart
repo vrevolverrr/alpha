@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@immutable
 class TextStyles {
   static const medium10 =
       TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0);

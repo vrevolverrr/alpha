@@ -1,14 +1,15 @@
-class Skill {
-  static const kBaseSkillLevel = 20.0;
-  static const kMinSkillLevel = 0.0;
-  static const kMaxSkillLevel = 100.0;
+import 'package:flutter/material.dart';
 
-  final String name;
+class SkillLevel extends ChangeNotifier {
+  int _totalExp = 2450;
 
-  Skill({required this.name});
+  int get totalExp => _totalExp;
+  int get levelExp => _totalExp % 1000;
+  double get expPercent => levelExp / 1000;
+  int get level => _totalExp ~/ 1000;
 
-  double _stat = kBaseSkillLevel;
-  double get stat => _stat;
-
-  void upskill(double delta) => _stat += delta;
+  void addExp(int delta) {
+    _totalExp += delta;
+    notifyListeners();
+  }
 }

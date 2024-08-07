@@ -1,10 +1,9 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/main.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/player_creation_menu/widgets/player_creation_card.dart';
-import 'package:alpha/ui/screens/players_menu/screen.dart';
+import 'package:alpha/ui/screens/players_menu/players_menu_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 class PlayerCreationMenuScreen extends StatefulWidget {
@@ -19,6 +18,9 @@ class PlayerCreationMenuScreen extends StatefulWidget {
 class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
   late final PageController _pageController;
 
+  // DEV
+  final defaultPlayerNames = ["Bryan", "DY", "Victor", "Kee", "Jared"];
+
   void _updateScroll() {
     // debugPrint(_pageController.offset.toString());
   }
@@ -30,25 +32,27 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AlphaScaffold(
-      title: "Players",
-      onTapBack: widget.onTapBack,
-      next: ListenableBuilder(
-          listenable: playerManager.playersList, builder: _nextBtnBuilder),
-      children: <Widget>[
-        const SizedBox(height: 50.0),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 580.0,
-          child: ListenableBuilder(
-              listenable: playerManager.playersList,
-              builder: _playersPageBuilder),
-        ),
-        const SizedBox(height: 50.0)
-      ],
-    );
+  /// Event Handlers
+  void _handleAddPlayerBtn() {
+    print(defaultPlayerNames[playerManager.playersList.numPlayers]);
+    playerManager
+        .createPlayer(defaultPlayerNames[playerManager.playersList.numPlayers]);
+
+    Future.delayed(const Duration(milliseconds: 80), () {
+      _pageController.nextPage(
+          duration: const Duration(milliseconds: 420),
+          curve: Curves.decelerate);
+    });
+  }
+
+  void _handleNotEnoughPlayers(BuildContext context) {
+    AlphaScaffold.of(context).showSnackbar(
+        message: "✋🏼 There are not enough players to start the game.");
+  }
+
+  void _handleStartBtn() {
+    gameManager.startGame();
+    context.navigateAndPopTo(const PlayersMenuScreen());
   }
 
   /// Widget Builders
@@ -57,7 +61,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
         height: 70.0,
         title: "START",
         onTap: _handleStartBtn,
-        disabled: playerManager.getPlayerCount() < 5,
+        disabled: playerManager.getPlayerCount() < 2,
         onTapDisabled: () => _handleNotEnoughPlayers(context),
       );
 
@@ -86,23 +90,24 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
     return cards;
   }
 
-  /// Event Handlers
-  void _handleAddPlayerBtn() {
-    playerManager.createPlayer("Bryan");
-
-    Future.delayed(const Duration(milliseconds: 80), () {
-      _pageController.nextPage(
-          duration: const Duration(milliseconds: 420),
-          curve: Curves.decelerate);
-    });
-  }
-
-  void _handleNotEnoughPlayers(BuildContext context) {
-    AlphaScaffold.of(context).showSnackbar(
-        message: "✋🏼 There are not enough players to start the game.");
-  }
-
-  void _handleStartBtn() {
-    context.navigateAndPopTo(const PlayersMenuScreen());
+  @override
+  Widget build(BuildContext context) {
+    return AlphaScaffold(
+      title: "Players",
+      onTapBack: widget.onTapBack,
+      next: ListenableBuilder(
+          listenable: playerManager.playersList, builder: _nextBtnBuilder),
+      children: <Widget>[
+        const SizedBox(height: 50.0),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: 580.0,
+          child: ListenableBuilder(
+              listenable: playerManager.playersList,
+              builder: _playersPageBuilder),
+        ),
+        const SizedBox(height: 50.0)
+      ],
+    );
   }
 }

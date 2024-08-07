@@ -7,7 +7,7 @@ import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/education_selection/widget/education_card.dart';
+import 'package:alpha/ui/screens/education_selection/widgets/education_card.dart';
 import 'package:flutter/material.dart';
 
 class EducationSelectionScreen extends StatefulWidget {

@@ -21,6 +21,9 @@ class AlphaScaffold extends StatefulWidget {
   /// The top title to be displayed.
   final String title;
 
+  /// Whether or not to include default padding on the contents.
+  final bool useDefaultPadding;
+
   /// The alignment used for the [Column] of the contents.
   final MainAxisAlignment? mainAxisAlignment;
 
@@ -43,6 +46,7 @@ class AlphaScaffold extends StatefulWidget {
   const AlphaScaffold(
       {super.key,
       required this.title,
+      this.useDefaultPadding = false,
       this.mainAxisAlignment,
       this.onTapBack,
       this.next,
@@ -169,6 +173,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
                   title: widget.title, onTapBack: widget.onTapBack),
               _AlphaScaffoldContents(
                   mainAxisAlignment: widget.mainAxisAlignment,
+                  useDefaultPadding: widget.useDefaultPadding,
                   next: widget.next,
                   children: widget.children)
             ],
@@ -248,9 +253,11 @@ class _AlphaScaffoldContents extends StatelessWidget {
   final MainAxisAlignment? mainAxisAlignment;
   final Widget? next;
   final List<Widget> children;
+  final bool useDefaultPadding;
 
   const _AlphaScaffoldContents(
       {required this.mainAxisAlignment,
+      required this.useDefaultPadding,
       required this.children,
       required this.next});
 
@@ -261,9 +268,14 @@ class _AlphaScaffoldContents extends StatelessWidget {
       children: [
         // The SizedBox.expand will give constraints to the Column
         SizedBox.expand(
-          child: Column(
-            mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
-            children: children,
+          child: Padding(
+            padding: useDefaultPadding
+                ? const EdgeInsets.symmetric(horizontal: 50.0)
+                : EdgeInsets.zero,
+            child: Column(
+              mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+              children: children,
+            ),
           ),
         ),
         Align(

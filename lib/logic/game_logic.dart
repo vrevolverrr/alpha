@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:alpha/logic/financial_market_logic.dart';
-import 'package:alpha/logic/career_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
 
 class GameManager {
@@ -15,6 +14,10 @@ class GameManager {
   /// Instantiate all managers
   final playerManager = PlayerManager();
   final marketManager = FinancialMarketManager();
+
+  void startGame() {
+    playerManager.setActivePlayer(0);
+  }
 
   void nextTurn() {
     if (_turn == 0) _round++;

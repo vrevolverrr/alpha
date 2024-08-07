@@ -10,7 +10,9 @@ class BudgetAllocation extends ChangeNotifier {
   late Map<Budget, int> _budgets;
   final valid = ValueNotifier<bool>(true);
 
-  BudgetAllocation({required Map<Budget, int> budgets}) : _budgets = budgets;
+  BudgetAllocation({required Map<Budget, int> budgets}) {
+    _budgets = Map.from(budgets);
+  }
 
   UnmodifiableMapView<Budget, int> get value => UnmodifiableMapView(_budgets);
   Iterable<int> get values => UnmodifiableMapView(_budgets).values;

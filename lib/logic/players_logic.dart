@@ -7,6 +7,7 @@ import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/logic/data/budget.dart';
 import 'package:alpha/logic/data/job.dart';
 import 'package:alpha/logic/education_logic.dart';
+import 'package:alpha/logic/skills_logic.dart';
 import 'package:alpha/logic/stats_logic.dart';
 import 'package:flutter/foundation.dart';
 
@@ -67,6 +68,7 @@ class Player {
   final stats = PlayerStats();
   final savings = SavingsAccount(initial: 2000.0);
   final investments = InvestmentAccount(initial: 500.0, ownedShares: {});
+  final skills = SkillLevel();
   final education = Education(initial: EducationDegree.uneducated);
   final career = Career(initial: Job.unemployed);
   final budgets = BudgetAllocation(budgets: {

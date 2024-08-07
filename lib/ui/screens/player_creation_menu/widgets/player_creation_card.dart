@@ -23,7 +23,7 @@ class _PlayerCreationCardState extends State<PlayerCreationCard> {
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: widget.isAddCard
             ? _AddPlayerCardContents(onTap: widget.onTap)
-            : const _PlayerCreationCardContents(name: "Bryan"));
+            : _PlayerCreationCardContents(name: widget.name));
   }
 }
 

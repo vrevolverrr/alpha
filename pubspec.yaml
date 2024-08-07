@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.1.2
   lottie: ^3.1.2
   get_it: ^7.7.0
+  vector_math: ^2.1.4
 
 dev_dependencies:
   flutter_test:
