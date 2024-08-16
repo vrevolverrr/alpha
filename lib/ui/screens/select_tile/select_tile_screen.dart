@@ -5,6 +5,7 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/education_selection/education_selection_screen.dart';
 import 'package:alpha/ui/screens/job_selection/job_selection_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
+import 'package:alpha/ui/screens/world_event/world_event_selection.dart';
 import 'package:flutter/material.dart';
 
 class TileSelectionScreen extends StatefulWidget {
@@ -42,6 +43,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         nextScreen = const JobSelectionScreen();
         break;
       case 2:
+        nextScreen = const WheelSpinScreen();
         break;
       case 3:
         break;
