@@ -31,6 +31,12 @@ class GameManager {
     return Random().nextInt(6) + 1;
   }
 
+  String wheelSpin() {
+    List<String> mylist = ['1.0x', '1.5x', '0.8x', '0.6x'];
+    mylist.shuffle();
+    return mylist.first;
+  }
+
   bool hasWinner() {
     // perform some check logic on each player
     return false;
