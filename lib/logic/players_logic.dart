@@ -34,7 +34,9 @@ class PlayerManager {
     playersList.removePlayerByName(name);
   }
 
-  void registerPlayerEvent(Player player) {}
+  void registerPlayerEvent(Player player) {
+    // TODO events manager
+  }
 }
 
 /// This class manages the collection of currently active [Player]s of the game.
@@ -68,7 +70,7 @@ class Player {
   final stats = PlayerStats();
   final savings = SavingsAccount(initial: 2000.0);
   final investments = InvestmentAccount(initial: 500.0, ownedShares: {});
-  final skills = SkillLevel();
+  final skill = SkillLevel();
   final education = Education(initial: EducationDegree.uneducated);
   final career = Career(initial: Job.unemployed);
   final budgets = BudgetAllocation(budgets: {

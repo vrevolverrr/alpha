@@ -52,7 +52,7 @@ class PlayerCard extends StatelessWidget {
                     border: Border.all(color: Colors.black, width: 2.0),
                     borderRadius: BorderRadius.circular(50.0)),
                 child: Text(
-                  player.skills.level.toString(),
+                  player.skill.level.toString(),
                   style: TextStyles.bold20,
                 ),
               )

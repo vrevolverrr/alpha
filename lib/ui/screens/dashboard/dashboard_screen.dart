@@ -169,10 +169,10 @@ class _DashboardPlayerExpLevel extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: ListenableBuilder(
-                    listenable: activePlayer.skills,
+                    listenable: activePlayer.skill,
                     builder: (context, child) => Container(
                       /// To calculate progress percentage
-                      width: activePlayer.skills.expPercent * 700.0,
+                      width: activePlayer.skill.levelPercent * 700.0,
                       height: 12.0,
                       decoration: BoxDecoration(
                           color: const Color(0xffFF6B6B),
@@ -190,9 +190,9 @@ class _DashboardPlayerExpLevel extends StatelessWidget {
             child: Transform.translate(
               offset: const Offset(0.0, -28.0),
               child: ListenableBuilder(
-                listenable: activePlayer.skills,
+                listenable: activePlayer.skill,
                 builder: (context, child) => Text(
-                  "XP ${activePlayer.skills.levelExp} / 1000",
+                  "XP ${activePlayer.skill.levelExp} / 1000",
                   style: TextStyles.bold18,
                 ),
               ),
@@ -202,9 +202,9 @@ class _DashboardPlayerExpLevel extends StatelessWidget {
             child: Transform.translate(
               offset: const Offset(0.0, -28.0),
               child: ListenableBuilder(
-                listenable: activePlayer.skills,
+                listenable: activePlayer.skill,
                 builder: (context, child) => Text(
-                  "LEVEL ${activePlayer.skills.level}",
+                  "LEVEL ${activePlayer.skill.level}",
                   style: TextStyles.bold18,
                 ),
               ),
