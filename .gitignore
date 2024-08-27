@@ -47,3 +47,5 @@ android/
 macos/
 web/
 windows/
+
+*.pbxproj
