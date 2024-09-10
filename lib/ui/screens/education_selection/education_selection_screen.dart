@@ -18,7 +18,8 @@ class EducationSelectionScreen extends StatefulWidget {
 }
 
 class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
-  bool _selectedEducation = true;
+  bool _selectedPursue = false;
+  bool _selectedOnline = false;
 
   EducationDegree getNextDegree() => activePlayer.education.getNext();
 
@@ -31,21 +32,74 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
 
   void _confirmSelection(BuildContext context) {
     final AlphaDialogBuilder dialog = AlphaDialogBuilder(
-        title: "Confirm Education",
+        title: "Confirm Selection",
         child: Column(
           children: <Widget>[
-            Text(
-              "You have chosen to pursue your ${getNextDegree().title} degree.",
-              style: TextStyles.medium22,
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                "Pursue ${getNextDegree().title}",
+                style: TextStyles.bold25,
+              ),
             ),
-            const SizedBox(height: 2.0),
-            const Text(
-              "The degree will be awarded after 4 turns.",
-              style: TextStyles.medium22,
+            const SizedBox(
+              height: 20,
             ),
-            const SizedBox(height: 8.0),
-            const Text("Are you sure?", style: TextStyles.medium22),
-            const SizedBox(height: 40.0),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize
+                        .min, // Ensures the row sizes itself to its content
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "💵",
+                        style: TextStyle(
+                          fontSize: 35.0, // Larger font size for the emoji
+                        ),
+                      ),
+                      SizedBox(
+                          width: 8.0), // Add spacing between emoji and text
+                      Text("-\$50000.00",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 30.0,
+                              color: Color.fromARGB(255, 230, 45, 32))),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 50,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
+                ),
+                Text(
+                  "+500xp",
+                  style: TextStyle(
+                      fontSize: 30,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 88, 231, 93)),
+                ),
+                SizedBox(
+                  width: 60,
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
           ],
         ),
         cancel: DialogButtonData.cancel(context),
@@ -60,36 +114,66 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
       title: "Choose Education",
       landingMessage: "🎓 Choose whether or not to pursue an education.",
       onTapBack: () => Navigator.of(context).pop(),
-      next: Builder(
-          builder: (BuildContext context) => AlphaButton(
-                width: 230.0,
-                title: "Confirm",
-                onTap: () => _confirmSelection(context),
-              )),
       children: <Widget>[
-        const SizedBox(height: 65.0),
-        Row(
+        const SizedBox(height: 35.0),
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            GestureDetector(
-                onTap: () => setState(() => _selectedEducation = true),
-                child: EducationCard(
-                    title: "${getNextDegree().title} Degree",
-                    description:
-                        "Pay \$5,000 to get educated and receive a ${getNextDegree().title} degree after 4 turns",
-                    selected: _selectedEducation,
-                    affordable: false)),
-            const SizedBox(width: 40.0),
-            GestureDetector(
-                onTap: () => setState(() => _selectedEducation = false),
-                child: EducationCard(
-                  title: "No Degree",
-                  description:
-                      "Maintain current education level as ${getCurrentDegree().title}",
-                  selected: !_selectedEducation,
-                ))
+            Builder(builder: (context) {
+              return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedPursue = true;
+                      _selectedOnline = false;
+                    });
+                    _confirmSelection(context);
+                  },
+                  child: EducationCard(
+                      title: "Pursue ${getNextDegree().title} Degree",
+                      description:
+                          "Increase skill and unlock more job opportunities",
+                      cost: 50000,
+                      xp: 500,
+                      selected: _selectedPursue,
+                      affordable: false));
+            }),
+            const SizedBox(height: 50.0),
+            Builder(builder: (context) {
+              return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedOnline = true;
+                      _selectedPursue = false;
+                    });
+                    _confirmSelection(context);
+                  },
+                  child: EducationCard(
+                    title: "Online Course",
+                    description: "Increase your skill",
+                    cost: 20000,
+                    xp: 200,
+                    selected: _selectedOnline,
+                  ));
+            })
           ],
-        )
+        ),
+        const SizedBox(
+          height: 50,
+        ),
+        Container(
+          height: 1,
+          width: 450,
+          color: const Color.fromARGB(255, 198, 198, 198),
+        ),
+        const SizedBox(
+          height: 50,
+        ),
+        Builder(
+            builder: (BuildContext context) => AlphaButton(
+                  width: 300.0,
+                  title: "Skip",
+                  onTap: () => _confirmSelection(context),
+                )),
       ],
     );
   }
