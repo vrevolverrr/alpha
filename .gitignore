@@ -45,7 +45,6 @@ app.*.map.json
 # Platforms not needed
 android/
 macos/
-web/
 windows/
 
 ios/Runner.xcodeproj/
