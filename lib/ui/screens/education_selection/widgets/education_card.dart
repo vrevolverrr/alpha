@@ -31,29 +31,26 @@ class EducationCard extends StatelessWidget {
           children: <Widget>[
             AlphaAnimatedContainer(
                 width: 400.0,
-                height: 200.0,
+                height: 225.0,
                 duration: const Duration(milliseconds: 120),
                 shadowOffset:
                     !selected ? const Offset(0.5, 3.0) : const Offset(5.0, 6.0),
                 child: Column(
-                  //////////////////////////////Make changes here//////////////////////////////////////////
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(right: 15, top: 3),
+                      padding: const EdgeInsets.only(right: 15.0, top: 10.0),
                       child: Align(
                         alignment: Alignment.topRight,
                         child: Text("+${xp.toString()} xp",
                             style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 25.0,
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 88, 231, 93))),
+                                color: Color(0xFF61D465))),
                       ),
                     ),
-
-                    // ignore: sized_box_for_whitespace
-                    Container(
-                      height: 91,
+                    SizedBox(
+                      height: 91.0,
                       child: Column(
                         children: <Widget>[
                           Text(title, style: TextStyles.bold22),
@@ -71,46 +68,43 @@ class EducationCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10.0),
-                    Container(
-                      width: double.infinity,
-                      height: 68.0,
-                      decoration: BoxDecoration(
-                          border: const Border(
-                              top: BorderSide(
-                            color: Colors.black,
-                            width: 4.0,
-                          )),
-                          borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(15.0),
-                              bottomRight: Radius.circular(15.0)),
-                          color: affordable
-                              ? const Color(0xffFEA079)
-                              : const Color(0xffBDBDBD)),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisSize: MainAxisSize
-                              .min, // Ensures the row sizes itself to its content
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "💵",
-                              style: TextStyle(
-                                fontSize:
-                                    28.0, // Larger font size for the emoji
+                    const SizedBox(height: 20.0),
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            border: const Border(
+                                top: BorderSide(
+                              color: Colors.black,
+                              width: 4.0,
+                            )),
+                            borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(15.0),
+                                bottomRight: Radius.circular(15.0)),
+                            color: affordable
+                                ? const Color(0xffFEA079)
+                                : const Color(0xffBDBDBD)),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "💵",
+                                style: TextStyle(
+                                  fontSize: 28.0,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                                width:
-                                    8.0), // Add spacing between emoji and text
-                            Text("-\$${cost.toStringAsFixed(2)}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20.0,
-                                    color: Color.fromARGB(255, 230, 45, 32))),
-                          ],
+                              const SizedBox(width: 8.0),
+                              Text("-\$${cost.toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20.0,
+                                      color: Color.fromARGB(255, 230, 45, 32))),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -130,12 +124,11 @@ class _UnaffordableBanner extends StatelessWidget {
     return Transform(
       alignment: Alignment.topLeft,
       transform: Matrix4.identity()
-        ..rotateZ(
-            -0.5236) // Rotate 30 degrees counterclockwise (-0.5236 radians)
-        ..translate(-40.0, 20.0), // Adjust translation to fit your needs
+        ..rotateZ(-0.5236)
+        ..translate(-40.0, 20.0),
       child: Container(
         alignment: Alignment.center,
-        width: 110.0, // Adjust width for a better diagonal fit
+        width: 110.0,
         height: 35.0,
         padding: const EdgeInsets.only(top: 4.0),
         decoration: BoxDecoration(
@@ -148,7 +141,7 @@ class _UnaffordableBanner extends StatelessWidget {
         ),
         child: const Text(
           "Cannot Afford",
-          style: TextStyles.bold12,
+          style: TextStyles.bold13,
         ),
       ),
     );

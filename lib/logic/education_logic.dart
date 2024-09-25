@@ -12,4 +12,6 @@ class Education extends ChangeNotifier {
     return EducationDegree
         .values[(_level.index + 1) % EducationDegree.values.length];
   }
+
+  void pursueNext() => _level = getNext();
 }
