@@ -1,12 +1,14 @@
 import 'dart:math';
 
+import 'package:alpha/logic/events_manager.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
+import 'package:logging/logging.dart';
 
 class GameManager {
   /// Initial game states
-  int _round = 1;
-  int _turn = 0;
+  int _round = 0;
+  int _turn = -1;
 
   int get round => _round;
   int get turn => _turn;
@@ -14,21 +16,33 @@ class GameManager {
   /// Instantiate all managers
   final playerManager = PlayerManager();
   final marketManager = FinancialMarketManager();
+  final eventsManager = AlphaEventsManager();
+
+  // Logging
+  final Logger log = Logger("GameManager");
 
   void startGame() {
-    playerManager.setActivePlayer(0);
+    log.info("Game has started with ${playerManager.getPlayerCount()} players");
+    nextTurn();
   }
 
   void nextTurn() {
+    _turn = (_turn + 1) % playerManager.getPlayerCount();
     if (_turn == 0) _round++;
-
-    _turn += (_turn + 1) % playerManager.getPlayerCount();
     playerManager.setActivePlayer(_turn);
-    // trigger some game events
+
+    log.info(
+        "Current round: $round, Current Turn: $_turn, Active Player: ${playerManager.getActivePlayer().name}");
+
+    /// Update the events manager
+    eventsManager.update();
   }
 
   int rollDice() {
-    return Random().nextInt(6) + 1;
+    int roll = Random().nextInt(6) + 1;
+    log.info("Dice rolled with result: $roll");
+
+    return roll;
   }
 
   String wheelSpin() {

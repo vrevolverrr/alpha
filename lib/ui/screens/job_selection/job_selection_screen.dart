@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/job.dart';
+import 'package:alpha/logic/events_manager.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
@@ -77,10 +78,12 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   }
 
   void _confirmJobInDialog() {
-    // This function maps to the CONFIRM button of the alert dialog
+    /// This function maps to the CONFIRM button of the alert dialog
     activePlayer.career.set(_selectedJob);
-    // TODO change this
-    // activePlayer.creditSalary();
+
+    /// Create an event to credit the player salary
+    eventsManager.subscribe(AlphaEventCreditSalary(target: activePlayer));
+
     context.navigateAndPopTo(const DashboardScreen());
   }
 
