@@ -1,11 +1,12 @@
 import 'dart:math';
 
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/events_manager.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:logging/logging.dart';
 
-class GameManager {
+class GameManager implements IManager {
   /// Initial game states
   int _round = 0;
   int _turn = -1;
@@ -18,7 +19,7 @@ class GameManager {
   final marketManager = FinancialMarketManager();
   final eventsManager = AlphaEventsManager();
 
-  // Logging
+  @override
   final Logger log = Logger("GameManager");
 
   void startGame() {

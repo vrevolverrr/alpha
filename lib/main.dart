@@ -9,6 +9,7 @@ import 'package:logging/logging.dart';
 
 void main() {
   GetIt.instance.registerSingleton<GameManager>(GameManager());
+
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   SystemChrome.setPreferredOrientations(

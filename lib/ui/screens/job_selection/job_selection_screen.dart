@@ -79,11 +79,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   void _confirmJobInDialog() {
     /// This function maps to the CONFIRM button of the alert dialog
-    activePlayer.career.set(_selectedJob);
-
-    /// Create an event to credit the player salary
-    eventsManager.subscribe(AlphaEventCreditSalary(target: activePlayer));
-
+    activePlayer.setCareer(_selectedJob);
     context.navigateAndPopTo(const DashboardScreen());
   }
 

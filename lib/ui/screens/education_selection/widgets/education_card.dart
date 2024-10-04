@@ -1,3 +1,4 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
@@ -31,7 +32,7 @@ class EducationCard extends StatelessWidget {
           children: <Widget>[
             AlphaAnimatedContainer(
                 width: 400.0,
-                height: 225.0,
+                height: 250.0,
                 duration: const Duration(milliseconds: 120),
                 shadowOffset:
                     !selected ? const Offset(0.5, 3.0) : const Offset(5.0, 6.0),
@@ -50,7 +51,7 @@ class EducationCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(
-                      height: 91.0,
+                      height: 120.0,
                       child: Column(
                         children: <Widget>[
                           Text(title, style: TextStyles.bold22),
@@ -68,10 +69,10 @@ class EducationCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20.0),
+                    const SizedBox(height: 10.0),
                     Expanded(
                       child: Container(
-                        width: double.infinity,
+                        width: double.maxFinite,
                         decoration: BoxDecoration(
                             border: const Border(
                                 top: BorderSide(
@@ -98,11 +99,11 @@ class EducationCard extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 8.0),
-                              Text("-\$${cost.toStringAsFixed(2)}",
+                              Text("-${cost.prettyCurrency}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 20.0,
-                                      color: Color.fromARGB(255, 230, 45, 32))),
+                                      fontSize: 22.0,
+                                      color: Color.fromARGB(255, 233, 16, 0))),
                             ],
                           ),
                         ),

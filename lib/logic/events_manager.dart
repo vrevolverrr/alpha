@@ -1,3 +1,6 @@
+import 'dart:collection';
+
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:flutter/widgets.dart';
@@ -69,8 +72,12 @@ class AlphaEventCreditSalary extends AlphaRecurringEvent {
             interval: 1);
 }
 
-class AlphaEventsManager {
+class AlphaEventsManager implements IManager {
   late List<AlphaEvent> _queue;
+
+  UnmodifiableListView get queue => UnmodifiableListView(_queue);
+
+  @override
   Logger log = Logger("Events Manager");
 
   AlphaEventsManager() {
