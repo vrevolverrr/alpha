@@ -1,5 +1,4 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';

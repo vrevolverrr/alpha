@@ -56,23 +56,27 @@ class _DashboardPlayerStats extends StatelessWidget {
         ListenableBuilder(
           listenable: activePlayer.savings,
           builder: (context, child) => DashboardPlayerStatCard(
-              emoji: "💵",
-              title: "Savings",
-              value: "\$${activePlayer.savings.sBalance}"),
+            emoji: "💵",
+            title: "Savings",
+            value: activePlayer.savings.balance,
+            isCurrency: true,
+          ),
         ),
         ListenableBuilder(
           listenable: activePlayer.investments,
           builder: (context, child) => DashboardPlayerStatCard(
-              emoji: "💵",
-              title: "Investments",
-              value: "\$${activePlayer.investments.sBalance}"),
+            emoji: "💵",
+            title: "Investments",
+            value: activePlayer.investments.balance,
+            isCurrency: true,
+          ),
         ),
         ListenableBuilder(
           listenable: activePlayer.stats,
           builder: (context, child) => DashboardPlayerStatCard(
               emoji: "❤️",
               title: "Happiness",
-              value: activePlayer.stats.happiness.toString(),
+              value: activePlayer.stats.happiness,
               valueWidth: 50.0),
         ),
         ListenableBuilder(
@@ -80,7 +84,7 @@ class _DashboardPlayerStats extends StatelessWidget {
           builder: (context, child) => DashboardPlayerStatCard(
               emoji: "🕙",
               title: "Time",
-              value: activePlayer.stats.time.toString(),
+              value: activePlayer.stats.time,
               valueWidth: 50.0),
         ),
       ],
@@ -170,15 +174,22 @@ class _DashboardPlayerExpLevel extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: ListenableBuilder(
                     listenable: activePlayer.skill,
-                    builder: (context, child) => Container(
-                      /// To calculate progress percentage
-                      width: activePlayer.skill.levelPercent * 700.0,
-                      height: 12.0,
-                      decoration: BoxDecoration(
-                          color: const Color(0xffFF6B6B),
-                          borderRadius: BorderRadius.circular(50.0),
-                          border: Border.all(color: Colors.black, width: 2.0)),
-                    ),
+                    builder: (context, child) => TweenAnimationBuilder<double>(
+                        tween: Tween(
+                            begin: -900.0,
+                            end: activePlayer.skill.levelPercent * 700.0),
+                        duration: const Duration(milliseconds: 700),
+                        curve: Curves.decelerate,
+                        builder: (context, value, child) => Container(
+                              /// To calculate progress percentage
+                              width: value > 0.0 ? value : 0.0,
+                              height: 12.0,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xffFF6B6B),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                  border: Border.all(
+                                      color: Colors.black, width: 2.0)),
+                            )),
                   ),
                 ),
               ],
