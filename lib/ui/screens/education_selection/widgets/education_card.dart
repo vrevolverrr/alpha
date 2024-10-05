@@ -26,7 +26,7 @@ class EducationCard extends StatelessWidget {
       duration: const Duration(milliseconds: 120),
       offset: !selected ? Offset.zero : const Offset(0.0, -0.03),
       child: AnimatedScale(
-        scale: !selected ? 1.0 : 1.03,
+        scale: !selected ? 1.0 : 1.07,
         duration: const Duration(milliseconds: 120),
         child: Stack(
           children: <Widget>[
@@ -55,7 +55,7 @@ class EducationCard extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           Text(title, style: TextStyles.bold22),
-                          const SizedBox(height: 10.0),
+                          const SizedBox(height: 8.0),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 50.0),

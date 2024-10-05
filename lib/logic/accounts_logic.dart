@@ -9,7 +9,7 @@ class Account extends ChangeNotifier {
   double get balance => _balance;
   String get sBalance => _balance.toStringAsFixed(2);
 
-  bool credit(double amount) {
+  bool deduct(double amount) {
     if (_balance < amount) return false;
 
     _balance -= amount;
@@ -17,7 +17,7 @@ class Account extends ChangeNotifier {
     return true;
   }
 
-  void debit(double amount) {
+  void add(double amount) {
     _balance += amount;
     notifyListeners();
   }
@@ -37,7 +37,7 @@ class InvestmentAccount extends Account {
 
   bool purchaseShare(Stock stock, int units) {
     final double totalPrice = stock.price * units;
-    final bool status = credit(totalPrice);
+    final bool status = deduct(totalPrice);
 
     if (status) {
       /// Add to stock count if present else set as `units`
@@ -59,7 +59,7 @@ class InvestmentAccount extends Account {
     }
 
     final double totalPrice = stock.price * units;
-    debit(totalPrice);
+    deduct(totalPrice);
     notifyListeners();
     return true;
   }

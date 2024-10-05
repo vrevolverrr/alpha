@@ -25,21 +25,30 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
     _EducationSelection(0,
         title: "Pursue ${activePlayer.education.getNext().title}",
         description:
-            "Further your education to significantly improve your skill XP and unlock more job oppurtunities",
-        cost: 50000,
-        xp: 500),
+            "Further your education to significantly improve your skill XP and unlock more job oppurtunities.",
+        cost: activePlayer.education.getNext().cost,
+        xp: activePlayer.education.getNext().xp,
+
+        /// Pursue degree on activePlayer
+        action: () => activePlayer.pursueDegree()),
     _EducationSelection(1,
         title: "Study Online Course",
         description:
             "Study an online course to slightly improve your skill XP.",
         cost: 20000,
-        xp: 200),
+        xp: 200,
+
+        /// Pursue online course on activePlayer
+        action: () => activePlayer.pursueOnlineCourse()),
     _EducationSelection(2,
         title: "Skip Education",
         description:
-            "Skipping education will result in not increase your skill XP.",
+            "Skipping education will result in not increasing your skill XP.",
         cost: 0,
-        xp: 0),
+        xp: 0,
+
+        /// Skip education, do nothing
+        action: () => {}),
   ];
 
   void _handleNextConfirm(BuildContext context) {
@@ -54,8 +63,7 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   }
 
   void _handleDialogConfirmation() {
-    /// Increment the player's education
-    activePlayer.education.pursueNext();
+    _selection!.action(); // At this point, _selection is never null
     context.navigateAndPopTo(const DashboardScreen());
   }
 
@@ -70,14 +78,14 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
             AlphaButton.next(onTap: () => _handleNextConfirm(context)),
       ),
       children: <Widget>[
-        const SizedBox(height: 50.0),
+        const SizedBox(height: 60.0),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 30.0,
           runSpacing: 30.0,
           children: _selections
               .map((selectable) => _buildEducationCardWithGestures(
-                  context, selectable, _selection?.selection ?? -1))
+                  context, selectable, _selection?.index ?? -1))
               .toList(),
         )
       ],
@@ -95,7 +103,7 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
             description: selection.description,
             cost: selection.cost,
             xp: selection.xp,
-            selected: selection.selection == current,
+            selected: selection.index == current,
           ));
 }
 
@@ -178,11 +186,13 @@ class _EducationSelection {
   final String description;
   final double cost;
   final int xp;
-  final int selection;
+  final int index;
+  final void Function() action;
 
-  _EducationSelection(this.selection,
+  _EducationSelection(this.index,
       {required this.title,
       required this.description,
       required this.cost,
-      required this.xp});
+      required this.xp,
+      required this.action});
 }

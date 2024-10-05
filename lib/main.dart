@@ -17,7 +17,7 @@ void main() {
       .then((_) => runApp(const MyApp()));
 
   /// Configure logging
-  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     log(record.message,
         name: record.loggerName, time: record.time, level: record.level.value);

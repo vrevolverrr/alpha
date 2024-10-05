@@ -77,9 +77,13 @@ class PlayersList extends ChangeNotifier {
 
 class Player {
   final String _name;
+  final Logger _logger;
+
   String get name => _name;
 
-  Player(String name) : _name = name;
+  Player(String name)
+      : _name = name,
+        _logger = Logger("Player @$name");
 
   final stats = PlayerStats();
   final savings = SavingsAccount(initial: 2000.0);
@@ -101,5 +105,24 @@ class Player {
   void setCareer(Job job) {
     career.set(job);
     eventsManager.subscribe(AlphaEventCreditSalary(target: this));
+    _logger.info("Set carrer to ${job.jobTitle}");
   }
+
+  void pursueDegree() {
+    EducationDegree degree = education.getNext();
+    final bool success = savings.deduct(degree.cost);
+
+    /// If player has not enough balance in savings
+    if (!success) {
+      _logger.warning(
+          "Failed to pursueDegree, balance check failed, player has insufficient savings.");
+      return;
+    }
+
+    /// Else, Advance the player's degree and add skill points
+    education.pursueNext();
+    skill.add(degree.xp);
+  }
+
+  void pursueOnlineCourse() {}
 }
