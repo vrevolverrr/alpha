@@ -2,6 +2,7 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/business/business_tile.dart';
 import 'package:alpha/ui/screens/education_selection/education_selection_screen.dart';
 import 'package:alpha/ui/screens/job_selection/job_selection_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
@@ -48,6 +49,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
       case 3:
         break;
       case 4:
+        nextScreen = const BusinessSelectionScreen();
         break;
       case 5:
         break;
