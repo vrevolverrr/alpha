@@ -1,3 +1,4 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
@@ -6,10 +7,14 @@ import 'package:flutter/material.dart';
 class EducationCard extends StatelessWidget {
   final String title;
   final String description;
+  final double cost;
+  final int xp;
   final bool selected;
   final bool affordable;
   const EducationCard(
       {super.key,
+      required this.cost,
+      required this.xp,
       required this.title,
       required this.description,
       this.selected = false,
@@ -21,44 +26,89 @@ class EducationCard extends StatelessWidget {
       duration: const Duration(milliseconds: 120),
       offset: !selected ? Offset.zero : const Offset(0.0, -0.03),
       child: AnimatedScale(
-        scale: !selected ? 1.0 : 1.03,
+        scale: !selected ? 1.0 : 1.07,
         duration: const Duration(milliseconds: 120),
         child: Stack(
           children: <Widget>[
             AlphaAnimatedContainer(
                 width: 400.0,
-                height: 500.0,
+                height: 250.0,
                 duration: const Duration(milliseconds: 120),
                 shadowOffset:
                     !selected ? const Offset(0.5, 3.0) : const Offset(5.0, 6.0),
                 child: Column(
                   children: <Widget>[
-                    Container(
-                      width: double.infinity,
-                      height: 280.0,
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(15.0),
-                              topRight: Radius.circular(15.0)),
-                          color: affordable
-                              ? const Color(0xffFEA079)
-                              : const Color(0xffBDBDBD)),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15.0, top: 10.0),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Text("+${xp.toString()} xp",
+                            style: const TextStyle(
+                                fontSize: 25.0,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF61D465))),
+                      ),
                     ),
-                    const SizedBox(height: 25.0),
-                    Column(
-                      children: <Widget>[
-                        Text(title, style: TextStyles.bold25),
-                        const SizedBox(height: 10.0),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                          child: Text(
-                            description,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 16.0, height: 1.8),
+                    SizedBox(
+                      height: 120.0,
+                      child: Column(
+                        children: <Widget>[
+                          Text(title, style: TextStyles.bold22),
+                          const SizedBox(height: 8.0),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 50.0),
+                            child: Text(
+                              description,
+                              textAlign: TextAlign.center,
+                              style:
+                                  const TextStyle(fontSize: 14.0, height: 1.8),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Expanded(
+                      child: Container(
+                        width: double.maxFinite,
+                        decoration: BoxDecoration(
+                            border: const Border(
+                                top: BorderSide(
+                              color: Colors.black,
+                              width: 4.0,
+                            )),
+                            borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(15.0),
+                                bottomRight: Radius.circular(15.0)),
+                            color: affordable
+                                ? const Color(0xffFEA079)
+                                : const Color(0xffBDBDBD)),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "💵",
+                                style: TextStyle(
+                                  fontSize: 28.0,
+                                ),
+                              ),
+                              const SizedBox(width: 8.0),
+                              Text("-${cost.prettyCurrency}",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 22.0,
+                                      color: Color.fromARGB(255, 233, 16, 0))),
+                            ],
                           ),
-                        )
-                      ],
-                    )
+                        ),
+                      ),
+                    ),
                   ],
                 )),
             RenderIfFalse(condition: affordable, child: _UnaffordableBanner())
@@ -72,28 +122,29 @@ class EducationCard extends StatelessWidget {
 class _UnaffordableBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Align(
+    return Transform(
+      alignment: Alignment.topLeft,
+      transform: Matrix4.identity()
+        ..rotateZ(-0.5236)
+        ..translate(-40.0, 20.0),
+      child: Container(
         alignment: Alignment.center,
-        child: Container(
-          alignment: Alignment.center,
-          transformAlignment: Alignment.center,
-          transform: Matrix4.identity()
-            ..translate(.0, 150.0)
-            ..scale(1.06, 1.06, 1.0),
-          width: 400.0,
-          height: 50.0,
-          padding: const EdgeInsets.only(top: 4.0),
-          decoration: BoxDecoration(
-              color: const Color(0xffEC5757),
-              border: Border.all(color: Colors.black, width: 2.5),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: const <BoxShadow>[
-                BoxShadow(color: Colors.black, offset: Offset(1.0, 3.0))
-              ]),
-          child: const Text(
-            "Cannot Afford",
-            style: TextStyles.bold20,
-          ),
-        ));
+        width: 110.0,
+        height: 35.0,
+        padding: const EdgeInsets.only(top: 4.0),
+        decoration: BoxDecoration(
+          color: const Color(0xffEC5757),
+          border: Border.all(color: Colors.black, width: 2.5),
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: const <BoxShadow>[
+            BoxShadow(color: Colors.black, offset: Offset(1.0, 3.0))
+          ],
+        ),
+        child: const Text(
+          "Cannot Afford",
+          style: TextStyles.bold13,
+        ),
+      ),
+    );
   }
 }

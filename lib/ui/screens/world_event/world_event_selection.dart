@@ -37,38 +37,6 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
     return '';
   }
 
-  @override
-  void initState() {
-    // initialize [AnimationController] and put wheel at end of animation
-    _animController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 0));
-    _animController.forward();
-    _animController.duration = const Duration(milliseconds: 2500);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlphaScaffold(
-        title: "Wheel Spin",
-        onTapBack: () => Navigator.of(context).pop(),
-        children: <Widget>[
-          Transform.translate(
-              offset: const Offset(0, -40.0),
-              child: WheelSpinAnimation(controller: _animController)),
-          Builder(
-              builder: (BuildContext context) => AlphaButton(
-                    width: 300.0,
-                    height: 70.0,
-                    title: "WHEEL SPIN",
-                    icon: Icons.arrow_upward_rounded,
-                    onTap: () => _handleWheelSpin(context),
-                    disabled: _hasSpinWheel,
-                    onTapDisabled: () => _wheelSpinInProgress(context),
-                  ))
-        ]);
-  }
-
   void _wheelSpinInProgress(BuildContext context) {
     AlphaScaffold.of(context)
         .showSnackbar(message: "✋🏼 The wheel is already spinning");
@@ -106,5 +74,37 @@ class _WheelSpinScreenState extends State<WheelSpinScreen>
       _animController.reset();
       _animController.forward().then((_) => context.showDialog(dialog));
     });
+  }
+
+  @override
+  void initState() {
+    // initialize [AnimationController] and put wheel at end of animation
+    _animController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 0));
+    _animController.forward();
+    _animController.duration = const Duration(milliseconds: 2500);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlphaScaffold(
+        title: "Wheel Spin",
+        onTapBack: () => Navigator.of(context).pop(),
+        children: <Widget>[
+          Transform.translate(
+              offset: const Offset(0, -40.0),
+              child: WheelSpinAnimation(controller: _animController)),
+          Builder(
+              builder: (BuildContext context) => AlphaButton(
+                    width: 265.0,
+                    height: 70.0,
+                    title: "WHEEL SPIN",
+                    icon: Icons.arrow_upward_rounded,
+                    onTap: () => _handleWheelSpin(context),
+                    disabled: _hasSpinWheel,
+                    onTapDisabled: () => _wheelSpinInProgress(context),
+                  ))
+        ]);
   }
 }

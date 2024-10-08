@@ -5,7 +5,7 @@ import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/screens/budgeting/budgeting_tile.dart';
+import 'package:alpha/ui/screens/budgeting/widgets/budgeting_tile.dart';
 import 'package:flutter/material.dart';
 
 class BudgetingScreen extends StatelessWidget {

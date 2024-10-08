@@ -1,18 +1,21 @@
 import 'package:alpha/styles.dart';
+import 'package:alpha/ui/common/alpha_animations.dart';
 import 'package:flutter/material.dart';
 
-class DashboardPlayerStatCard extends StatelessWidget {
+class DashboardPlayerStatCard<T extends num> extends StatelessWidget {
   final String title;
   final String emoji;
-  final String value;
+  final T value;
   final double valueWidth;
+  final bool isCurrency;
 
   const DashboardPlayerStatCard(
       {super.key,
       required this.emoji,
       required this.title,
       required this.value,
-      this.valueWidth = 135.0});
+      this.valueWidth = 135.0,
+      this.isCurrency = false});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +38,18 @@ class DashboardPlayerStatCard extends StatelessWidget {
           SizedBox(
             width: valueWidth,
             height: 22.0,
-            child: Text(value,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff00734A),
-                    fontSize: 18.0),
-                textAlign: TextAlign.right),
+            child: AnimatedNumber<T>(
+              value,
+              formatCurrency: isCurrency,
+              duration:
+                  Durations.long1, // TODO make duration a function of value
+              delay: Durations.medium2,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff00734A),
+                  fontSize: 18.0),
+              textAlign: TextAlign.right,
+            ),
           )
         ],
       ),

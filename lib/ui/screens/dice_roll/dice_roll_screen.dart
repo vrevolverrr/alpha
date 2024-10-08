@@ -31,26 +31,6 @@ class _DiceRollScreenState extends State<DiceRollScreen>
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AlphaScaffold(title: "Dice Roll", children: <Widget>[
-      Transform.translate(
-          offset: const Offset(0, -40.0),
-          child: DiceRollAnimation(controller: _animController)),
-      const SizedBox(height: 30.0),
-      Builder(
-          builder: (BuildContext context) => AlphaButton(
-                width: 240.0,
-                height: 70.0,
-                title: "ROLL DICE",
-                icon: Icons.arrow_upward_rounded,
-                onTap: () => _handleRollDice(context),
-                disabled: _hasRolledDice,
-                onTapDisabled: () => _diceRollInProgress(context),
-              ))
-    ]);
-  }
-
   void _diceRollInProgress(BuildContext context) {
     AlphaScaffold.of(context)
         .showSnackbar(message: "✋🏼 The dice is already rolling");
@@ -88,5 +68,25 @@ class _DiceRollScreenState extends State<DiceRollScreen>
       _animController.reset();
       _animController.forward().then((_) => context.showDialog(dialog));
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlphaScaffold(title: "Dice Roll", children: <Widget>[
+      Transform.translate(
+          offset: const Offset(0, -40.0),
+          child: DiceRollAnimation(controller: _animController)),
+      const SizedBox(height: 30.0),
+      Builder(
+          builder: (BuildContext context) => AlphaButton(
+                width: 240.0,
+                height: 70.0,
+                title: "ROLL DICE",
+                icon: Icons.arrow_upward_rounded,
+                onTap: () => _handleRollDice(context),
+                disabled: _hasRolledDice,
+                onTapDisabled: () => _diceRollInProgress(context),
+              ))
+    ]);
   }
 }
