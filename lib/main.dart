@@ -1,5 +1,6 @@
-import 'dart:developer';
 
+import 'package:alpha/logic/business_logic.dart';
+import 'dart:developer';
 import 'package:alpha/logic/game_logic.dart';
 import 'package:alpha/ui/pages/main_menu_page.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,8 @@ import 'package:logging/logging.dart';
 
 void main() {
   GetIt.instance.registerSingleton<GameManager>(GameManager());
-
+  // TO-DO: how to integrate below business headcount class inside GetIt
+  BusinessHeadCount.initializeHeadCount();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   SystemChrome.setPreferredOrientations(
