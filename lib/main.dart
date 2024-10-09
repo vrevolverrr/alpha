@@ -1,4 +1,3 @@
-
 import 'package:alpha/logic/business_logic.dart';
 import 'dart:developer';
 import 'package:alpha/logic/game_logic.dart';
@@ -14,9 +13,6 @@ void main() {
   BusinessHeadCount.initializeHeadCount();
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-  SystemChrome.setPreferredOrientations(
-          [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
-      .then((_) => runApp(const MyApp()));
 
   /// Configure logging
   Logger.root.level = Level.ALL;
@@ -24,6 +20,8 @@ void main() {
     log(record.message,
         name: record.loggerName, time: record.time, level: record.level.value);
   });
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
