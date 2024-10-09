@@ -4,10 +4,10 @@ import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
-import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/common/alpha_skill_bar.dart';
+import 'package:alpha/ui/common/alpha_stat_cards.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_stats.dart';
 import 'package:alpha/ui/screens/education/widgets/education_card.dart';
 import 'package:flutter/material.dart';
 
@@ -84,7 +84,15 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            SizedBox(
+                width: 280.0,
+                height: 45.0,
+                child: PlayerStatCard(
+                    emoji: "💵",
+                    title: "Savings",
+                    value: activePlayer.savings.balance.prettyCurrency)),
             const SizedBox(width: 20.0),
+            AlphaSkillBar(activePlayer)
           ],
         ),
         const SizedBox(height: 30.0),

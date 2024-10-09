@@ -42,6 +42,7 @@ class PlayerStatCard extends StatelessWidget {
           const SizedBox(width: 6.0),
           Expanded(
             child: Text(value,
+                textAlign: TextAlign.right,
                 style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Color(0xff00734A),
