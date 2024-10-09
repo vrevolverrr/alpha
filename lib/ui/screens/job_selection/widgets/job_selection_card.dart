@@ -1,5 +1,5 @@
 import 'package:alpha/assets.dart';
-import 'package:alpha/logic/data/job.dart';
+import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';

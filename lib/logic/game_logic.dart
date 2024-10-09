@@ -27,16 +27,36 @@ class GameManager implements IManager {
     nextTurn();
   }
 
+  void onNextTurn() {}
+
+  void onNextRound() {
+    /// Add round specific logic here
+    for (Player player in playerManager.getAllPlayers()) {
+      player.creditInterest();
+      player.creditSalary();
+    }
+  }
+
+  /// This method updates all relavant systems and increments the game turn.
   void nextTurn() {
     _turn = (_turn + 1) % playerManager.getPlayerCount();
-    if (_turn == 0) _round++;
+
+    if (_turn == 0) {
+      /// Run all round triggered events, skip the starting round
+      if (round != 0) onNextRound();
+
+      /// Next round
+      _round++;
+    }
+
     playerManager.setActivePlayer(_turn);
+    eventsManager.update();
+
+    /// Run all turn triggered events
+    onNextTurn();
 
     log.info(
         "Current round: $round, Current Turn: $_turn, Active Player: ${playerManager.getActivePlayer().name}");
-
-    /// Update the events manager
-    eventsManager.update();
   }
 
   int rollDice() {

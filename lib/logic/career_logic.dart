@@ -1,4 +1,4 @@
-import 'package:alpha/logic/data/job.dart';
+import 'package:alpha/logic/data/careers.dart';
 import 'package:flutter/foundation.dart';
 
 class Career extends ChangeNotifier {

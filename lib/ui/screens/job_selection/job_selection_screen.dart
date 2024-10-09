@@ -1,5 +1,5 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/data/job.dart';
+import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/logic/events_manager.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';

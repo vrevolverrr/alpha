@@ -34,7 +34,6 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
 
   /// Event Handlers
   void _handleAddPlayerBtn() {
-    print(defaultPlayerNames[playerManager.playersList.numPlayers]);
     playerManager
         .createPlayer(defaultPlayerNames[playerManager.playersList.numPlayers]);
 

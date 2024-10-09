@@ -1,10 +1,13 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
+import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
+import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_stats.dart';
 import 'package:alpha/ui/screens/education_selection/widgets/education_card.dart';
 import 'package:flutter/material.dart';
 
@@ -34,8 +37,8 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
         title: "Study Online Course",
         description:
             "Study an online course to slightly improve your skill XP.",
-        cost: 20000,
-        xp: 200,
+        cost: OnlineCourse.basic.cost,
+        xp: OnlineCourse.basic.xp,
 
         /// Pursue online course on activePlayer
         action: () => activePlayer.pursueOnlineCourse()),
@@ -77,7 +80,14 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
             AlphaButton.next(onTap: () => _handleNextConfirm(context)),
       ),
       children: <Widget>[
-        const SizedBox(height: 60.0),
+        const SizedBox(height: 30.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(width: 20.0),
+          ],
+        ),
+        const SizedBox(height: 30.0),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 30.0,

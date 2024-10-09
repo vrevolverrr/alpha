@@ -67,7 +67,7 @@ class AlphaEventCreditSalary extends AlphaRecurringEvent {
       : super(
             action: () {
               double salary = target.career.salary;
-              target.savings.deduct(salary);
+              target.savings.add(salary);
             },
             interval: 1);
 }

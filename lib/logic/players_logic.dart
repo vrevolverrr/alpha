@@ -6,7 +6,7 @@ import 'package:alpha/logic/career_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/logic/data/budget.dart';
-import 'package:alpha/logic/data/job.dart';
+import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/logic/education_logic.dart';
 import 'package:alpha/logic/events_manager.dart';
 import 'package:alpha/logic/skills_logic.dart';
@@ -104,7 +104,7 @@ class Player {
 
   void setCareer(Job job) {
     career.set(job);
-    eventsManager.subscribe(AlphaEventCreditSalary(target: this));
+    // eventsManager.subscribe(AlphaEventCreditSalary(target: this));
     _logger.info("Set carrer to ${job.jobTitle}");
   }
 
@@ -119,10 +119,43 @@ class Player {
       return;
     }
 
-    /// Else, Advance the player's degree and add skill points
+    /// Else, advance the player's degree and add skill points
     education.pursueNext();
     skill.add(degree.xp);
+
+    _logger.info("Pursued ${degree.name}, new XP: ${skill.levelExp}");
   }
 
-  void pursueOnlineCourse() {}
+  void pursueOnlineCourse() {
+    final bool success = savings.deduct(OnlineCourse.basic.cost);
+
+    /// If player has not enough balance in savings
+    if (!success) {
+      _logger.warning(
+          "Failed to pursueOnlineCourse, balance check failed, player has insufficient savings.");
+      return;
+    }
+
+    /// Else, add skill points
+    skill.add(OnlineCourse.basic.xp);
+    _logger.info("Pursued online course, new XP: ${skill.levelExp}");
+  }
+
+  void creditSalary() {
+    if (career.job == Job.unemployed) {
+      return;
+    }
+
+    savings.add(career.salary);
+    _logger.info("Credited salary, current Savings: ${savings.balance}");
+  }
+
+  /// Updates the [Player]'s balance with the interest earnings
+  void creditInterest() {
+    savings.returnOnInterest();
+    investments.returnOnInterest();
+
+    _logger.info(
+        "Credited interest earnings, current Savings: ${savings.balance} Investments: ${investments.balance}");
+  }
 }

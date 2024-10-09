@@ -11,32 +11,28 @@ class FinancialMarketManager {
   }
 
   void _generateStocks() {
-    /// TODO generate randomly every time
-    // FZT 5% drift 8% volatility
     _stocks.add(Stock(
-        name: "FutureTech Innovations Inc.",
-        code: "FZT",
-        initialPrice: 100.0,
-        percentDrift: 0.12,
-        percentVolatility: 0.20));
+        name: "S&P 500",
+        code: "GSPC",
+        initialPrice: 570.0,
+        percentDrift: 0.30,
+        percentVolatility: 0.10));
 
-    // GLO 8% drift 10% volatility
     _stocks.add(Stock(
-        name: "Galactic Logistics Corporation",
-        code: "GLO",
-        initialPrice: 50.0,
-        percentDrift: 0.10,
-        percentVolatility: 0.16));
+        name: "Dow Jones",
+        code: "DJI",
+        initialPrice: 420.0,
+        percentDrift: 0.25,
+        percentVolatility: 0.08));
 
-    // GLO 10% drift 12% volatility
     _stocks.add(Stock(
-        name: "Phoenix Energy Solutions",
+        name: "S-REIT Index",
         code: "PWR",
         initialPrice: 120.0,
-        percentDrift: 0.20,
-        percentVolatility: 0.25));
+        percentDrift: 0.15,
+        percentVolatility: 0.05));
 
-    // GLO 15% drift 20% volatility
+    /// ESG Stocks
     _stocks.add(Stock(
         name: "Mystic Enterprises Ltd.",
         code: "MYS",
@@ -44,7 +40,6 @@ class FinancialMarketManager {
         percentDrift: 0.30,
         percentVolatility: 0.32));
 
-    // GLO 2% drift 5% volatility
     _stocks.add(Stock(
         name: "Vertigo Robotics Corporation",
         code: "VRX",
