@@ -1,12 +1,15 @@
 import 'dart:math';
 
 import 'package:alpha/logic/common/interfaces.dart';
-import 'package:alpha/logic/events_manager.dart';
+import 'package:alpha/logic/economy_logic.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:logging/logging.dart';
 
 class GameManager implements IManager {
+  @override
+  final Logger log = Logger("GameManager");
+
   /// Initial game states
   int _round = 0;
   int _turn = -1;
@@ -17,17 +20,17 @@ class GameManager implements IManager {
   /// Instantiate all managers
   final playerManager = PlayerManager();
   final marketManager = FinancialMarketManager();
-  final eventsManager = AlphaEventsManager();
-
-  @override
-  final Logger log = Logger("GameManager");
+  final economyManager = EconomyManager();
+  // final eventsManager = AlphaEventsManager();
 
   void startGame() {
     log.info("Game has started with ${playerManager.getPlayerCount()} players");
     nextTurn();
   }
 
-  void onNextTurn() {}
+  void onNextTurn() {
+    /// Add turn specifc logic here
+  }
 
   void onNextRound() {
     /// Add round specific logic here
@@ -35,6 +38,9 @@ class GameManager implements IManager {
       player.creditInterest();
       player.creditSalary();
     }
+
+    economyManager.updateCycle();
+    marketManager.updateMarket();
   }
 
   /// This method updates all relavant systems and increments the game turn.
@@ -50,7 +56,7 @@ class GameManager implements IManager {
     }
 
     playerManager.setActivePlayer(_turn);
-    eventsManager.update();
+    // eventsManager.update();
 
     /// Run all turn triggered events
     onNextTurn();

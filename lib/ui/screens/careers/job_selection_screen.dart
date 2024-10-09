@@ -7,7 +7,7 @@ import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/job_selection/widgets/job_selection_card.dart';
+import 'package:alpha/ui/screens/careers/widgets/job_selection_card.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 

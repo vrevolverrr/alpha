@@ -1,3 +1,4 @@
+import 'package:alpha/services.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -7,12 +8,16 @@ extension PrettyFormatNumber on double {
       NumberFormat.currency(symbol: "\$", decimalDigits: 2).format(this);
 }
 
+extension EconomicAdjustedValue on double {
+  double get adjustedValue => gameManager.economyManager.adjustValue(this);
+}
+
 extension GetScreenDimensions on BuildContext {
   double get screenWidth => MediaQuery.of(this).size.width;
   double get screenHeight => MediaQuery.of(this).size.height;
 }
 
-extension ShowdismissDialog on BuildContext {
+extension ShowDismissDialog on BuildContext {
   void showDialog(AlphaDialogBuilder builder) =>
       AlphaScaffold.of(this).showDialog(builder);
   void dismissDialog() => AlphaScaffold.of(this).dismissDialog();

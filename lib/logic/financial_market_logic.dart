@@ -48,7 +48,7 @@ class FinancialMarketManager {
         percentVolatility: 0.05));
   }
 
-  void incrementMarket() => _stocks.forEach(updateStockPrice);
+  void updateMarket() => _stocks.forEach(updateStockPrice);
 
   void updateStockPrice(Stock stock) => stock.updatePrice();
 }

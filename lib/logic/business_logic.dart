@@ -1,5 +1,7 @@
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/business.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 class BusinessHeadCount extends ChangeNotifier {
   static final Map<Business, int> _headCount = {};
@@ -45,5 +47,20 @@ class BusinessHeadCount extends ChangeNotifier {
 
   static void decrementHeadCount(Business business) {
     set(business, _headCount[business]! - 1);
+  }
+}
+
+class BusinessManager implements IManager {
+  /// The number of owners for each business
+  final Map<Business, int> _headcount = {
+    for (Business b in Business.values) b: 0
+  };
+
+  final Logger log = Logger("BusinessManager");
+
+  /// Calculate and credit business earnings to each player
+  void distributeEarnings() {
+    // TODO factor in sector economic state
+    // TOOO factor in economic cycle
   }
 }
