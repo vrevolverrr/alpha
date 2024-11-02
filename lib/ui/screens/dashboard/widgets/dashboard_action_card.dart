@@ -1,3 +1,4 @@
+import 'package:alpha/assets.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +6,15 @@ import 'package:flutter/material.dart';
 class DashboardActionCard extends StatefulWidget {
   final String title;
   final String description;
+  final AlphaAssets? image;
   final void Function()? onTap;
 
   const DashboardActionCard(
-      {super.key, required this.title, required this.description, this.onTap});
+      {super.key,
+      required this.title,
+      required this.description,
+      this.image,
+      this.onTap});
 
   @override
   State<DashboardActionCard> createState() => _DashboardActionCardState();
@@ -34,13 +40,20 @@ class _DashboardActionCardState extends State<DashboardActionCard> {
           child: Column(
             children: <Widget>[
               Container(
-                height: 180.0,
-                decoration: const BoxDecoration(
-                    color: Color(0xffFEA079),
+                  height: 180.0,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 255, 203, 180),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(15.0),
-                        topRight: Radius.circular(15.0))),
-              ),
+                        topRight: Radius.circular(15.0)),
+                  ),
+                  child: widget.image != null
+                      ? Image.asset(
+                          widget.image!.path,
+                          fit: BoxFit.cover,
+                        )
+                      : null),
               const SizedBox(height: 20.0),
               Text(
                 widget.title,

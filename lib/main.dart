@@ -12,6 +12,8 @@ void main() {
   // TO-DO: how to integrate below business headcount class inside GetIt
   BusinessHeadCount.initializeHeadCount();
   WidgetsFlutterBinding.ensureInitialized();
+
+  /// Hide the status bar
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
   /// Configure logging

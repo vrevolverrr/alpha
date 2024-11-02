@@ -27,18 +27,21 @@ class AlphaScaffold extends StatefulWidget {
   /// The alignment used for the [Column] of the contents.
   final MainAxisAlignment? mainAxisAlignment;
 
-  /// The function that is called when the back button is pressed.\
+  /// The function that is called when the back button is pressed.
   /// Note that the back button is not showed if `onTapBack` is null.
   final void Function()? onTapBack;
 
-  /// The button that is shown at the bottom right corner of the screen.\
+  /// The button that is shown at the bottom right corner of the screen.
   /// Typically an [AlphaButton] is used.
   final Widget? next;
 
-  /// The [AlphaSnackbar] message to show when the screen is first rendered.\
+  /// The [AlphaSnackbar] message to show when the screen is first rendered.
   /// The animation is played after a fixed delay after
   /// calling [AlphaScaffoldState.initState].
   final String? landingMessage;
+
+  /// The [AlphaAlertDialog] to show when the screen is first rendered.
+  final AlphaDialogBuilder? landingDialog;
 
   /// The children to be spreaded in the [Column] of the contents.
   final List<Widget> children;
@@ -51,6 +54,7 @@ class AlphaScaffold extends StatefulWidget {
       this.onTapBack,
       this.next,
       this.landingMessage,
+      this.landingDialog,
       required this.children});
 
   /// Finds the [AlphaScaffoldState] from the closest instance of this class
@@ -123,6 +127,12 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   /// The existing [AlphaAlertDialog] is replaced by the new [AlphaAlertDialog]
   /// built based on [builder] provided.
   void showDialog(AlphaDialogBuilder builder) {
+    if (_showAlphaDialog) {
+      dismissDialog();
+      Future.delayed(Durations.medium1, () => showDialog(builder));
+      return;
+    }
+
     setState(() {
       _dialogBuilder = builder;
 
@@ -151,6 +161,11 @@ class AlphaScaffoldState extends State<AlphaScaffold>
           () => showSnackbar(
               message: widget.landingMessage!,
               duration: const Duration(seconds: 3)));
+    }
+
+    if (widget.landingDialog != null) {
+      Future.delayed(const Duration(milliseconds: 500),
+          () => showDialog(widget.landingDialog!));
     }
     super.initState();
   }

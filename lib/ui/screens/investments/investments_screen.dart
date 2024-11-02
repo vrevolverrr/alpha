@@ -1,10 +1,11 @@
+import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/screens/investments/widgets/stock_entry.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_listing.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:flutter/material.dart';
 
@@ -17,13 +18,7 @@ class InvestmentsScreen extends StatefulWidget {
 
 class _InvestmentsScreenState extends State<InvestmentsScreen> {
   int _stockUnits = 10;
-  late Stock _selectedStock;
-
-  @override
-  void initState() {
-    _selectedStock = marketManager.stocks[0];
-    super.initState();
-  }
+  Stock _selectedStock = marketManager.stocks.first;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +53,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                                   child: GestureDetector(
                                     onTap: () =>
                                         setState(() => _selectedStock = stock),
-                                    child: StockMarketEntry(
+                                    child: StockListing(
                                       stock: stock,
                                       selected: _selectedStock == stock,
                                     ),
@@ -82,7 +77,6 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // const SizedBox(height: 175.0)
                               Text(
                                 _selectedStock.name,
                                 style: TextStyles.bold20,
@@ -94,46 +88,16 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                               ),
                               const SizedBox(height: 8.0),
                               Row(children: <Widget>[
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    const Text(
-                                      "Share Price",
-                                      style: TextStyles.bold16,
-                                    ),
-                                    SizedBox(
-                                        width: 120.0,
-                                        child: Text(
-                                          "\$${_selectedStock.price.toStringAsFixed(2)}",
-                                          style: TextStyles.bold22,
-                                        ))
-                                  ],
+                                _GenericTitleValue(
+                                  title: "Share Price",
+                                  value: _selectedStock.price.prettyCurrency,
+                                  width: 115.0,
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    const Text(
-                                      "Total Shares",
-                                      style: TextStyles.bold16,
-                                    ),
-                                    SizedBox(
-                                      width: 130.0,
-                                      child: Text(
-                                        "\$${(_selectedStock.price * 10).toStringAsFixed(2)}",
-                                        style: TextStyles.bold22,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      "Owned Shares",
-                                      style: TextStyles.bold16,
-                                    ),
-                                    Text("10 units", style: TextStyles.bold22)
-                                  ],
+                                _GenericTitleValue(
+                                  title: "Total Shares",
+                                  value:
+                                      "${(_selectedStock.price * 10).prettyCurrency} (10 units)",
+                                  width: 240.0,
                                 ),
                               ]),
                               const SizedBox(height: 40.0),
@@ -320,5 +284,34 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
             ],
           )
         ]);
+  }
+}
+
+class _GenericTitleValue extends StatelessWidget {
+  final String title;
+  final String value;
+  final double width;
+
+  const _GenericTitleValue(
+      {required this.title, required this.value, this.width = 120.0});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          title,
+          style: TextStyles.bold16,
+        ),
+        SizedBox(
+          width: width,
+          child: Text(
+            value,
+            style: TextStyles.bold22,
+          ),
+        )
+      ],
+    );
   }
 }

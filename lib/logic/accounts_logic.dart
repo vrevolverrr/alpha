@@ -33,7 +33,24 @@ class Account extends ChangeNotifier {
 }
 
 class SavingsAccount extends Account {
+  // The amount of money in the savings that is not allocated to any budget.
+  double _unbudgeted = 0.0;
+
   SavingsAccount({double initial = 0.0}) : super(initial, interest: 2.5);
+
+  double get unbudgeted => _unbudgeted;
+  String get sUnbudgeted => _unbudgeted.toStringAsFixed(2);
+
+  void addUnbudgeted(double amount) {
+    add(amount);
+    _unbudgeted += amount;
+    notifyListeners();
+  }
+
+  void clearUnbudgeted() {
+    _unbudgeted = 0.0;
+    notifyListeners();
+  }
 }
 
 class InvestmentAccount extends Account {

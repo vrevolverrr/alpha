@@ -31,6 +31,7 @@ class AlphaAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      constraints: const BoxConstraints(minWidth: 0.0, minHeight: 0.0),
       duration: show ? const Duration(milliseconds: 800) : Durations.short4,
       curve: show ? Curves.elasticOut : Curves.decelerate,
 

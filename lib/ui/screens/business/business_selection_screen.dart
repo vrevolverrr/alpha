@@ -29,13 +29,12 @@ class _BusinessSelectionScreenState extends State<BusinessSelectionScreen> {
       //condition == true ? new Container() : new Container()
       .where((business) => business.totalMarketRevenue > 0)
       .map((business) => BusinessSelectionCard(
-          // map each [Job] enum to a [JobSelectionCard] widget
-          business: business,
-          selected: business == _selectedBusiness,
-          eligible: (playerManager.getActivePlayer().savings.balance >=
-                  business.totalMarketRevenue)
-              ? true
-              : false)) // eliglbe iff player meets education requirements
+            // map each [Job] enum to a [JobSelectionCard] widget
+            business: business,
+            selected: business == _selectedBusiness,
+            eligible: true,
+            image: business.asset,
+          )) // eliglbe iff player meets education requirements
       .toList()
     // sort by eligible first, then by salary
     ..sort((BusinessSelectionCard a, BusinessSelectionCard b) {

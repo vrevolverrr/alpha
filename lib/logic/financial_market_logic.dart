@@ -1,61 +1,21 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:alpha/logic/data/stocks.dart';
+
 class FinancialMarketManager {
-  final List<Stock> _stocks = [];
+  final List<Stock> _stocks =
+      StockItem.values.map((StockItem item) => Stock(item)).toList();
 
   UnmodifiableListView<Stock> get stocks => UnmodifiableListView(_stocks);
-
-  FinancialMarketManager() {
-    _generateStocks();
-  }
-
-  void _generateStocks() {
-    _stocks.add(Stock(
-        name: "S&P 500",
-        code: "GSPC",
-        initialPrice: 570.0,
-        percentDrift: 0.30,
-        percentVolatility: 0.10));
-
-    _stocks.add(Stock(
-        name: "Dow Jones",
-        code: "DJI",
-        initialPrice: 420.0,
-        percentDrift: 0.25,
-        percentVolatility: 0.08));
-
-    _stocks.add(Stock(
-        name: "S-REIT Index",
-        code: "PWR",
-        initialPrice: 120.0,
-        percentDrift: 0.15,
-        percentVolatility: 0.05));
-
-    /// ESG Stocks
-    _stocks.add(Stock(
-        name: "Mystic Enterprises Ltd.",
-        code: "MYS",
-        initialPrice: 20.0,
-        percentDrift: 0.30,
-        percentVolatility: 0.32));
-
-    _stocks.add(Stock(
-        name: "Vertigo Robotics Corporation",
-        code: "VRX",
-        initialPrice: 200.0,
-        percentDrift: 0.02,
-        percentVolatility: 0.05));
-  }
 
   void updateMarket() => _stocks.forEach(updateStockPrice);
 
   void updateStockPrice(Stock stock) => stock.updatePrice();
 }
 
+/// This class simulates stock prices using Geometric Brownian Motion (GBM).
 class StockMarket {
-  /// This class simulates stock prices using Geometric Brownian Motion (GBM)
-
   /// initial stock price
   final double s0;
 
@@ -131,19 +91,23 @@ class StockMarket {
 }
 
 class Stock {
-  final String name;
-  final String code;
-  final double initialPrice;
-  final double percentDrift;
-  final double percentVolatility;
   final int start;
-
-  late final StockMarket market;
+  final StockItem item;
+  final StockMarket market;
 
   UnmodifiableListView<double> get history =>
       UnmodifiableListView(market.historicPrices);
 
   double get price => market.historicPrices.last;
+
+  String get name => item.name;
+  String get code => item.code;
+  double get initialPrice => item.initialPrice;
+  double get percentDrift => item.percentDrift;
+  double get percentVolatility => item.percentVolatility;
+  int get esgRating => item.esgRating;
+  StockType get type => item.type;
+  StockRisk get risk => item.risk;
 
   double priceChange() {
     final int n = market.historicPrices.length;
@@ -154,23 +118,21 @@ class Stock {
   }
 
   double percentPriceChange() {
+    /// Calculate the percent change in stock price over the last 10 rounds
     final int n = market.historicPrices.length;
+
     final double percentChange =
-        market.historicPrices[n - 1] / market.historicPrices[n - 2] - 1.0;
+        (market.historicPrices[n - 1] / market.historicPrices[n - 10] - 1.0) *
+            100;
 
     return double.parse(percentChange.toStringAsFixed(2));
   }
 
-  Stock(
-      {required this.name,
-      required this.code,
-      required this.initialPrice,
-      required this.percentDrift,
-      required this.percentVolatility,
-      this.start = 30}) {
-    market = StockMarket(
-        s0: initialPrice, mu: percentDrift, sigma: percentVolatility);
-
+  Stock(this.item, {this.start = 30})
+      : market = StockMarket(
+            s0: item.initialPrice,
+            mu: item.percentDrift,
+            sigma: item.percentVolatility) {
     /// Generate 10 prices to plot the price graph, essentially the game starts
     /// with the stock market at t = start days
     market.generatePrices(N: start);

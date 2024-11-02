@@ -1,6 +1,5 @@
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/logic/skills_logic.dart';
-import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +37,11 @@ class AlphaSkillBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50.0),
                     border: Border.all(color: Colors.black, width: 2.0)),
               ),
-              Container(
+              AnimatedContainer(
+                constraints:
+                    const BoxConstraints(maxWidth: 200.0, maxHeight: 12.0),
+                duration: Durations.medium1,
+                curve: Curves.decelerate,
                 width: player.skill.levelPercent * 200.0,
                 height: 12.0,
                 decoration: BoxDecoration(

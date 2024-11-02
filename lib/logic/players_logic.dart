@@ -89,7 +89,7 @@ class Player {
   final savings = SavingsAccount(initial: 2000.0);
   final investments = InvestmentAccount(initial: 500.0, ownedShares: {});
   final skill = SkillLevel();
-  final education = Education(initial: EducationDegree.uneducated);
+  final education = Education(initial: EducationDegree.bachelors);
   final career = Career(initial: Job.unemployed);
   final budgets = BudgetAllocation(budgets: {
     Budget.dailyExpenses: 2,
@@ -99,13 +99,11 @@ class Player {
     Budget.savings: 2
   });
 
-  double get commitments => 671.0;
-  double get disposable => career.salary - commitments;
+  double get disposable => savings.unbudgeted - career.cpf;
 
   void setCareer(Job job) {
     career.set(job);
-    // eventsManager.subscribe(AlphaEventCreditSalary(target: this));
-    _logger.info("Set carrer to ${job.jobTitle}");
+    _logger.info("Set carrer to ${job.title}");
   }
 
   void pursueDegree() {
@@ -146,7 +144,8 @@ class Player {
       return;
     }
 
-    savings.add(career.salary);
+    // savings.add(career.salary);
+    savings.addUnbudgeted(career.salary);
     _logger.info("Credited salary, current Savings: ${savings.balance}");
   }
 
@@ -157,5 +156,18 @@ class Player {
 
     _logger.info(
         "Credited interest earnings, current Savings: ${savings.balance} Investments: ${investments.balance}");
+  }
+
+  void applyBudget(BudgetAllocation budget) {
+    activePlayer.budgets.apply(budget);
+
+    activePlayer.savings.deduct(disposable);
+    activePlayer.savings.add(disposable * (budget[Budget.savings] / 10));
+    activePlayer.investments
+        .add(disposable * (budget[Budget.investments] / 10));
+
+    activePlayer.savings.clearUnbudgeted();
+    _logger.info(
+        "Applied budget, new Savings: ${savings.balance}, new Investments: ${investments.balance}");
   }
 }

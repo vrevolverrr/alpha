@@ -6,6 +6,7 @@ import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/budgeting/widgets/budgeting_tile.dart';
+import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 class BudgetingScreen extends StatelessWidget {
@@ -24,32 +25,35 @@ class BudgetingScreen extends StatelessWidget {
   }
 
   void _handleConfirmBudget(BuildContext context) {
-    activePlayer.budgets.apply(tempBudget);
-    Navigator.of(context).pop();
+    activePlayer.applyBudget(tempBudget);
+    context.navigateAndPopTo(const DashboardScreen());
   }
 
   @override
   Widget build(BuildContext context) {
     return AlphaScaffold(
         title: "Budgeting",
-        onTapBack: () => Navigator.of(context).pop(),
         next: ValueListenableBuilder(
           valueListenable: tempBudget.valid,
           builder: _buildConfirmBtn,
         ),
         children: <Widget>[
           const SizedBox(height: 25.0),
-          const Text("Disposable Income", style: TextStyles.bold35),
+          const Text("Unallocated Budget", style: TextStyles.bold32),
+          const SizedBox(height: 4.0),
           Text(
-            "(\$${activePlayer.career.sSalary} minus commitments \$${activePlayer.commitments.toStringAsFixed(2)})",
-            style: TextStyles.bold18,
+            "${activePlayer.career.salary.prettyCurrency} minus ${activePlayer.career.cpf.prettyCurrency} (CPF)",
+            style: TextStyles.medium22,
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 12.0),
           Text(
-            "\$${activePlayer.disposable.toStringAsFixed(2)}",
-            style: TextStyles.bold40,
+            activePlayer.disposable.prettyCurrency,
+            style: const TextStyle(
+                fontSize: 44.0,
+                color: Color(0xFF348A37),
+                fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 30.0),
+          const SizedBox(height: 15.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
@@ -65,8 +69,8 @@ class BudgetingScreen extends StatelessWidget {
   /// Widget builders
   Widget _buildConfirmBtn(BuildContext context, bool value, Widget? child) =>
       AlphaButton(
-        width: 230.0,
-        title: "Confirm",
+        width: 300.0,
+        title: "Apply Budget",
         disabled: !value,
         onTapDisabled: () => _handleConfirmInvalidBudget(context),
         onTap: () => _handleConfirmBudget(context),

@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 class JobSelectionCard extends StatelessWidget {
   final Job job;
   final bool eligible;
+  final bool disabled;
   final bool selected;
   const JobSelectionCard(
       {super.key,
       required this.job,
       this.eligible = true,
+      this.disabled = false,
       this.selected = false});
 
   @override
@@ -38,7 +40,7 @@ class JobSelectionCard extends StatelessWidget {
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(15.0),
                               topRight: Radius.circular(15.0)),
-                          color: eligible
+                          color: !disabled
                               ? const Color(0xffFEA079)
                               : const Color(0xffBDBDBD)),
                     ),
@@ -46,18 +48,17 @@ class JobSelectionCard extends StatelessWidget {
                     Column(
                       children: <Widget>[
                         Text(
-                          job.jobTitle,
+                          job.title,
                           style: TextStyles.bold25,
                         ),
-                        const SizedBox(height: 13.0),
+                        const SizedBox(height: 6.0),
                         JobDescriptionTagCollection(
-                            job: job, eligible: eligible)
+                            job: job, disabled: disabled)
                       ],
-                    )
+                    ),
                   ],
                 )),
-            _JobHeroImage(
-                asset: eligible ? job.asset : job.assetBW, eligible: eligible),
+            _JobHeroImage(asset: job.asset, disabled: disabled),
             RenderIfFalse(condition: eligible, child: _IneligibleBanner())
           ],
         ),
@@ -69,9 +70,9 @@ class JobSelectionCard extends StatelessWidget {
 class _JobHeroImage extends StatelessWidget {
   /// Widget for the hero image on each job card
   final AlphaAssets asset;
-  final bool eligible;
+  final bool disabled;
 
-  const _JobHeroImage({required this.asset, required this.eligible});
+  const _JobHeroImage({required this.asset, this.disabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -79,17 +80,45 @@ class _JobHeroImage extends StatelessWidget {
       offset: const Offset(0.0, -20.0),
       child: Align(
         alignment: Alignment.topCenter,
-        child: Image.asset(
-          asset.path,
-          height: 220.0,
-        ),
+        child: disabled
+            ? ColorFiltered(
+                colorFilter: const ColorFilter.matrix(<double>[
+                  0.2126,
+                  0.7152,
+                  0.0722,
+                  0,
+                  0,
+                  0.2126,
+                  0.7152,
+                  0.0722,
+                  0,
+                  0,
+                  0.2126,
+                  0.7152,
+                  0.0722,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                ]),
+                child: Image.asset(
+                  asset.path,
+                  height: 220.0,
+                ),
+              )
+            : Image.asset(
+                asset.path,
+                height: 220.0,
+              ),
       ),
     );
   }
 }
 
 class _IneligibleBanner extends StatelessWidget {
-  ///
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -100,7 +129,7 @@ class _IneligibleBanner extends StatelessWidget {
           transform: Matrix4.identity()
             ..translate(0.0, -45.0)
             ..scale(1.06, 1.06, 1.0),
-          width: 320.0,
+          width: 315.0,
           height: 45.0,
           padding: const EdgeInsets.only(top: 4.0),
           decoration: BoxDecoration(
@@ -120,15 +149,15 @@ class _IneligibleBanner extends StatelessWidget {
 
 class _JobDescriptionTag extends StatelessWidget {
   final String title;
-  final bool eligible;
-  const _JobDescriptionTag({required this.title, this.eligible = false});
+  final bool disabled;
+  const _JobDescriptionTag({required this.title, this.disabled = false});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 3.0),
       decoration: BoxDecoration(
-          color: eligible ? const Color(0xffB5D2AD) : const Color(0xffBDBDBD),
+          color: !disabled ? const Color(0xffB5D2AD) : const Color(0xffBDBDBD),
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(color: Colors.black, width: 2.5),
           boxShadow: const <BoxShadow>[
@@ -136,7 +165,7 @@ class _JobDescriptionTag extends StatelessWidget {
           ]),
       child: Text(
         title,
-        style: TextStyles.medium16,
+        style: TextStyles.medium14,
       ),
     );
   }
@@ -144,9 +173,9 @@ class _JobDescriptionTag extends StatelessWidget {
 
 class JobDescriptionTagCollection extends StatelessWidget {
   final Job job;
-  final bool eligible;
+  final bool disabled;
   const JobDescriptionTagCollection(
-      {super.key, required this.job, required this.eligible});
+      {super.key, required this.job, required this.disabled});
 
   @override
   Widget build(BuildContext context) {
@@ -154,21 +183,21 @@ class JobDescriptionTagCollection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Wrap(
         spacing: 8.0,
-        runSpacing: 15.0,
+        runSpacing: 8.0,
         alignment: WrapAlignment.center,
         verticalDirection: VerticalDirection.up,
         children: <Widget>[
           _JobDescriptionTag(
-            title: "💵 \$${job.jobSalary.toStringAsFixed(0)}",
-            eligible: eligible,
+            title: "💵 \$${job.salary.toStringAsFixed(0)}",
+            disabled: disabled,
           ),
           _JobDescriptionTag(
             title: "🕒 ${job.timeConsumed}",
-            eligible: eligible,
+            disabled: disabled,
           ),
           _JobDescriptionTag(
             title: "🎓 ${job.education.title}",
-            eligible: eligible,
+            disabled: disabled,
           ),
         ],
       ),

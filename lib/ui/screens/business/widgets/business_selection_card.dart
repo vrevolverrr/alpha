@@ -9,11 +9,13 @@ class BusinessSelectionCard extends StatelessWidget {
   final Business business;
   final bool eligible;
   final bool selected;
+  final AlphaAssets? image;
   const BusinessSelectionCard(
       {super.key,
       required this.business,
       this.eligible = true,
-      this.selected = false});
+      this.selected = false,
+      this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +59,7 @@ class BusinessSelectionCard extends StatelessWidget {
                   ],
                 )),
             _JobHeroImage(
-                asset: eligible ? business.asset : business.assetBW,
-                eligible: eligible),
+                asset: image ?? AlphaAssets.jobProgrammer, eligible: eligible),
             RenderIfFalse(condition: eligible, child: _IneligibleBanner())
           ],
         ),
@@ -77,7 +78,7 @@ class _JobHeroImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: const Offset(0.0, -20.0),
+      offset: const Offset(0.0, -15.0),
       child: Align(
         alignment: Alignment.topCenter,
         child: Image.asset(

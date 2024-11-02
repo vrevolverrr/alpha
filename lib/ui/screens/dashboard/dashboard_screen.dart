@@ -1,8 +1,12 @@
+import 'package:alpha/assets.dart';
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/skills_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
+import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/assets/assets_screen.dart';
 import 'package:alpha/ui/screens/budgeting/budgeting_screen.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_action_card.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_education_card.dart';
@@ -26,14 +30,17 @@ class DashboardScreen extends StatelessWidget {
     return AlphaScaffold(
         title: "Dashboard",
         useDefaultPadding: true,
+        landingDialog: (activePlayer.savings.unbudgeted > 0.0)
+            ? _buildBudgetingDialog(context, () {
+                // context.dismissDialog();
+                context.navigateTo(BudgetingScreen());
+              })
+            : null,
         next: Builder(
           builder: (context) => AlphaButton(
             width: 235.0,
             title: "End Turn",
             onTap: () => _handleEndTurn(context),
-            onTapDisabled: () => context.showSnackbar(
-                message:
-                    "✋🏼 Plan your unallocated budgets before ending the turn"),
           ),
         ),
         children: const <Widget>[
@@ -43,6 +50,34 @@ class DashboardScreen extends StatelessWidget {
           _DashboardContents(),
         ]);
   }
+
+  AlphaDialogBuilder _buildBudgetingDialog(
+          BuildContext context, void Function() onTapConfirm) =>
+      AlphaDialogBuilder(
+          title: "Budgeting",
+          child: Column(
+            children: <Widget>[
+              const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Please allocate budgets for your income",
+                  style: TextStyles.bold20,
+                ),
+              ),
+              const SizedBox(height: 15.0),
+              const Text("Budget unallocated is"),
+              Text(activePlayer.savings.unbudgeted.prettyCurrency,
+                  style: const TextStyle(
+                      color: Color(0xFF38A83C),
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.w700)),
+              const SizedBox(
+                height: 15.0,
+              ),
+            ],
+          ),
+          next: DialogButtonData(
+              title: "Proceed", width: 380.0, onTap: onTapConfirm));
 }
 
 class _DashboardPlayerStats extends StatelessWidget {
@@ -116,9 +151,9 @@ class _DashboardContents extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 DashboardActionCard(
-                  title: "Budgeting",
-                  description: "Plan your budget to earn stats and level up.",
-                  onTap: () => context.navigateTo(BudgetingScreen()),
+                  title: "Assets",
+                  description: "Manage your assets and liabilities.",
+                  onTap: () => context.navigateTo(const AssetsScreen()),
                 ),
                 const SizedBox(width: 20.0),
                 DashboardActionCard(
@@ -130,6 +165,7 @@ class _DashboardContents extends StatelessWidget {
                 const DashboardActionCard(
                   title: "Businesses",
                   description: "Manage your business operations.",
+                  image: AlphaAssets.dashboardBusiness,
                 ),
               ],
             )
@@ -203,7 +239,7 @@ class _DashboardPlayerExpLevel extends StatelessWidget {
               child: ListenableBuilder(
                 listenable: activePlayer.skill,
                 builder: (context, child) => Text(
-                  "XP ${activePlayer.skill.levelExp} / 1000",
+                  "XP ${activePlayer.skill.levelExp} / ${SkillLevel.xpPerLevel}",
                   style: TextStyles.bold18,
                 ),
               ),

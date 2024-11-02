@@ -5,12 +5,11 @@ import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:flutter/material.dart';
 
-class StockMarketEntry extends StatelessWidget {
+class StockListing extends StatelessWidget {
   final Stock stock;
   final bool selected;
 
-  const StockMarketEntry(
-      {super.key, required this.stock, this.selected = false});
+  const StockListing({super.key, required this.stock, this.selected = false});
 
   @override
   Widget build(BuildContext context) {

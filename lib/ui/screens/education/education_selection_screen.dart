@@ -9,6 +9,7 @@ import 'package:alpha/ui/common/alpha_skill_bar.dart';
 import 'package:alpha/ui/common/alpha_stat_cards.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/education/widgets/education_card.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 class EducationSelectionScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class EducationSelectionScreen extends StatefulWidget {
 
 class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   _EducationSelection? _selection;
+  late ConfettiController confettiController;
 
   /// All possible education selection options
   final List<_EducationSelection> _selections = [
@@ -59,14 +61,41 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
       return;
     }
 
-    AlphaDialogBuilder dialog =
-        _buildConfirmDialog(context, _selection!, _handleDialogConfirmation);
+    AlphaDialogBuilder dialog = _buildConfirmDialog(
+        context, _selection!, () => _handleDialogConfirmation(context));
+
     context.showDialog(dialog);
   }
 
-  void _handleDialogConfirmation() {
-    _selection!.action(); // At this point, _selection is never null
-    context.navigateAndPopTo(const DashboardScreen());
+  void _handleDialogConfirmation(BuildContext context) {
+    /// Perform the transaction after a short delay, to make the animation of the
+    /// XP bar change visible to the user, basically i'm just lazy
+    Future.delayed(Durations.long1,
+        () => _selection!.action()); // At this point, _selection is never null
+
+    AlphaDialogBuilder successDialog = _buildSuccessDialog(
+        context, () => context.navigateAndPopTo(const DashboardScreen()));
+
+    Future.delayed(Durations.short2, () {
+      context.showDialog(successDialog);
+      confettiController.play();
+    });
+  }
+
+  void _handleUnaffordable(BuildContext context, String action) {
+    context.showSnackbar(message: "✋🏼 You cannot afford to $action.");
+  }
+
+  @override
+  void initState() {
+    confettiController = ConfettiController(duration: Durations.medium4);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    confettiController.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,15 +116,20 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
             SizedBox(
                 width: 280.0,
                 height: 45.0,
-                child: PlayerStatCard(
-                    emoji: "💵",
-                    title: "Savings",
-                    value: activePlayer.savings.balance.prettyCurrency)),
+                child: ListenableBuilder(
+                  listenable: activePlayer.savings,
+                  builder: (context, child) => PlayerStatCard(
+                      emoji: "💵",
+                      title: "Savings",
+                      value: activePlayer.savings.balance.prettyCurrency),
+                )),
             const SizedBox(width: 20.0),
-            AlphaSkillBar(activePlayer)
+            ListenableBuilder(
+                listenable: activePlayer.skill,
+                builder: (context, child) => AlphaSkillBar(activePlayer))
           ],
         ),
-        const SizedBox(height: 30.0),
+        const SizedBox(height: 40.0),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 30.0,
@@ -110,93 +144,123 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   }
 
   Widget _buildEducationCardWithGestures(
-          BuildContext context, _EducationSelection selection, int current) =>
-      GestureDetector(
-          onTapDown: (_) => setState(() => _selection = selection),
-          onTapCancel: () => setState(() => _selection = selection),
-          onTapUp: (_) => setState(() => _selection = selection),
+      BuildContext context, _EducationSelection selection, int current) {
+    bool affordable = activePlayer.savings.balance >= selection.cost;
+
+    return Builder(
+      builder: (BuildContext context) => GestureDetector(
+          onTap: affordable
+              ? () => setState(() => _selection = selection)
+              : () =>
+                  _handleUnaffordable(context, selection.title.toLowerCase()),
           child: EducationCard(
             title: selection.title,
             description: selection.description,
+            affordable: affordable,
             cost: selection.cost,
             xp: selection.xp,
             selected: selection.index == current,
-          ));
-}
+          )),
+    );
+  }
 
-AlphaDialogBuilder _buildConfirmDialog(BuildContext context,
-        _EducationSelection selection, void Function() onTapConfirm) =>
-    AlphaDialogBuilder(
-        title: "Confirm Selection",
-        child: Column(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                selection.title,
-                style: TextStyles.bold25,
+  AlphaDialogBuilder _buildSuccessDialog(
+          BuildContext context, void Function() onTapConfirm) =>
+      AlphaDialogBuilder(
+          title: "Congratulations",
+          child: Column(
+            children: <Widget>[
+              const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "You've increased your skill level",
+                  style: TextStyles.bold20,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "💵",
-                        style: TextStyle(
-                          fontSize: 35.0,
+              const SizedBox(height: 15.0),
+              SizedBox(
+                width: 440.0,
+                child: FittedBox(
+                  child: ListenableBuilder(
+                    listenable: activePlayer.skill,
+                    builder: (context, child) => AlphaSkillBar(activePlayer),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 45.0),
+            ],
+          ),
+          next: DialogButtonData(
+              title: "Proceed", width: 380.0, onTap: onTapConfirm));
+
+  AlphaDialogBuilder _buildConfirmDialog(BuildContext context,
+          _EducationSelection selection, void Function() onTapConfirm) =>
+      AlphaDialogBuilder(
+          title: "Confirm Selection",
+          child: Column(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  selection.title,
+                  style: TextStyles.bold25,
+                ),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "💵",
+                          style: TextStyle(
+                            fontSize: 35.0,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8.0),
-                      Text(selection.cost.prettyCurrency,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 30.0,
-                              color: Color.fromARGB(255, 230, 45, 32))),
-                    ],
+                        const SizedBox(width: 8.0),
+                        Text(selection.cost.prettyCurrency,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 30.0,
+                                color: Color.fromARGB(255, 230, 45, 32))),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                const Align(
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.arrow_forward,
-                    size: 50,
-                    color: Colors.black,
+                  const SizedBox(width: 20.0),
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.arrow_forward,
+                      size: 50.0,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 40,
-                ),
-                Text(
-                  "+${selection.xp}xp",
-                  style: const TextStyle(
-                      fontSize: 30,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF61D465)),
-                ),
-                const SizedBox(
-                  width: 60,
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
-        cancel: DialogButtonData.cancel(context),
-        next: DialogButtonData.confirm(onTap: onTapConfirm));
+                  const SizedBox(width: 40.0),
+                  Text(
+                    "+${selection.xp}xp",
+                    style: const TextStyle(
+                        fontSize: 30,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF61D465)),
+                  ),
+                  const SizedBox(width: 60.0),
+                ],
+              ),
+              const SizedBox(height: 40.0),
+            ],
+          ),
+          cancel: DialogButtonData.cancel(context),
+          next: DialogButtonData.confirm(onTap: onTapConfirm));
+}
 
 class _EducationSelection {
   final String title;
