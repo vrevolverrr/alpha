@@ -149,6 +149,10 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     setState(() => _showAlphaDialog = false);
   }
 
+  void closeDialog() {
+    setState(() => _showAlphaDialog = true);
+  }
+
   @override
   void initState() {
     _snackbarController = AnimationController(vsync: this);

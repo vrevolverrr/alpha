@@ -84,6 +84,9 @@ flutter:
       fonts:
         - asset: assets/fonts/LexendMega/LexendMega-Black.ttf
           weight: 900
+        - asset: assets/fonts/LexendMega/LexendMega-ExtraBold.ttf
+          weight: 900
+
 
     - family: MazzardH
       fonts:
