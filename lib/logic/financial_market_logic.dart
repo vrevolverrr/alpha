@@ -91,7 +91,6 @@ class StockMarket {
 }
 
 class Stock {
-  final int start;
   final StockItem item;
   final StockMarket market;
 
@@ -128,14 +127,14 @@ class Stock {
     return double.parse(percentChange.toStringAsFixed(2));
   }
 
-  Stock(this.item, {this.start = 30})
+  Stock(this.item)
       : market = StockMarket(
             s0: item.initialPrice,
             mu: item.percentDrift,
             sigma: item.percentVolatility) {
     /// Generate 10 prices to plot the price graph, essentially the game starts
-    /// with the stock market at t = start days
-    market.generatePrices(N: start);
+    /// with the stock market at t = 20 rounds
+    market.generatePrices(N: 20);
   }
 
   void updatePrice() {

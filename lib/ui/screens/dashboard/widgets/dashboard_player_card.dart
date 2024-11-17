@@ -15,13 +15,16 @@ class DashboardPlayerCard extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 20.0),
-          SizedBox(
-            width: 130.0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(100.0),
-              child: Image.asset(
-                "assets/images/player_default.png",
-              ),
+          Container(
+            width: 120.0,
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+                color: const Color(0xFFFFC1BD),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.black, width: 2.0)),
+            child: Image.asset(
+              "assets/images/player_avatar_1.png",
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(height: 20.0),

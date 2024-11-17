@@ -1,3 +1,4 @@
+import 'package:alpha/logic/data/stocks.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:flutter/foundation.dart';
 
@@ -54,21 +55,26 @@ class SavingsAccount extends Account {
 }
 
 class InvestmentAccount extends Account {
-  final Map<String, int> shares;
+  late final Map<StockItem, ShareOwnership> shares;
 
-  InvestmentAccount(
-      {double initial = 0.0, Map<String, int> ownedShares = const {}})
-      : shares = ownedShares,
-        super(initial, interest: 4.5);
+  InvestmentAccount({double initial = 0.0}) : super(initial, interest: 4.5) {
+    shares = {};
+
+    for (var item in StockItem.values) {
+      shares[item] = ShareOwnership(item: item);
+    }
+  }
 
   bool purchaseShare(Stock stock, int units) {
     final double totalPrice = stock.price * units;
     final bool status = deduct(totalPrice);
 
     if (status) {
-      /// Add to stock count if present else set as `units`
-      shares.update(stock.code, (owned) => owned + units,
-          ifAbsent: () => units);
+      if (shares.keys.contains(stock.item)) {
+        shares[stock.item]!.units += units;
+      } else {
+        shares[stock.item] = ShareOwnership(item: stock.item, units: units);
+      }
     }
 
     // true if enough cash in investment account to purchase else false
@@ -77,7 +83,13 @@ class InvestmentAccount extends Account {
   }
 
   bool sellShare(Stock stock, int units) {
-    final int ownedUnits = shares[stock.code] ?? 0;
+    if (!shares.keys.contains(stock.item)) {
+      /// Player does not own any units of the stock.
+      shares[stock.item] = ShareOwnership(item: stock.item, units: 0);
+      return false;
+    }
+
+    final int ownedUnits = shares[stock.item]!.units;
 
     if (ownedUnits < units) {
       /// Player does not have sufficient units to sell.
@@ -85,8 +97,18 @@ class InvestmentAccount extends Account {
     }
 
     final double totalPrice = stock.price * units;
-    deduct(totalPrice);
+    add(totalPrice);
+    shares[stock.item]!.units -= units;
+
     notifyListeners();
     return true;
   }
+}
+
+class ShareOwnership {
+  final StockItem item;
+  int units;
+  double buyinPrice;
+
+  ShareOwnership({required this.item, this.units = 0, this.buyinPrice = 0.0});
 }

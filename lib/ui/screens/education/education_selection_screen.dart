@@ -164,35 +164,6 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
     );
   }
 
-  AlphaDialogBuilder _buildSuccessDialog(
-          BuildContext context, void Function() onTapConfirm) =>
-      AlphaDialogBuilder(
-          title: "Congratulations",
-          child: Column(
-            children: <Widget>[
-              const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "You've increased your skill level",
-                  style: TextStyles.bold20,
-                ),
-              ),
-              const SizedBox(height: 15.0),
-              SizedBox(
-                width: 440.0,
-                child: FittedBox(
-                  child: ListenableBuilder(
-                    listenable: activePlayer.skill,
-                    builder: (context, child) => AlphaSkillBar(activePlayer),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 45.0),
-            ],
-          ),
-          next: DialogButtonData(
-              title: "Proceed", width: 380.0, onTap: onTapConfirm));
-
   AlphaDialogBuilder _buildConfirmDialog(BuildContext context,
           _EducationSelection selection, void Function() onTapConfirm) =>
       AlphaDialogBuilder(
@@ -260,6 +231,35 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
           ),
           cancel: DialogButtonData.cancel(context),
           next: DialogButtonData.confirm(onTap: onTapConfirm));
+
+  AlphaDialogBuilder _buildSuccessDialog(
+          BuildContext context, void Function() onTapConfirm) =>
+      AlphaDialogBuilder(
+          title: "Congratulations",
+          child: Column(
+            children: <Widget>[
+              const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "You've increased your skill level",
+                  style: TextStyles.bold20,
+                ),
+              ),
+              const SizedBox(height: 15.0),
+              SizedBox(
+                width: 440.0,
+                child: FittedBox(
+                  child: ListenableBuilder(
+                    listenable: activePlayer.skill,
+                    builder: (context, child) => AlphaSkillBar(activePlayer),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 45.0),
+            ],
+          ),
+          next: DialogButtonData(
+              title: "Proceed", width: 380.0, onTap: onTapConfirm));
 }
 
 class _EducationSelection {

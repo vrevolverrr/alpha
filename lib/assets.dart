@@ -8,6 +8,8 @@ enum AlphaAssets {
 
   // Dashboard Icons
   dashboardBusiness(path: "${ImagePaths.root}/dashboard_business.png"),
+  dashboardInvestment(path: "${ImagePaths.root}/dashboard_investments.png"),
+  dashboardAssets(path: "${ImagePaths.root}/dashboard_assets.png"),
 
   // Business Sectors
   businessFoodAndBeverages(path: "${ImagePaths.root}/business_fnb.png"),
@@ -27,7 +29,15 @@ enum AlphaAssets {
   careerMedicine(path: "${ImagePaths.root}/career_medicine.png"),
 
   // Jobs Hero Images
-  jobProgrammer(path: "${ImagePaths.root}/job_programmer.png");
+  jobProgrammer(path: "${ImagePaths.root}/job_programmer.png"),
+
+  jobAssistantChef(path: "${ImagePaths.root}/job_assistant_chef.png"),
+  jobExecutiveChef(path: "${ImagePaths.root}/job_executive_chef.png"),
+
+  jobHouseman(path: "${ImagePaths.root}/job_houseman.png"),
+  jobResident(path: "${ImagePaths.root}/job_resident.png"),
+  jobDoctor(path: "${ImagePaths.root}/job_doctor.png"),
+  ;
 
   const AlphaAssets({required this.path});
 

@@ -9,7 +9,7 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/assets/assets_screen.dart';
 import 'package:alpha/ui/screens/budgeting/budgeting_screen.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_action_card.dart';
-import 'package:alpha/ui/screens/dashboard/widgets/dashboard_education_card.dart';
+import 'package:alpha/ui/screens/dashboard/widgets/dashboard_career_card.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_card.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_stats.dart';
 import 'package:alpha/ui/screens/investments/investments_screen.dart';
@@ -138,9 +138,9 @@ class _DashboardContents extends StatelessWidget {
       children: <Widget>[
         Column(
           children: <Widget>[
-            const DashboardPlayerCard(playerName: "Bryan"),
+            const DashboardPlayerCard(playerName: "Michelle"),
             const SizedBox(height: 50.0),
-            DashboardCurrentTileCard(player: activePlayer)
+            DashboardCurrentCareerCard(player: activePlayer)
           ],
         ),
         Column(
@@ -153,12 +153,14 @@ class _DashboardContents extends StatelessWidget {
                 DashboardActionCard(
                   title: "Assets",
                   description: "Manage your assets and liabilities.",
+                  image: AlphaAssets.dashboardAssets,
                   onTap: () => context.navigateTo(const AssetsScreen()),
                 ),
                 const SizedBox(width: 20.0),
                 DashboardActionCard(
                   title: "Investments",
                   description: "Invest in various assets to earn money.",
+                  image: AlphaAssets.dashboardInvestment,
                   onTap: () => context.navigateTo(const InvestmentsScreen()),
                 ),
                 const SizedBox(width: 20.0),

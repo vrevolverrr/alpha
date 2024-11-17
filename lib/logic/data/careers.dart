@@ -47,6 +47,7 @@ enum Job {
     salary: 3500.0,
     education: EducationDegree.bachelors,
     timeConsumed: 120,
+    asset: AlphaAssets.jobAssistantChef,
     tier: 0,
   ),
 
@@ -56,6 +57,7 @@ enum Job {
     salary: 5000.0,
     education: EducationDegree.masters,
     timeConsumed: 150,
+    asset: AlphaAssets.jobExecutiveChef,
     tier: 1,
   ),
 
@@ -143,6 +145,7 @@ enum Job {
       salary: 3000.0,
       education: EducationDegree.masters,
       timeConsumed: 120,
+      asset: AlphaAssets.jobHouseman,
       tier: 0),
 
   medicineResident(
@@ -150,6 +153,7 @@ enum Job {
       career: CareerSector.medicine,
       salary: 5000.0,
       education: EducationDegree.masters,
+      asset: AlphaAssets.jobResident,
       timeConsumed: 140,
       tier: 1),
 
@@ -159,6 +163,7 @@ enum Job {
       salary: 8000.0,
       education: EducationDegree.phd,
       timeConsumed: 160,
+      asset: AlphaAssets.jobDoctor,
       tier: 2),
 
   medicineSpecialist(

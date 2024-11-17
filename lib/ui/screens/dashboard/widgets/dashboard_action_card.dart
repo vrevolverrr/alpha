@@ -51,7 +51,7 @@ class _DashboardActionCardState extends State<DashboardActionCard> {
                   child: widget.image != null
                       ? Image.asset(
                           widget.image!.path,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fitWidth,
                         )
                       : null),
               const SizedBox(height: 20.0),

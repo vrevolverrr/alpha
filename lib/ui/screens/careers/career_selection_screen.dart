@@ -127,6 +127,14 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   }
 
   List<Widget> _buildJobCards() {
+    for (int i = 0; i < careers.length; i++) {
+      if (careers[i] == CareerSector.culinaryChef) {
+        final int index = i + 1;
+        careers.insert(index, CareerSector.medicine);
+        break;
+      }
+    }
+
     /// This function builds all of the job cards for each career sector
     return careers
         .map((CareerSector career) => Container(

@@ -22,7 +22,6 @@ class StockGraph extends StatelessWidget {
       required this.width,
       required this.height,
       required this.stock}) {
-    /// Get last 10 prices of the stock
     final List<double> prices = stock.market.historicPrices.sublist(
         stock.market.historicPrices.length - StockGraph._priceHistoryDuration);
 
@@ -74,8 +73,15 @@ class LargeStockGraph extends StockGraph {
       size: Size(width, height),
       painter: LineGraphPainter(points,
           hasGrid: true,
-          xLabel: List.generate(10, (index) => index + 1),
-          yLabel: List.generate(5, (index) => 70 + index * 10),
+          yMax: yMax,
+          yMin: yMin,
+          xLabel: List.generate(20, (index) => index + 1),
+          yLabel: List.generate(
+              5,
+              (index) => (yMin +
+                  index *
+                      (yMax - yMin) /
+                      4)), // generate between min and max price
           strokeWidth: 5.0,
           color: stock.percentPriceChange() == 0
               ? const Color(0xFF5B5B5B)

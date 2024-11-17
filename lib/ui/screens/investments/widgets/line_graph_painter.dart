@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:alpha/extensions.dart';
 import 'package:flutter/material.dart';
 
 class LineGraphPainter extends CustomPainter {
@@ -9,7 +10,10 @@ class LineGraphPainter extends CustomPainter {
   final int startNumber;
 
   final List<int>? xLabel;
-  final List<int>? yLabel;
+  final List<double>? yLabel;
+
+  final double yMax;
+  final double yMin;
 
   final List<Point<double>> points;
 
@@ -22,6 +26,8 @@ class LineGraphPainter extends CustomPainter {
       this.startNumber = 1,
       this.xLabel,
       this.yLabel,
+      this.yMax = 0.0,
+      this.yMin = 0.0,
       this.color = const Color(0xffDF4141)});
 
   void _drawGrid(Canvas canvas, Size size) {
@@ -114,25 +120,27 @@ class LineGraphPainter extends CustomPainter {
         fontFamily: "MazzardH",
         fontWeight: FontWeight.w700);
 
+    /*
     final TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
 
-    for (int i = 0; i < points.length / 2; i++) {
+    for (int i = 0; i < points.length; i++) {
       painter.text = TextSpan(text: xLabel![i].toString(), style: style);
       painter.layout();
 
       final Offset offset = Offset(
-          i * size.width / (points.length / 2.05) + translateX,
+          (i / 2) * size.width / (points.length / 2.05) + translateX,
           size.height + 10.0);
       painter.paint(canvas, offset);
     }
+    */
 
     final TextPainter labelPainter = TextPainter(
-        text: const TextSpan(text: "Game Round", style: style),
+        text: const TextSpan(text: "Historical Prices", style: style),
         textDirection: TextDirection.ltr);
 
     labelPainter.layout();
     labelPainter.paint(canvas,
-        Offset((size.width - labelPainter.width) / 2, size.height + 35.0));
+        Offset((size.width - labelPainter.width) / 2, size.height + 20.0));
   }
 
   void _drawYLabels(Canvas canvas, Size size) {
@@ -146,11 +154,12 @@ class LineGraphPainter extends CustomPainter {
 
     for (int i = 0; i < kGridNumLines; i++) {
       painter.text = TextSpan(
-          text: yLabel![kGridNumLines - i - 1].toString(), style: style);
+          text: yLabel![kGridNumLines - i - 1].toStringAsFixed(1),
+          style: style);
       painter.layout();
 
       final Offset offset =
-          Offset(-10.0, i * (size.height / (kGridNumLines - 1)) - 5.0);
+          Offset(-12.0, i * (size.height / (kGridNumLines - 1)) - 30.0);
       painter.paint(canvas, offset);
     }
   }
@@ -161,14 +170,8 @@ class LineGraphPainter extends CustomPainter {
 
     if (hasGrid) {
       _drawGrid(canvas, size);
-
-      if (xLabel != null) {
-        _drawXLabels(canvas, size);
-      }
-
-      if (yLabel != null) {
-        _drawYLabels(canvas, size);
-      }
+      _drawXLabels(canvas, size);
+      _drawYLabels(canvas, size);
     }
     _drawLineFill(canvas, size);
 

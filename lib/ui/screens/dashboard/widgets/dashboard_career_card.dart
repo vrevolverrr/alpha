@@ -4,10 +4,10 @@ import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
-class DashboardCurrentTileCard extends StatelessWidget {
+class DashboardCurrentCareerCard extends StatelessWidget {
   final Player player;
 
-  const DashboardCurrentTileCard({super.key, required this.player});
+  const DashboardCurrentCareerCard({super.key, required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class DashboardCurrentTileCard extends StatelessWidget {
                 BoxShadow(color: Colors.black, offset: Offset(1.5, 1.5))
               ]),
           child: const Text(
-            "Education",
+            "Career",
             style: TextStyles.bold18,
           ),
         ),

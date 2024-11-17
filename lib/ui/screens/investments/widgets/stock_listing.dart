@@ -1,9 +1,13 @@
+import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/data/stocks.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_risk_label.dart';
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class StockListing extends StatelessWidget {
   final Stock stock;
@@ -20,8 +24,9 @@ class StockListing extends StatelessWidget {
       child: AlphaAnimatedContainer(
           width: 340.0,
           height: 152.0,
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
@@ -29,11 +34,11 @@ class StockListing extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     stock.code,
-                    style: TextStyles.bold24,
+                    style: TextStyles.bold22,
                   ),
                   const SizedBox(width: 10.0),
                   Text(
-                    "${stock.percentPriceChange().toStringAsFixed(2)}%",
+                    "${stock.percentPriceChange()}%",
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 22.0,
@@ -76,43 +81,55 @@ class StockListing extends StatelessWidget {
               ),
               const SizedBox(height: 7.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Text(
-                        "Total Shares",
-                        style: TextStyles.bold14,
-                      ),
-                      const SizedBox(height: 2.0),
-                      SizedBox(
-                        width: 170.0,
-                        child: Text(
-                          // TODO add own stocks
-                          "\$${(stock.price * 10).toStringAsFixed(2)}",
-                          style: TextStyles.bold25,
-                        ),
-                      )
-                    ],
+                  _GenericTitleValue(
+                      title: "Risk Level",
+                      child: StockRiskLabel(risk: stock.risk)),
+                  const SizedBox(width: 15.0),
+                  _GenericTitleValue(
+                      title: "ESG Score",
+                      child: Text(
+                          stock.esgRating == 0
+                              ? "N/A"
+                              : "${stock.esgRating} ♻️",
+                          style: TextStyle(
+                              fontSize: stock.esgRating > 0 ? 24.0 : 20.0,
+                              fontWeight: FontWeight.w700))),
+                  const SizedBox(width: 20.0),
+                  Expanded(
+                    child: _GenericTitleValue(
+                        title: "Share Price",
+                        child: Text(stock.price.prettyCurrency,
+                            style: TextStyles.bold23)),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Text(
-                        "Share Price",
-                        style: TextStyles.bold14,
-                      ),
-                      const SizedBox(height: 2.0),
-                      Text(
-                        "\$${stock.price.toStringAsFixed(2)}",
-                        style: TextStyles.bold25,
-                      )
-                    ],
-                  )
                 ],
               ),
             ],
           )),
+    );
+  }
+}
+
+class _GenericTitleValue extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _GenericTitleValue({required this.title, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          title,
+          style: TextStyles.bold14,
+        ),
+        const SizedBox(height: 3.0),
+        child,
+      ],
     );
   }
 }

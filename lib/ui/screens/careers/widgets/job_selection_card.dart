@@ -77,7 +77,7 @@ class _JobHeroImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: const Offset(0.0, -20.0),
+      offset: const Offset(0.0, -15.0),
       child: Align(
         alignment: Alignment.topCenter,
         child: disabled

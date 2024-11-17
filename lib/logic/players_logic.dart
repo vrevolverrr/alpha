@@ -8,7 +8,6 @@ import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/logic/data/budget.dart';
 import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/logic/education_logic.dart';
-import 'package:alpha/logic/events_manager.dart';
 import 'package:alpha/logic/skills_logic.dart';
 import 'package:alpha/logic/stats_logic.dart';
 import 'package:alpha/services.dart';
@@ -87,7 +86,7 @@ class Player {
 
   final stats = PlayerStats();
   final savings = SavingsAccount(initial: 2000.0);
-  final investments = InvestmentAccount(initial: 500.0, ownedShares: {});
+  final investments = InvestmentAccount(initial: 500.0);
   final skill = SkillLevel();
   final education = Education(initial: EducationDegree.bachelors);
   final career = Career(initial: Job.unemployed);
