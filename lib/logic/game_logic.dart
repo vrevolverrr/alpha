@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:alpha/logic/common/interfaces.dart';
+import 'package:alpha/logic/data/opportunity.dart';
 import 'package:alpha/logic/economy_logic.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
@@ -76,6 +77,12 @@ class GameManager implements IManager {
     List<String> mylist = ['1.0x', '1.5x', '0.8x', '0.6x'];
     mylist.shuffle();
     return mylist.first;
+  }
+
+  Opportunity getOpportunityPrize() {
+    List<Opportunity> myList = List<Opportunity>.from(Opportunity.values);
+    myList.shuffle();
+    return myList.first;
   }
 
   bool hasWinner() {

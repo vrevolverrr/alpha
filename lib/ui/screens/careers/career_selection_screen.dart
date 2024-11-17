@@ -93,6 +93,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
                 title: "Confirm",
+                icon: Icons.arrow_back_rounded,
                 onTap: () => _handleConfirmJobSelection(context))),
         children: <Widget>[
           const SizedBox(height: 10),

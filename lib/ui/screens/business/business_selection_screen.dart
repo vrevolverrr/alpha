@@ -111,6 +111,7 @@ class _BusinessSelectionScreenState extends State<BusinessSelectionScreen> {
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
                 title: "Confirm",
+                icon: Icons.arrow_back_rounded,
                 onTap: () => _confirmBusinessSelection(context))),
         children: <Widget>[
           const SizedBox(height: 5.0),
