@@ -28,6 +28,13 @@ enum AlphaAssets {
   careerEngineer(path: "${ImagePaths.root}/career_engineer.png"),
   careerMedicine(path: "${ImagePaths.root}/career_medicine.png"),
 
+  // Opportunity Icons
+  opportunityQuestionMark(path: "${ImagePaths.root}/question_mark_icon.png"),
+  opportunityMoneyBag(path: "${ImagePaths.root}/opportunity_money_bag.png"),
+  opportunityCdcVoucher(path: "${ImagePaths.root}/opportunity_cdc_voucher.png"),
+  opportunityQuiz(path: "${ImagePaths.root}/opportunity_quiz.png"),
+  opportunityFined(path: "${ImagePaths.root}/opportunity_fined.png"),
+
   // Jobs Hero Images
   jobProgrammer(path: "${ImagePaths.root}/job_programmer.png"),
 

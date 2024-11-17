@@ -5,6 +5,7 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/business/business_selection_screen.dart';
 import 'package:alpha/ui/screens/education/education_selection_screen.dart';
 import 'package:alpha/ui/screens/careers/career_selection_screen.dart';
+import 'package:alpha/ui/screens/opportunity/opportunity_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
 import 'package:alpha/ui/screens/world_event/world_event_selection.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         nextScreen = const WheelSpinScreen();
         break;
       case 3:
+        nextScreen = OpportunityScreen();
         break;
       case 4:
         nextScreen = const BusinessSelectionScreen();
