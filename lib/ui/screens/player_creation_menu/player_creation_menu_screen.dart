@@ -60,7 +60,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
         height: 70.0,
         title: "START",
         onTap: _handleStartBtn,
-        disabled: playerManager.getPlayerCount() < 2,
+        disabled: playerManager.getPlayerCount() < 1,
         onTapDisabled: () => _handleNotEnoughPlayers(context),
       );
 

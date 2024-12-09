@@ -123,7 +123,11 @@ class _AlertDialogContents extends StatelessWidget {
               color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
         ),
         const SizedBox(height: 20.0),
-        child,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [child],
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -134,6 +138,7 @@ class _AlertDialogContents extends StatelessWidget {
                     height: cancel!.height,
                     title: cancel!.title,
                     onTap: cancel!.onTap,
+                    icon: Icons.arrow_forward_rounded,
                   )
                 : const SizedBox(),
             RenderIfAllNotNull(
@@ -145,6 +150,7 @@ class _AlertDialogContents extends StatelessWidget {
                     title: next!.title,
                     color: const Color.fromARGB(255, 164, 211, 151),
                     onTap: next!.onTap,
+                    icon: Icons.arrow_forward_rounded,
                   )
                 : const SizedBox()
           ],

@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/budget_logic.dart';
+import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/career_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/education.dart';
@@ -85,11 +86,15 @@ class Player {
         _logger = Logger("Player @$name");
 
   final stats = PlayerStats();
-  final savings = SavingsAccount(initial: 2000.0);
+  final savings = SavingsAccount(initial: 5000.0);
   final investments = InvestmentAccount(initial: 500.0);
+
   final skill = SkillLevel();
   final education = Education(initial: EducationDegree.bachelors);
+
   final career = Career(initial: Job.unemployed);
+  final business = BusinessVentures();
+
   final budgets = BudgetAllocation(budgets: {
     Budget.dailyExpenses: 2,
     Budget.selfImprovement: 2,

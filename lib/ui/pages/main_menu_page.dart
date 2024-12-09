@@ -14,6 +14,8 @@ class _MainMenuPageState extends State<MainMenuPage> {
   int _page = 0;
   final PageController _pageController = PageController();
 
+  int get page => _page;
+
   void _incrementPage() {
     setState(() {
       _pageController.nextPage(

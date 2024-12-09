@@ -2,159 +2,139 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/data/business.dart';
 import 'package:alpha/services.dart';
-import 'package:alpha/styles.dart';
-import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/common/alpha_stat_cards.dart';
 import 'package:alpha/ui/screens/business/widgets/business_selection_card.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart' hide CarouselController;
 
-class BusinessSelectionScreen extends StatefulWidget {
-  const BusinessSelectionScreen({super.key});
+class BusinessSelectionScren extends StatefulWidget {
+  final BusinessSector sector;
+
+  const BusinessSelectionScren(
+      {super.key, this.sector = BusinessSector.technology});
 
   @override
-  State<BusinessSelectionScreen> createState() =>
-      _BusinessSelectionScreenState();
+  State<BusinessSelectionScren> createState() => _BusinessSelectionScrenState();
 }
 
-class _BusinessSelectionScreenState extends State<BusinessSelectionScreen> {
-  Business _selectedBusiness = Business.noBusiness;
+class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
+  final List<Business> _businesses =
+      businessManager.generateBusinesses(BusinessSector.technology, 5);
 
-  /// This function maps each Business to a [BusinessSelectionCard] widget and computes
-  /// the eligibility and whether or not the card has been selected
-  /// This function is called on each build()
-  List<BusinessSelectionCard> _mapBusinessCards() => Business.values
-      // TODO optimise performance by only sorting once during initState
-      //condition == true ? new Container() : new Container()
-      .where((business) => business.totalMarketRevenue > 0)
-      .map((business) => BusinessSelectionCard(
-            // map each [Job] enum to a [JobSelectionCard] widget
-            business: business,
-            selected: business == _selectedBusiness,
-            eligible: true,
-            image: business.asset,
-          )) // eliglbe iff player meets education requirements
-      .toList()
-    // sort by eligible first, then by salary
-    ..sort((BusinessSelectionCard a, BusinessSelectionCard b) {
-      // sort by eligibility first
-      if ((a.eligible && !b.eligible) || (!a.eligible && b.eligible)) {
-        return (a.eligible && !b.eligible) ? -1 : 1;
-      }
+  final CarouselSliderController _controller = CarouselSliderController();
 
-      // then sort by totalMarketRevenue ascending
-      return (a.business.totalMarketRevenue - b.business.totalMarketRevenue)
-          .toInt();
+  late Business _selectedBusiness = _businesses[0];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _handlePageChanged(int index) {
+    setState(() {
+      _selectedBusiness = _businesses[index];
     });
+  }
 
-  void _confirmBusinessSelection(BuildContext context) {
-    /// This function maps to the action of the CONFIRM button of the screen
-    if (_selectedBusiness == Business.noBusiness) {
-      context.showSnackbar(message: "✋🏼 Please select a business to continue");
+  bool _handleCanPurchase() {
+    if (activePlayer.savings.balance < _selectedBusiness.initialCost) {
+      return true;
+    }
+
+    return false;
+  }
+
+  void _handlePurchase(BuildContext context) {
+    if (_handleCanPurchase()) {
+      context.showSnackbar(
+          message: "✋🏼 Insufficients funds to start this business");
       return;
     }
 
-    final AlphaDialogBuilder dialog = AlphaDialogBuilder(
-        title: "Confirm Business",
-        child: Column(
-          children: <Widget>[
-            Text(
-              "You have chosen to invest in the ${_selectedBusiness.titleName} sector.",
-              style: TextStyles.medium22,
-            ),
-            const SizedBox(height: 2.0),
-            const Text("Are you sure?", style: TextStyles.medium22),
-            const SizedBox(height: 2.0),
-            HeadCountBuilder(business: _selectedBusiness),
-            const SizedBox(height: 25.0),
-            BusinessDescriptionTagCollection(
-                business: _selectedBusiness, eligible: true),
-            const SizedBox(height: 50.0),
-          ],
-        ),
-        cancel: DialogButtonData.cancel(context),
-        next: DialogButtonData.confirm(onTap: _confirmBusinessInDialog));
-
-    context.showDialog(dialog);
-  }
-
-  void _incrementHeadCount() {
-    BusinessHeadCount.incrementHeadCount(_selectedBusiness);
-  }
-
-  void _confirmBusinessInDialog() {
-    // // This function maps to the CONFIRM button of the alert dialog
-    // activePlayer.career.set(_selectedJob);
-    // // TODO change this
-    // // activePlayer.creditSalary();
-    // Future.delayed(const Duration(milliseconds: 50), () {
-    //   _incrementHeadCount();
-    // });
-    _incrementHeadCount();
-    context.navigateAndPopTo(const DashboardScreen());
-  }
-
-  void _showIneligibleMessage(BuildContext context) {
-    /// This function is called when an ineligible card is pressed
+    businessManager.buyBusiness(_selectedBusiness, activePlayer);
     context.showSnackbar(
-        message: "✋🏼 Insufficient money to invest in that business.");
+        message:
+            "🎉 Congratulations! You are now the proud owner of ${_selectedBusiness.name}");
   }
 
   @override
   Widget build(BuildContext context) {
     return AlphaScaffold(
-        title: "Choose a Business",
-        onTapBack: () => Navigator.of(context).pop(),
-        landingMessage: "🎯 Choose a business you would like to invest",
-        next: Builder(
-            builder: (BuildContext context) => AlphaButton(
-                width: 230.0,
-                title: "Confirm",
-                icon: Icons.arrow_back_rounded,
-                onTap: () => _confirmBusinessSelection(context))),
-        children: <Widget>[
-          const SizedBox(height: 5.0),
-          Expanded(
-            child: Builder(
-              builder: (BuildContext context) => GridView.count(
-                childAspectRatio: 0.78,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 60.0, vertical: 50.0),
-                mainAxisSpacing: 50.0,
-                crossAxisSpacing: 50.0,
-                crossAxisCount: 3,
-                children: _mapBusinessCards()
-                    .map((BusinessSelectionCard card) => GestureDetector(
-                          onTap: card.eligible
-                              ? () => setState(
-                                  () => _selectedBusiness = card.business)
-                              : () => _showIneligibleMessage(context),
-                          child: card,
-                        ))
-                    .toList(),
-              ),
-            ),
-          )
-        ]);
-  }
-}
+      title: "Choose A Business",
+      onTapBack: () => Navigator.pop(context),
+      mainAxisAlignment: MainAxisAlignment.center,
+      next: AlphaButton.next(
+          onTap: () => context.navigateTo(const DashboardScreen())),
+      children: [
+        const SizedBox(height: 20.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+                width: 280.0,
+                height: 45.0,
+                child: ListenableBuilder(
+                  listenable: activePlayer.savings,
+                  builder: (context, child) => PlayerStatCard(
+                      emoji: "💵",
+                      title: "Savings",
+                      value: activePlayer.savings.balance.prettyCurrency),
+                )),
+          ],
+        ),
+        const SizedBox(height: 20.0),
+        CarouselSlider.builder(
+          carouselController: _controller,
+          itemCount: _businesses.length,
+          itemBuilder: (context, index, _) {
+            final business = _businesses[index];
+            final sectorState =
+                businessManager.getBusinessState(business.sector);
 
-class HeadCountBuilder extends StatelessWidget {
-  final Business business;
-
-  const HeadCountBuilder({super.key, required this.business});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable:
-          BusinessHeadCount(), // Ensure this returns your ChangeNotifier
-      builder: (context, _) {
-        return Text(
-            "Current headcount: ${BusinessHeadCount.getHeadCount(business)}",
-            style: TextStyles.medium22);
-      },
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: (business == _selectedBusiness)
+                  ? BusinessSelectionCard(
+                      business,
+                      sectorState,
+                      width: MediaQuery.sizeOf(context).width,
+                    )
+                  : BusinessSelectionCardSm(business, sectorState,
+                      width: MediaQuery.sizeOf(context).width),
+            );
+          },
+          options: CarouselOptions(
+              onPageChanged: (index, _) => _handlePageChanged(index),
+              height: 480.0,
+              enlargeCenterPage: true,
+              viewportFraction: 0.4),
+        ),
+        const SizedBox(height: 30.0),
+        Builder(
+            builder: (context) => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    AlphaButton(
+                        width: 260.0,
+                        title: "Apply loan",
+                        color: const Color(0xFF91CE77),
+                        onTap: () => context.showSnackbar(
+                            message: "🚧 This feature is under construction")),
+                    const SizedBox(width: 20.0),
+                    AlphaButton(
+                        width: 380.0,
+                        title: "Purchase Business",
+                        disabled: _handleCanPurchase(),
+                        onTapDisabled: () => _handlePurchase(context),
+                        onTap: () => _handlePurchase(context)),
+                    const SizedBox(width: 60.0),
+                  ],
+                )),
+        const SizedBox(height: 60.0),
+      ],
     );
   }
 }

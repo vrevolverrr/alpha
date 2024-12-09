@@ -30,7 +30,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
     );
   }
 
-  void _noTileSelected(BuildContext context) {
+  void _handleNoTileSelected(BuildContext context) {
     context.showSnackbar(message: "✋🏼 Please select a game tile to proceed");
   }
 
@@ -48,15 +48,15 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         nextScreen = const WheelSpinScreen();
         break;
       case 3:
-        nextScreen = OpportunityScreen();
+        nextScreen = const OpportunityScreen();
         break;
       case 4:
-        nextScreen = const BusinessSelectionScreen();
+        nextScreen = const BusinessSelectionScren();
         break;
       case 5:
         break;
       default:
-        _noTileSelected(context);
+        _handleNoTileSelected(context);
         return;
     }
 

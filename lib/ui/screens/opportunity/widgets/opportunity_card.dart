@@ -1,10 +1,7 @@
 import 'package:alpha/assets.dart';
-import 'package:alpha/logic/data/business.dart';
 import 'package:alpha/logic/data/opportunity.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
-import 'package:alpha/ui/common/should_render_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OpportunityCardBack extends StatelessWidget {
@@ -13,7 +10,7 @@ class OpportunityCardBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 350,
       height: 450,
       child: CardBack(opportunity: opportunity),
@@ -27,7 +24,7 @@ class OpportunityCardFront extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 350,
       height: 450,
       child: CardFront(opportunity: opportunity),
@@ -146,11 +143,7 @@ class CardFront extends StatelessWidget {
                 child: Text(
                   textAlign: TextAlign.center,
                   opportunity.titleName,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'LexendMega-ExtraBold',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
+                  style: TextStyles.bold20,
                 ),
               ),
             ),

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:alpha/extensions.dart';
 import 'package:flutter/material.dart';
 
 class LineGraphPainter extends CustomPainter {

@@ -15,7 +15,7 @@ enum EconomicCycle {
 
 class EconomyManager implements IManager {
   @override
-  final Logger log = Logger("EconomyManager");
+  final Logger log = Logger("Economy Manager");
 
   /// The CONSTANT rate of inflation in percent
   static const double inflationRate = 2.5;

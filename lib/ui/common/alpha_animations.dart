@@ -1,6 +1,8 @@
 import 'package:alpha/extensions.dart';
 import 'package:flutter/material.dart';
 
+/// An animated number widget that animates from 0 to the given number, and its
+/// subsequent changes.
 class AnimatedNumber<T extends num> extends StatelessWidget {
   final T value;
   final Duration? duration;

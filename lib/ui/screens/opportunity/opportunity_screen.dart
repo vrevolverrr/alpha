@@ -1,22 +1,19 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/opportunity.dart';
-import 'package:alpha/logic/game_logic.dart';
+import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/opportunity/widgets/opportunity_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class OpportunityScreen extends StatefulWidget {
-  OpportunityScreen({super.key});
+  const OpportunityScreen({super.key});
 
   @override
   State<OpportunityScreen> createState() => _OpportunityScreenState();
@@ -27,6 +24,8 @@ class _OpportunityScreenState extends State<OpportunityScreen>
   late AnimationController _controller; // Controller for animation
   late AnimationController _spinningEffectController;
   late AnimationController _levitationController;
+  late AnimationController _flipController;
+  late AnimationController _dropController;
   late Animation<double> _left1;
   late Animation<double> _rotation1;
   late Animation<double> _rotation2;
@@ -39,6 +38,8 @@ class _OpportunityScreenState extends State<OpportunityScreen>
   late Animation<double> _left4;
   late Animation<double> _rotateAnimation;
   late Animation<double> _levitationAnimation;
+  late Animation<double> _flipAnimation;
+  late Animation<double> _dropAnimation;
 
   double leftTarget = 250; // Target left position
   double rotationTarget = 0; // Target rotation value
@@ -49,14 +50,14 @@ class _OpportunityScreenState extends State<OpportunityScreen>
   bool _showDrawedCard = false;
   bool _displayPrize = false;
 
-  get opportunityChosen => GameManager().getOpportunityPrize();
+  late final Opportunity opportunityChosen = gameManager.getOpportunityPrize();
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 500),
     );
 
     _spinningEffectController = AnimationController(
@@ -64,6 +65,16 @@ class _OpportunityScreenState extends State<OpportunityScreen>
 
     _levitationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 1500));
+
+    _flipController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _dropController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
 
     // Define animations for position and rotation
     _left1 = Tween<double>(begin: 95, end: leftTarget).animate(_controller);
@@ -80,13 +91,39 @@ class _OpportunityScreenState extends State<OpportunityScreen>
     _left4 = Tween<double>(begin: 425, end: leftTarget).animate(_controller);
     _rotation4 =
         Tween<double>(begin: 17, end: rotationTarget).animate(_controller);
-    _rotateAnimation =
-        Tween(begin: 2 * pi, end: 0.0).animate(_spinningEffectController);
+    _rotateAnimation = Tween(begin: 2 * pi, end: 0.0).animate(CurvedAnimation(
+        parent: _spinningEffectController, curve: Curves.linear));
     _levitationAnimation =
-        Tween(begin: 75.00, end: -75.0).animate(CurvedAnimation(
-      parent: _levitationController,
-      curve: Curves.easeInOut,
-    ));
+        Tween(begin: 75.00, end: -75.0).animate(_levitationController);
+    _flipAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _flipController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _dropAnimation =
+        Tween<double>(begin: _levitationAnimation.value, end: 40.0).animate(
+      CurvedAnimation(
+        parent: _dropController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    // Modify the listener to set `_displayPrize` after the flip animation completes
+    _flipController.addStatusListener((status) {
+      if (status == AnimationStatus.forward) {
+        setState(() {
+          _showDrawedCard = false; // Hide spinning card when flip starts
+        });
+      }
+      if (status == AnimationStatus.completed) {
+        _dropController.forward(); // Start the drop animation
+        setState(() {
+          _displayPrize = true;
+        });
+      }
+    });
 
     // Set up listener to perform actions when animation completes
     _controller.addStatusListener((status) {
@@ -94,15 +131,15 @@ class _OpportunityScreenState extends State<OpportunityScreen>
         setState(() {
           _showDrawedCard = true;
         });
-        _spinningEffectController.repeat();
-        _levitationController.repeat(reverse: true);
 
-        // Start a timer to stop the animations after 5 seconds
-        Timer(const Duration(seconds: 3), () {
-          _spinningEffectController.stop();
-          _levitationController.stop();
-          setState(() {
-            _displayPrize = true;
+        Future.delayed(Durations.medium1, () {
+          _spinningEffectController.repeat();
+          _levitationController.repeat(reverse: true);
+
+          Timer(const Duration(milliseconds: 2500), () {
+            _spinningEffectController.stop();
+            _levitationController.stop();
+            _flipController.forward(); // Start the flip animation
           });
         });
       }
@@ -192,7 +229,6 @@ class _OpportunityScreenState extends State<OpportunityScreen>
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
                 title: "Confirm",
-                icon: Icons.arrow_back_rounded,
                 onTap: () => _confirmPrize(context))),
         children: [
           const SizedBox(
@@ -200,7 +236,7 @@ class _OpportunityScreenState extends State<OpportunityScreen>
           ),
           Expanded(
             child: Builder(
-                builder: (context) => Container(
+                builder: (context) => SizedBox(
                       width: 900,
                       height: 30,
                       // color: Colors.orange,
@@ -296,20 +332,20 @@ class _OpportunityScreenState extends State<OpportunityScreen>
                               );
                             },
                           ),
-                          if (!_showDrawedCard)
+                          if (!_animationTriggered)
                             Positioned(
                               top: 220,
                               left: 280,
                               child: Builder(
                                   builder: (context) => AlphaButton(
-                                        color: Color(0xFFF99799),
-                                        width: 250,
-                                        height: 100,
+                                        color: const Color(0xFFF99799),
+                                        width: 250.0,
+                                        height: 80.0,
                                         title: "DRAW CARD", //to add onTap
                                         onTap: _drawCard,
                                       )),
                             ),
-                          if (_showDrawedCard)
+                          if (_showDrawedCard && !_flipController.isAnimating)
                             AnimatedBuilder(
                               animation: _spinningEffectController,
                               builder: (context, child) {
@@ -338,24 +374,30 @@ class _OpportunityScreenState extends State<OpportunityScreen>
                                 );
                               },
                             ),
-                          if (_displayPrize)
+                          if (_flipController.isAnimating || _displayPrize)
                             AnimatedBuilder(
-                              animation: _controller,
+                              animation: Listenable.merge(
+                                  [_flipAnimation, _dropAnimation]),
                               builder: (context, child) {
-                                // Get the current values for position and rotation based on animation progress
-                                double currentLeft = _left4.value;
-                                double currentRotation = _rotation4.value;
+                                double angle = _flipAnimation.value * pi;
+                                Widget card;
+
+                                if (angle <= pi / 2) {
+                                  card = OpportunityCardBack(
+                                      opportunity: opportunityChosen);
+                                } else {
+                                  card = OpportunityCardFront(
+                                      opportunity: opportunityChosen);
+                                  angle = pi - angle;
+                                }
 
                                 return Positioned(
-                                  left:
-                                      currentLeft, // Use the current animated position
-                                  child: RotationTransition(
-                                    turns: AlwaysStoppedAnimation(
-                                        currentRotation /
-                                            360), // Use the current rotation
-                                    child: OpportunityCardFront(
-                                      opportunity: opportunityChosen,
-                                    ),
+                                  left: _left4.value,
+                                  top: _dropAnimation.value,
+                                  child: Transform(
+                                    transform: Matrix4.rotationY(angle),
+                                    alignment: Alignment.center,
+                                    child: card,
                                   ),
                                 );
                               },
@@ -370,7 +412,7 @@ class _OpportunityScreenState extends State<OpportunityScreen>
         ]);
   }
 
-  _confirmPrize(BuildContext context) {
+  void _confirmPrize(BuildContext context) {
     if (!_displayPrize) {
       context.showSnackbar(message: "✨ Please draw a card to continue");
       return;

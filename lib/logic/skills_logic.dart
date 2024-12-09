@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SkillLevel extends ChangeNotifier {
   static int xpPerLevel = 1000;
 
-  int _value = 3200;
+  int _value = 0;
 
   SkillLevel();
 

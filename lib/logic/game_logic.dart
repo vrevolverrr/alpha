@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/opportunity.dart';
 import 'package:alpha/logic/economy_logic.dart';
@@ -22,6 +23,7 @@ class GameManager implements IManager {
   final playerManager = PlayerManager();
   final marketManager = FinancialMarketManager();
   final economyManager = EconomyManager();
+  final businessManager = BusinessManager();
   // final eventsManager = AlphaEventsManager();
 
   void startGame() {

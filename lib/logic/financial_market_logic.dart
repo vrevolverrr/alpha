@@ -1,17 +1,48 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/stocks.dart';
+import 'package:alpha/services.dart';
+import 'package:logging/logging.dart';
 
-class FinancialMarketManager {
+/// A controller for the financial market systems in the game. Currently
+///  manages the stocks and their prices
+class FinancialMarketManager implements IManager {
+  @override
+  Logger log = Logger('Financial Market Manager');
+
+  /// The list of [Stock]s with simulated prices, created for parameters
+  /// provided by [StockItem].
   final List<Stock> _stocks =
       StockItem.values.map((StockItem item) => Stock(item)).toList();
 
+  /// Gets the list of [Stock]s managed.
   UnmodifiableListView<Stock> get stocks => UnmodifiableListView(_stocks);
 
-  void updateMarket() => _stocks.forEach(updateStockPrice);
+  void updateMarket() {
+    _stocks.forEach(updateStockPrice);
+    log.info("All stock prices updated for ${_stocks.length} stocks");
+  }
 
-  void updateStockPrice(Stock stock) => stock.updatePrice();
+  void updateStockPrice(Stock stock) {
+    double lastPrice = stock.price;
+    stock.updatePrice();
+
+    log.info(
+        "Stock price updated for ${stock.name} :  $lastPrice -> ${stock.price} (${stock.percentPriceChange(lastNth: 1)}%)");
+  }
+
+  /// Get the stock price of the [StockItem] at the nth round
+  double getStockPrice(StockItem stock, {int? nth}) {
+    nth = nth ?? gameManager.round;
+    nth = nth.clamp(1, gameManager.round);
+
+    final List<double> prices =
+        _stocks.firstWhere((Stock s) => s.item == stock).history;
+
+    return prices[prices.length - (gameManager.round - nth) - 1];
+  }
 }
 
 /// This class simulates stock prices using Geometric Brownian Motion (GBM).
@@ -108,20 +139,19 @@ class Stock {
   StockType get type => item.type;
   StockRisk get risk => item.risk;
 
-  double priceChange() {
+  double priceChange({int lastNth = 20}) {
     final int n = market.historicPrices.length;
-    final double priceChange =
-        market.historicPrices[n - 1] - market.historicPrices[n - 2];
 
-    return priceChange;
+    return market.historicPrices[n - 1] - market.historicPrices[n - lastNth];
   }
 
-  double percentPriceChange() {
-    /// Calculate the percent change in stock price over the last 10 rounds
+  /// Calculate the percent change in stock price over the last Nth rounds
+  double percentPriceChange({int lastNth = 20}) {
     final int n = market.historicPrices.length;
 
     final double percentChange =
-        (market.historicPrices[n - 1] / market.historicPrices[n - 10] - 1.0) *
+        (market.historicPrices[n - 1] / market.historicPrices[n - lastNth] -
+                1.0) *
             100;
 
     return double.parse(percentChange.toStringAsFixed(2));

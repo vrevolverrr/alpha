@@ -35,7 +35,7 @@ class AlphaButton extends StatefulWidget {
       width: 185.0,
       height: 70.0,
       title: "Next",
-      icon: Icons.arrow_back_rounded,
+      icon: Icons.arrow_forward_rounded,
       onTap: onTap,
     );
   }
@@ -74,47 +74,19 @@ class _AlphaButtonState extends State<AlphaButton> {
                   ? (widget.color ?? const Color(0xffFF6B6B))
                   : const Color.fromARGB(255, 188, 188, 188),
             ),
-            child: widget.icon != null
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        widget.title.toUpperCase(),
-                        style: const TextStyle(
-                            fontFamily: "PublicSans",
-                            fontWeight: FontWeight.w900,
-                            fontSize: 24.0),
-                      ),
-                      Transform.rotate(
-                          angle: (widget.icon == null ||
-                                  widget.icon == Icons.arrow_back_rounded)
-                              ? 3.142
-                              : 0.0,
-                          child: Icon(
-                            widget.icon,
-                            size: 32.0,
-                          ))
-                    ],
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        widget.title.toUpperCase(),
-                        style: const TextStyle(
-                            fontFamily: "PublicSans",
-                            fontWeight: FontWeight.w900,
-                            fontSize: 24.0),
-                      ),
-                      Transform.rotate(
-                        angle: (widget.icon == null ||
-                                widget.icon == Icons.arrow_back_rounded)
-                            ? 3.142
-                            : 0.0,
-                        child: const SizedBox.shrink(),
-                      )
-                    ],
-                  )),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  widget.title.toUpperCase(),
+                  style: const TextStyle(
+                      fontFamily: "PublicSans",
+                      fontWeight: FontWeight.w900,
+                      fontSize: 24.0),
+                ),
+                Icon(widget.icon ?? Icons.arrow_forward_rounded, size: 32.0)
+              ],
+            )),
       ),
     );
   }

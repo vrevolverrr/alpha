@@ -93,7 +93,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
                 title: "Confirm",
-                icon: Icons.arrow_back_rounded,
                 onTap: () => _handleConfirmJobSelection(context))),
         children: <Widget>[
           const SizedBox(height: 10),
@@ -204,12 +203,15 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
             children: <Widget>[
               Text(
                 "You have chosen to work as ${singularArticle(_selectedJob.title)}.",
-                style: TextStyles.medium22,
+                style: TextStyles.bold24,
               ),
               const SizedBox(height: 2.0),
               const Text("Are you sure?", style: TextStyles.medium22),
-              const SizedBox(height: 25.0),
-              JobDescriptionTagCollection(job: _selectedJob, disabled: false),
+              const SizedBox(height: 20.0),
+              Transform.scale(
+                  scale: 1.2,
+                  child: JobDescriptionTagCollection(
+                      job: _selectedJob, disabled: false)),
               const SizedBox(height: 50.0),
             ],
           ),
@@ -229,12 +231,12 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
                   style: TextStyles.bold20,
                 ),
               ),
-              const SizedBox(height: 15.0),
+              const SizedBox(height: 10.0),
               const Text("Your salary per round is"),
               Text(_selectedJob.salary.prettyCurrency,
                   style: const TextStyle(
                       color: Color(0xFF38A83C),
-                      fontSize: 30.0,
+                      fontSize: 32.0,
                       fontWeight: FontWeight.w700)),
               const SizedBox(
                 height: 15.0,

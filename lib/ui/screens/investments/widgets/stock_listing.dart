@@ -1,5 +1,4 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/data/stocks.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
@@ -7,7 +6,6 @@ import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_risk_label.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class StockListing extends StatelessWidget {
   final Stock stock;

@@ -1,3 +1,4 @@
+import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/economy_logic.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/logic/game_logic.dart';
@@ -27,3 +28,7 @@ FinancialMarketManager get marketManager =>
 
 /// Service locator for the [EconomyManager], held by the [GameManager]
 EconomyManager get economyManager => GetIt.I.get<GameManager>().economyManager;
+
+/// Service locator for the [BusinessManager], held by the [GameManager]
+BusinessManager get businessManager =>
+    GetIt.I.get<GameManager>().businessManager;
