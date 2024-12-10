@@ -149,10 +149,6 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     setState(() => _showAlphaDialog = false);
   }
 
-  void closeDialog() {
-    setState(() => _showAlphaDialog = true);
-  }
-
   @override
   void initState() {
     _snackbarController = AnimationController(vsync: this);
@@ -168,8 +164,42 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     }
 
     if (widget.landingDialog != null) {
-      Future.delayed(const Duration(milliseconds: 500),
-          () => showDialog(widget.landingDialog!));
+      AlphaDialogBuilder oldDialog = widget.landingDialog!;
+
+      if (oldDialog.next != null && oldDialog.next!.onTap != null) {
+        throw FlutterError(
+            "The next button in the landing dialog should not have an onTap function.");
+      }
+
+      if (oldDialog.cancel != null && oldDialog.cancel!.onTap != null) {
+        throw FlutterError(
+            "The cancel button in the landing dialog should not have an onTap function.");
+      }
+
+      Widget child = oldDialog.child;
+      AlphaDialogBuilder dialog = AlphaDialogBuilder(
+        title: oldDialog.title,
+        child: child,
+        next: oldDialog.next == null
+            ? null
+            : DialogButtonData(
+                title: oldDialog.next!.title,
+                width: oldDialog.next!.width,
+                height: oldDialog.next!.height,
+                onTap: () => dismissDialog(),
+              ),
+        cancel: oldDialog.cancel == null
+            ? null
+            : DialogButtonData(
+                title: oldDialog.cancel!.title,
+                width: oldDialog.cancel!.width,
+                height: oldDialog.cancel!.height,
+                onTap: () => dismissDialog(),
+              ),
+      );
+
+      Future.delayed(
+          const Duration(milliseconds: 250), () => showDialog(dialog));
     }
     super.initState();
   }
@@ -360,6 +390,17 @@ class AlphaDialogBuilder {
   final Widget child;
   final DialogButtonData? next;
   final DialogButtonData? cancel;
+
+  static dismissable(
+      {required String title,
+      required String dismissText,
+      required double width,
+      required Widget child}) {
+    return AlphaDialogBuilder(
+        title: title,
+        child: child,
+        next: DialogButtonData(title: dismissText, width: width));
+  }
 
   const AlphaDialogBuilder(
       {required this.title, required this.child, this.next, this.cancel});

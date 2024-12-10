@@ -44,6 +44,7 @@ class GameManager implements IManager {
 
     economyManager.updateCycle();
     marketManager.updateMarket();
+    // businessManager.creditBusinessEarnings();
   }
 
   /// This method updates all relavant systems and increments the game turn.

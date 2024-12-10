@@ -8,6 +8,7 @@ import 'package:alpha/ui/common/alpha_animations.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/investments/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_listing.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_price_change.dart';
@@ -76,6 +77,11 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   Widget build(BuildContext context) {
     return AlphaScaffold(
       title: "Investments",
+      landingDialog: AlphaDialogBuilder.dismissable(
+          title: "Welcome",
+          dismissText: "Start Investing",
+          width: 350.0,
+          child: const InvestmentsLandingDialog()),
       onTapBack: () => Navigator.of(context).pop(),
       children: <Widget>[
         const SizedBox(height: 30.0),
