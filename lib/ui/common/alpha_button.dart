@@ -1,11 +1,14 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 /// Creates an animated button in the style of the game.
 class AlphaButton extends StatefulWidget {
   final double width, height;
   final String title;
+  final double? fontSize;
   final Color? color;
   final IconData? icon;
+  final bool? disableIcon;
 
   /// Whether or not the button is disabled.\
   /// The button turns grey when disabled and [onTapDisabled] is called instead
@@ -27,7 +30,9 @@ class AlphaButton extends StatefulWidget {
       this.icon,
       this.disabled = false,
       this.onTap,
-      this.onTapDisabled});
+      this.onTapDisabled,
+      this.fontSize,
+      this.disableIcon});
 
   /// Creates a default [AlphaButton] for the next action.
   static AlphaButton next({void Function()? onTap}) {
@@ -77,14 +82,18 @@ class _AlphaButtonState extends State<AlphaButton> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  widget.title.toUpperCase(),
-                  style: const TextStyle(
-                      fontFamily: "PublicSans",
-                      fontWeight: FontWeight.w900,
-                      fontSize: 24.0),
+                Expanded(
+                  child: AutoSizeText(
+                    widget.title.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: "PublicSans",
+                        fontWeight: FontWeight.w900,
+                        fontSize: widget.fontSize ?? 24.0),
+                  ),
                 ),
-                Icon(widget.icon ?? Icons.arrow_forward_rounded, size: 32.0)
+                if (widget.disableIcon == null || widget.disableIcon == false)
+                  Icon(widget.icon ?? Icons.arrow_forward_rounded, size: 32.0)
               ],
             )),
       ),

@@ -6,6 +6,7 @@ import 'package:alpha/ui/screens/business/business_selection_screen.dart';
 import 'package:alpha/ui/screens/education/education_selection_screen.dart';
 import 'package:alpha/ui/screens/careers/career_selection_screen.dart';
 import 'package:alpha/ui/screens/opportunity/opportunity_screen.dart';
+import 'package:alpha/ui/screens/personal_life/personal_life_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
 import 'package:alpha/ui/screens/world_event/world_event_selection.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         nextScreen = const BusinessSelectionScren();
         break;
       case 5:
+        nextScreen = const PersonalLifeScreen();
         break;
       default:
         _handleNoTileSelected(context);

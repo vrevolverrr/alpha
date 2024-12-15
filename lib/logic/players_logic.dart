@@ -8,7 +8,9 @@ import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/logic/data/budget.dart';
 import 'package:alpha/logic/data/careers.dart';
+import 'package:alpha/logic/data/personal_life.dart';
 import 'package:alpha/logic/education_logic.dart';
+import 'package:alpha/logic/personal_life_logic.dart';
 import 'package:alpha/logic/skills_logic.dart';
 import 'package:alpha/logic/stats_logic.dart';
 import 'package:alpha/services.dart';
@@ -95,6 +97,8 @@ class Player {
   final career = Career(initial: Job.unemployed);
   final business = BusinessVentures();
 
+  final personalLife = PersonalLife(initial: PersonalLifeStatus.single);
+
   final budgets = BudgetAllocation(budgets: {
     Budget.dailyExpenses: 2,
     Budget.selfImprovement: 2,
@@ -141,6 +145,52 @@ class Player {
     /// Else, add skill points
     skill.add(OnlineCourse.basic.xp);
     _logger.info("Pursued online course, new XP: ${skill.levelExp}");
+  }
+
+  void nextLifeStage() {
+    PersonalLifeStatus status = personalLife.getNext();
+
+    // check if time balance is enough
+    if (stats.time - status.pursueTimeConsumed < 0) {
+      _logger.warning("Not enough time to be deducted");
+      return;
+    }
+
+    // check if next status can be pursued
+    if (status == personalLife.status) {
+      _logger.warning("Unable to purse from ${personalLife.status}");
+      return;
+    }
+
+    // else, update time and savings , then proceed to next stage in life
+    stats.updateTime(-status.pursueTimeConsumed);
+    savings.deduct(status.pursueCostRatio * savings.balance);
+    personalLife.pursueNext();
+
+    _logger.info("Moved on to ${personalLife.status}");
+  }
+
+  void revertLifeStage() {
+    PersonalLifeStatus status = personalLife.getPrevious();
+
+    // check if status can be reverted
+    if (status == personalLife.status) {
+      _logger.warning("Unable to revert from ${personalLife.status}");
+      return;
+    }
+
+    stats.updateHappiness(-status.revertHappinessCost);
+    stats.updateTime(status.revertTimeGain);
+    savings.deduct(status.revertCostRatio * savings.balance);
+    personalLife.revert();
+
+    _logger.info("Successfully reverted to ${personalLife.status}");
+  }
+
+  // to be called every round base on personal life status
+  void gainHappiness() {
+    PersonalLifeStatus status = personalLife.status;
+    stats.updateHappiness(status.pursueHappinessPR);
   }
 
   void creditSalary() {

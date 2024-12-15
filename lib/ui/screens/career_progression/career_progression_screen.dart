@@ -6,6 +6,7 @@ class CareerProgressionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlphaScaffold(title: "Career Progression", children: <Widget>[]);
+    return const AlphaScaffold(
+        title: "Career Progression", children: <Widget>[]);
   }
 }
