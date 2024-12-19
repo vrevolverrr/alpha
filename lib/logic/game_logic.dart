@@ -40,6 +40,7 @@ class GameManager implements IManager {
     for (Player player in playerManager.getAllPlayers()) {
       player.creditInterest();
       player.creditSalary();
+      player.gainHappiness();
     }
 
     economyManager.updateCycle();
