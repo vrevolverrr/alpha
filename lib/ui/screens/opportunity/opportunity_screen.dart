@@ -9,6 +9,8 @@ import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
+import 'package:alpha/ui/screens/opportunity/quiz_screen.dart';
+import 'package:alpha/ui/screens/opportunity/widgets/landing_dialog.dart';
 import 'package:alpha/ui/screens/opportunity/widgets/opportunity_card.dart';
 import 'package:flutter/material.dart';
 
@@ -225,6 +227,11 @@ class _OpportunityScreenState extends State<OpportunityScreen>
         onTapBack: () => Navigator.of(context).pop(),
         // landingMessage: "✨ Draw a card",
         // landingDialog: _startingDialog(),
+        landingDialog: AlphaDialogBuilder.dismissable(
+            title: "Life presents unexpected opportunities!",
+            dismissText: "Continue",
+            width: 350,
+            child: OpportunityLandingDialog()),
         next: Builder(
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
@@ -419,6 +426,10 @@ class _OpportunityScreenState extends State<OpportunityScreen>
     }
     // TO-DO
     // add the player stats logic
-    context.navigateAndPopTo(const DashboardScreen());
+    if (opportunityChosen == Opportunity.quiz) {
+      context.navigateTo(const QuizScreen());
+    } else {
+      context.navigateAndPopTo(const DashboardScreen());
+    }
   }
 }
