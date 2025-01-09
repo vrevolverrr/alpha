@@ -1,5 +1,9 @@
 import 'dart:math';
 
+import 'package:alpha/logic/car_logic.dart';
+import 'package:alpha/logic/career_logic.dart';
+import 'package:alpha/logic/hints_logic.dart';
+import 'package:alpha/logic/real_estate_logic.dart';
 import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/opportunity.dart';
@@ -22,10 +26,13 @@ class GameManager implements IManager {
 
   /// Instantiate all managers
   final playerManager = PlayerManager();
+  final careerManager = CareerManager();
   final marketManager = FinancialMarketManager();
   final economyManager = EconomyManager();
   final businessManager = BusinessManager();
-  // final eventsManager = AlphaEventsManager();
+  final realEstateManager = RealEstateManager();
+  final carManager = CarManager();
+  final hintsManager = HintsManager();
 
   void startGame() {
     log.info("Game has started with ${playerManager.getPlayerCount()} players");
@@ -40,10 +47,10 @@ class GameManager implements IManager {
     /// Add round specific logic here
     for (Player player in playerManager.getAllPlayers()) {
       player.creditInterest();
-      player.creditSalary();
       player.gainHappiness();
     }
 
+    careerManager.creditSalary();
     economyManager.updateCycle();
     marketManager.updateMarket();
     // businessManager.creditBusinessEarnings();

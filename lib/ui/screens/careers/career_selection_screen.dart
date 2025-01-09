@@ -1,10 +1,12 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/careers.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/careers/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/careers/widgets/job_selection_card.dart';
 import 'package:alpha/utils.dart';
@@ -26,7 +28,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   /// Event Handlers
   void _handleOnTapCard(JobSelectionCard card, BuildContext context) {
     // This function is called when a job card is pressed
-    if (card.disabled) {
+    if (card.disabled && card.eligible) {
       _showCareerProgressionMessage(context);
       return;
     }
@@ -55,7 +57,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   void _handleDialogConfirmation(BuildContext context) {
     /// This function is called when the user confirms the job selection in the dialog
-    activePlayer.setCareer(_selectedJob);
+    careerManager.employ(activePlayer, _selectedJob, gameManager.round);
 
     AlphaDialogBuilder successDialog = _buildDialogSuccess(context, () {
       context.dismissDialog();
@@ -89,6 +91,14 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
         title: "Choose a Career",
         onTapBack: () => Navigator.of(context).pop(),
         landingMessage: "🎯 Choose a career you would like to pursue",
+        landingDialog:
+            (hintsManager.shouldShowHint(activePlayer, Hint.careerSelection))
+                ? AlphaDialogBuilder.dismissable(
+                    title: "Choose A Career",
+                    dismissText: "Continue",
+                    width: 350.0,
+                    child: const CareerSelectionLandingDialog())
+                : null,
         next: Builder(
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
@@ -111,7 +121,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   /// Widget Builders
   List<JobSelectionCard> _buildCareerJobCards(CareerSector career) {
-    /// This function builds the job cards for the career sector passed
     return Job.values
         .where((job) => job.career == career)
         .map((job) => JobSelectionCard(
@@ -127,14 +136,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
   }
 
   List<Widget> _buildJobCards() {
-    for (int i = 0; i < careers.length; i++) {
-      if (careers[i] == CareerSector.culinaryChef) {
-        final int index = i + 1;
-        careers.insert(index, CareerSector.medicine);
-        break;
-      }
-    }
-
     /// This function builds all of the job cards for each career sector
     return careers
         .map((CareerSector career) => Container(
@@ -247,11 +248,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
               title: "Proceed", width: 380.0, onTap: onTapConfirm));
 
   /// Utility Methods
-  static bool _isQualified(Job job) => playerManager
-      .getActivePlayer()
-      .education
-      .level
-      .greaterThanOrEqualsTo(job.education);
+  static bool _isQualified(Job job) =>
+      careerManager.isQualified(activePlayer, job);
 
   List<CareerSector> _getSortedCareers() {
     List<CareerSector> careerSectors = List.from(CareerSector.values)

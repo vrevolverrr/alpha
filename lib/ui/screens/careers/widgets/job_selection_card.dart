@@ -195,10 +195,6 @@ class JobDescriptionTagCollection extends StatelessWidget {
             title: "🕒 ${job.timeConsumed}",
             disabled: disabled,
           ),
-          _JobDescriptionTag(
-            title: "🎓 ${job.education.title}",
-            disabled: disabled,
-          ),
         ],
       ),
     );

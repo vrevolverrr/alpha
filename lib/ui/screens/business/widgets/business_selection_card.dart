@@ -129,7 +129,7 @@ class BusinessSelectionCardSm extends StatelessWidget {
               Text(
                 (businessSectorState.grossProfit - business.operationalCosts)
                     .prettyCurrency,
-                style: TextStyles.bold38,
+                style: TextStyles.bold40,
               ),
             ],
           ),
@@ -156,8 +156,8 @@ class _GenericTitleValue extends StatelessWidget {
         children: [
           Text(title,
               style:
-                  TextStyles.bold18.copyWith(color: const Color(0xFF383838))),
-          Text(value, style: TextStyles.bold28),
+                  TextStyles.bold17.copyWith(color: const Color(0xFF383838))),
+          Text(value, style: TextStyles.bold25),
         ],
       ),
     );

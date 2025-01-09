@@ -1,3 +1,7 @@
+import 'package:alpha/logic/car_logic.dart';
+import 'package:alpha/logic/career_logic.dart';
+import 'package:alpha/logic/hints_logic.dart';
+import 'package:alpha/logic/real_estate_logic.dart';
 import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/economy_logic.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
@@ -32,3 +36,12 @@ EconomyManager get economyManager => GetIt.I.get<GameManager>().economyManager;
 /// Service locator for the [BusinessManager], held by the [GameManager]
 BusinessManager get businessManager =>
     GetIt.I.get<GameManager>().businessManager;
+
+RealEstateManager get realEstateManager =>
+    GetIt.I.get<GameManager>().realEstateManager;
+
+CarManager get carManager => GetIt.I.get<GameManager>().carManager;
+
+CareerManager get careerManager => GetIt.I.get<GameManager>().careerManager;
+
+HintsManager get hintsManager => GetIt.I.get<GameManager>().hintsManager;

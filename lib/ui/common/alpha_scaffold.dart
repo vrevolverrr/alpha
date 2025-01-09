@@ -21,6 +21,9 @@ class AlphaScaffold extends StatefulWidget {
   /// The top title to be displayed.
   final String title;
 
+  /// The color of the title.
+  final Color? titleColor;
+
   /// Whether or not to include default padding on the contents.
   final bool useDefaultPadding;
 
@@ -46,16 +49,21 @@ class AlphaScaffold extends StatefulWidget {
   /// The children to be spreaded in the [Column] of the contents.
   final List<Widget> children;
 
+  /// The background color of the scaffold.
+  final Color? backgroundColor;
+
   const AlphaScaffold(
       {super.key,
       required this.title,
+      this.titleColor,
       this.useDefaultPadding = false,
       this.mainAxisAlignment,
       this.onTapBack,
       this.next,
       this.landingMessage,
       this.landingDialog,
-      required this.children});
+      required this.children,
+      this.backgroundColor});
 
   /// Finds the [AlphaScaffoldState] from the closest instance of this class
   /// that encloses the given [BuildContext].
@@ -213,13 +221,17 @@ class AlphaScaffoldState extends State<AlphaScaffold>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: widget.backgroundColor ?? const Color(0xffFCF7E8),
       body: Stack(
         children: <Widget>[
           Column(
             children: <Widget>[
               const SizedBox(height: 35.0),
               _AlphaScaffoldAppBar(
-                  title: widget.title, onTapBack: widget.onTapBack),
+                  title: widget.title,
+                  titleColor: widget.titleColor,
+                  onTapBack: widget.onTapBack),
               _AlphaScaffoldContents(
                   mainAxisAlignment: widget.mainAxisAlignment,
                   useDefaultPadding: widget.useDefaultPadding,
@@ -232,7 +244,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
               snackbarController: _snackbarController),
           RenderIfTrue(
               condition: _showAlphaDialog,
-              child: Container(color: const Color.fromARGB(120, 86, 86, 86))),
+              child: Container(color: const Color(0x78565656))),
           _AlphaScaffoldDialog(
               showAlphaDialog: _showAlphaDialog, dialogBuilder: _dialogBuilder),
         ],
@@ -247,9 +259,11 @@ class AlphaScaffoldState extends State<AlphaScaffold>
 /// This widget should only be used by [AlphaScaffold].
 class _AlphaScaffoldAppBar extends StatelessWidget {
   final String title;
+  final Color? titleColor;
   final void Function()? onTapBack;
 
-  const _AlphaScaffoldAppBar({required this.title, required this.onTapBack});
+  const _AlphaScaffoldAppBar(
+      {required this.title, this.titleColor, required this.onTapBack});
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +276,7 @@ class _AlphaScaffoldAppBar extends StatelessWidget {
           alignment: Alignment.center,
           child: AlphaTitle(
             title,
+            color: titleColor,
             fontSize: 40.0,
           ),
         ),
@@ -369,7 +384,7 @@ class _AlphaScaffoldDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 80.0),
+      padding: const EdgeInsets.only(bottom: 60.0),
       child: Align(
         alignment: Alignment.center,
         child: AlphaAlertDialog(
@@ -388,6 +403,7 @@ class _AlphaScaffoldDialog extends StatelessWidget {
 class AlphaDialogBuilder {
   final String title;
   final Widget child;
+  final double? height;
   final DialogButtonData? next;
   final DialogButtonData? cancel;
 
@@ -403,5 +419,9 @@ class AlphaDialogBuilder {
   }
 
   const AlphaDialogBuilder(
-      {required this.title, required this.child, this.next, this.cancel});
+      {required this.title,
+      required this.child,
+      this.height,
+      this.next,
+      this.cancel});
 }

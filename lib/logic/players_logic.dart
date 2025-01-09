@@ -1,21 +1,47 @@
 import 'dart:collection';
 
+import 'package:alpha/assets.dart';
 import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/budget_logic.dart';
 import 'package:alpha/logic/business_logic.dart';
-import 'package:alpha/logic/career_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/education.dart';
 import 'package:alpha/logic/data/budget.dart';
-import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/logic/data/personal_life.dart';
 import 'package:alpha/logic/education_logic.dart';
 import 'package:alpha/logic/personal_life_logic.dart';
 import 'package:alpha/logic/skills_logic.dart';
 import 'package:alpha/logic/stats_logic.dart';
 import 'package:alpha/services.dart';
-import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+
+enum PlayerAvatar {
+  pinkHair(AlphaAssets.avatarPinkHair),
+  greenBuns(AlphaAssets.avatarGreenBuns),
+  orangePonytail(AlphaAssets.avatarOrangePonytail),
+  brownHair(AlphaAssets.avatarBrownHair),
+  blackGuy(AlphaAssets.avatarBlackGuy);
+
+  const PlayerAvatar(this.image);
+
+  final AlphaAssets image;
+}
+
+enum PlayerColor {
+  red(Color(0xFFF75C5C)),
+  green(Color(0xFF7FC36A)),
+  blue(Color(0xFF6DBDFA)),
+  yellow(Color(0xFFF7F091)),
+  pink(Color(0xFFF78DCE));
+
+  const PlayerColor(this.color);
+
+  final Color color;
+}
+
+enum PlayerLifeGoal { family, career, wealth }
 
 /// The managing class for all [Player] related functionality.
 class PlayerManager implements IManager {
@@ -26,7 +52,9 @@ class PlayerManager implements IManager {
   final Logger log = Logger("PlayerManager");
 
   UnmodifiableListView<Player> getAllPlayers() => playersList.players;
+
   int getPlayerCount() => playersList.numPlayers;
+
   Player getActivePlayer() => _active;
 
   void setActivePlayer(int? turn) {
@@ -40,8 +68,24 @@ class PlayerManager implements IManager {
     _active = playersList.get(turn);
   }
 
-  void createPlayer(String name) {
-    final newPlayer = Player(name);
+  List<PlayerColor> getAvailableColors() {
+    final takenColors = playersList.players.map((player) => player.playerColor);
+    return PlayerColor.values
+        .where((color) => !takenColors.contains(color))
+        .toList();
+  }
+
+  List<PlayerAvatar> getAvailableAvatars() {
+    final takenAvatars =
+        playersList.players.map((player) => player.playerAvatar);
+    return PlayerAvatar.values
+        .where((avatar) => !takenAvatars.contains(avatar))
+        .toList();
+  }
+
+  void createPlayer(String name, PlayerAvatar avatar, PlayerColor color) {
+    final newPlayer =
+        Player(name: name, playerAvatar: avatar, playerColor: color);
     playersList.addPlayer(newPlayer);
 
     log.info("New player $name added to PlayerList");
@@ -77,24 +121,33 @@ class PlayersList extends ChangeNotifier {
   }
 }
 
-class Player {
-  final String _name;
+class Player extends Equatable {
+  final String name;
+  final PlayerColor playerColor;
+  final PlayerAvatar playerAvatar;
+
+  Player(
+      {required this.name,
+      required this.playerColor,
+      required this.playerAvatar})
+      : _logger = Logger("Player @$name");
+
+  @override
+  List<Object?> get props => [name, playerColor, playerAvatar];
+
   final Logger _logger;
 
-  String get name => _name;
-
-  Player(String name)
-      : _name = name,
-        _logger = Logger("Player @$name");
-
   final stats = PlayerStats();
-  final savings = SavingsAccount(initial: 5000.0);
+
+  /// Player accounts
+  final savings = SavingsAccount(initial: 999999.0);
+  final cpf = CPFAccount(initial: 0.0);
   final investments = InvestmentAccount(initial: 500.0);
+  final debt = DebtAccount(initial: 0.0);
 
   final skill = SkillLevel();
   final education = Education(initial: EducationDegree.bachelors);
 
-  final career = Career(initial: Job.unemployed);
   final business = BusinessVentures();
 
   final personalLife = PersonalLife(initial: PersonalLifeStatus.single);
@@ -106,13 +159,6 @@ class Player {
     Budget.investments: 2,
     Budget.savings: 2
   });
-
-  double get disposable => savings.unbudgeted - career.cpf;
-
-  void setCareer(Job job) {
-    career.set(job);
-    _logger.info("Set carrer to ${job.title}");
-  }
 
   void pursueDegree() {
     EducationDegree degree = education.getNext();
@@ -193,16 +239,6 @@ class Player {
     stats.updateHappiness(status.pursueHappinessPR);
   }
 
-  void creditSalary() {
-    if (career.job == Job.unemployed) {
-      return;
-    }
-
-    // savings.add(career.salary);
-    savings.addUnbudgeted(career.salary);
-    _logger.info("Credited salary, current Savings: ${savings.balance}");
-  }
-
   /// Updates the [Player]'s balance with the interest earnings
   void creditInterest() {
     savings.returnOnInterest();
@@ -212,6 +248,7 @@ class Player {
         "Credited interest earnings, current Savings: ${savings.balance} Investments: ${investments.balance}");
   }
 
+  /** 
   void applyBudget(BudgetAllocation budget) {
     activePlayer.budgets.apply(budget);
 
@@ -224,4 +261,5 @@ class Player {
     _logger.info(
         "Applied budget, new Savings: ${savings.balance}, new Investments: ${investments.balance}");
   }
+  */
 }

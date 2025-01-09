@@ -25,7 +25,7 @@ class BudgetingScreen extends StatelessWidget {
   }
 
   void _handleConfirmBudget(BuildContext context) {
-    activePlayer.applyBudget(tempBudget);
+    // activePlayer.applyBudget(tempBudget);
     context.navigateAndPopTo(const DashboardScreen());
   }
 
@@ -40,14 +40,14 @@ class BudgetingScreen extends StatelessWidget {
         children: <Widget>[
           const SizedBox(height: 25.0),
           const Text("Unallocated Budget", style: TextStyles.bold32),
-          const SizedBox(height: 4.0),
+          const SizedBox(height: 4.03),
           Text(
-            "${activePlayer.career.salary.prettyCurrency} minus ${activePlayer.career.cpf.prettyCurrency} (CPF)",
+            " minus (CPF)",
             style: TextStyles.medium22,
           ),
           const SizedBox(height: 12.0),
           Text(
-            activePlayer.disposable.prettyCurrency,
+            "",
             style: const TextStyle(
                 fontSize: 44.0,
                 color: Color(0xFF348A37),
@@ -81,7 +81,7 @@ class BudgetingScreen extends StatelessWidget {
         builder: (context, child) => BudgetingTile(
           title: key.title,
           proportion: tempBudget[key],
-          amount: (tempBudget[key] / 10) * activePlayer.disposable,
+          amount: (tempBudget[key] / 10),
           onIncrement: () => _handleIncrementBudget(key),
           onDecrement: () => _handleDecrementBudget(key),
         ),

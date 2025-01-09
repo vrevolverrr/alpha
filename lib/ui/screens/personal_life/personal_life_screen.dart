@@ -35,100 +35,92 @@ class _PersonalLifeScreenState extends State<PersonalLifeScreen> {
         onTapBack: () => Navigator.pop(context),
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 50, top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ListenableBuilder(
-                    listenable: activePlayer.savings,
-                    builder: (context, child) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 20),
-                      child: DashboardPlayerStatCard(
-                        emoji: "💵",
-                        title: "Savings",
-                        value: activePlayer.savings.balance,
-                        isCurrency: true,
-                      ),
-                    ),
+          const SizedBox(height: 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ListenableBuilder(
+                listenable: activePlayer.savings,
+                builder: (context, child) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+                  child: DashboardPlayerStatCard(
+                    emoji: "💵",
+                    title: "Savings",
+                    value: activePlayer.savings.balance,
+                    isCurrency: true,
                   ),
-                  ListenableBuilder(
-                    listenable: activePlayer.stats,
-                    builder: (context, child) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 20),
-                      child: DashboardPlayerStatCard(
-                          emoji: "❤️",
-                          title: "Happiness",
-                          value: activePlayer.stats.happiness,
-                          valueWidth: 50.0),
-                    ),
-                  ),
-                  ListenableBuilder(
-                    listenable: activePlayer.stats,
-                    builder: (context, child) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 20),
-                      child: DashboardPlayerStatCard(
-                          emoji: "🕙",
-                          title: "Time",
-                          value: activePlayer.stats.time,
-                          valueWidth: 50.0),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              ListenableBuilder(
+                listenable: activePlayer.stats,
+                builder: (context, child) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                  child: DashboardPlayerStatCard(
+                      emoji: "❤️",
+                      title: "Happiness",
+                      value: activePlayer.stats.happiness,
+                      valueWidth: 50.0),
+                ),
+              ),
+              ListenableBuilder(
+                listenable: activePlayer.stats,
+                builder: (context, child) => Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                  child: DashboardPlayerStatCard(
+                      emoji: "🕙",
+                      title: "Time",
+                      value: activePlayer.stats.time,
+                      valueWidth: 50.0),
+                ),
+              ),
+            ],
           ),
-          Center(
-            child: CarouselSlider.builder(
-                itemCount: carouselItems.length,
-                itemBuilder: (context, index, _) {
-                  final temp = carouselItems[index];
+          const SizedBox(height: 20.0),
+          CarouselSlider.builder(
+              itemCount: carouselItems.length,
+              itemBuilder: (context, index, _) {
+                final temp = carouselItems[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: currentStatus == carouselItems[index]
-                        ? CurrentLifeStageCard(
-                            focused: onCurrentStatus,
-                            status: temp,
-                            width: 350,
-                            height: 500,
-                          )
-                        : LifeStageCard(
-                            status: temp,
-                            width: 350,
-                            height: 500,
-                            toPursue:
-                                index > carouselItems.indexOf(currentStatus),
-                          ),
-                  );
+                return Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: currentStatus == carouselItems[index]
+                      ? CurrentLifeStageCard(
+                          focused: onCurrentStatus,
+                          status: temp,
+                          width: 350,
+                          height: 500,
+                        )
+                      : LifeStageCard(
+                          status: temp,
+                          width: 350,
+                          height: 500,
+                          toPursue:
+                              index > carouselItems.indexOf(currentStatus),
+                        ),
+                );
+              },
+              options: CarouselOptions(
+                onPageChanged: (index, _) {
+                  setState(() {
+                    if (currentStatus == carouselItems[index]) {
+                      onCurrentStatus = true;
+                    } else {
+                      onCurrentStatus = false;
+                    }
+                  });
                 },
-                options: CarouselOptions(
-                  onPageChanged: (index, _) {
-                    setState(() {
-                      if (currentStatus == carouselItems[index]) {
-                        onCurrentStatus = true;
-                      } else {
-                        onCurrentStatus = false;
-                      }
-                    });
-                  },
-                  initialPage: carouselItems.indexOf(currentStatus),
-                  height: 500,
-                  enlargeCenterPage: true,
-                  enlargeFactor: 0.2,
-                  viewportFraction: 0.35,
-                  enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                  enableInfiniteScroll: false,
-                )),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
+                initialPage: carouselItems.indexOf(currentStatus),
+                height: 500,
+                enlargeCenterPage: true,
+                enlargeFactor: 0.2,
+                viewportFraction: 0.35,
+                enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                enableInfiniteScroll: false,
+              )),
+          const SizedBox(height: 20.0),
           if (onCurrentStatus)
             AlphaButton(
               color: const Color.fromARGB(255, 106, 202, 196),

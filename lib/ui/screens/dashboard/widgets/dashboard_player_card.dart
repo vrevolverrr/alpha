@@ -1,5 +1,7 @@
+import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
+import 'package:alpha/ui/screens/next_turn/widgets/player_avatar.dart';
 import 'package:flutter/material.dart';
 
 class DashboardPlayerCard extends StatelessWidget {
@@ -22,10 +24,7 @@ class DashboardPlayerCard extends StatelessWidget {
                 color: const Color(0xFFFFC1BD),
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.black, width: 2.0)),
-            child: Image.asset(
-              "assets/images/player_avatar_1.png",
-              fit: BoxFit.cover,
-            ),
+            child: PlayerAvatarWidget(player: activePlayer, radius: 60.0),
           ),
           const SizedBox(height: 20.0),
           Container(

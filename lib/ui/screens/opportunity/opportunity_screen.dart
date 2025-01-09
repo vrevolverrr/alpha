@@ -3,14 +3,12 @@ import 'dart:math';
 
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/opportunity.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
-import 'package:alpha/styles.dart';
-import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/opportunity/quiz_screen.dart';
-import 'package:alpha/ui/screens/opportunity/widgets/landing_dialog.dart';
+import 'package:alpha/ui/screens/opportunity/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/opportunity/widgets/opportunity_card.dart';
 import 'package:flutter/material.dart';
 
@@ -148,68 +146,6 @@ class _OpportunityScreenState extends State<OpportunityScreen>
     });
   }
 
-  AlphaDialogBuilder _startingDialog() => AlphaDialogBuilder(
-      title: "Life presents unexpected opportunities!",
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 15.0,
-          ),
-          const Text(
-            "Draw an Opportunity Tile to see what chance or challenge awaits.",
-            style: TextStyles.bold30,
-          ),
-          const Text(
-            "It could bring you luck, test your knowledge, or even lighten or tighten your wallet.",
-            style: TextStyles.bold30,
-          ),
-          const SizedBox(
-            height: 2.0,
-          ),
-          const Text(
-            "Here’s what you might find:",
-            style: TextStyles.bold30,
-          ),
-          Container(
-            alignment: Alignment.topLeft,
-            child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "• Quiz",
-                      style: TextStyles.bold30,
-                    ),
-                  ),
-                  Text(
-                    "• CDC Vouchers",
-                    style: TextStyles.bold30,
-                  ),
-                  Text(
-                    "• Get Fined",
-                    style: TextStyles.bold30,
-                  ),
-                  Text(
-                    "• Win the Lottery",
-                    style: TextStyles.bold30,
-                  ),
-                ]),
-          ),
-          const SizedBox(height: 50.0),
-        ],
-      ),
-      cancel: DialogButtonData(
-        title: "Let's Go!",
-        width: 380,
-        onTap: () => _closeStartingDialog(context),
-      ));
-
-  void _closeStartingDialog(BuildContext context) {
-    Navigator.of(context).pop();
-  }
-
   void _drawCard() {
     if (!_animationTriggered) {
       setState(() {
@@ -227,11 +163,14 @@ class _OpportunityScreenState extends State<OpportunityScreen>
         onTapBack: () => Navigator.of(context).pop(),
         // landingMessage: "✨ Draw a card",
         // landingDialog: _startingDialog(),
-        landingDialog: AlphaDialogBuilder.dismissable(
-            title: "Life presents unexpected opportunities!",
-            dismissText: "Continue",
-            width: 350,
-            child: OpportunityLandingDialog()),
+        landingDialog:
+            (hintsManager.shouldShowHint(activePlayer, Hint.opportunity))
+                ? AlphaDialogBuilder.dismissable(
+                    title: "Opportunity",
+                    dismissText: "Continue",
+                    width: 350.0,
+                    child: const OpportunityLandingDialog())
+                : null,
         next: Builder(
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
@@ -424,12 +363,6 @@ class _OpportunityScreenState extends State<OpportunityScreen>
       context.showSnackbar(message: "✨ Please draw a card to continue");
       return;
     }
-    // TO-DO
-    // add the player stats logic
-    if (opportunityChosen == Opportunity.quiz) {
-      context.navigateTo(const QuizScreen());
-    } else {
-      context.navigateAndPopTo(const DashboardScreen());
-    }
+    context.navigateAndPopTo(const DashboardScreen());
   }
 }

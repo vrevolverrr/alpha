@@ -11,6 +11,9 @@ class PlayerStatCard extends StatelessWidget {
   /// The value of the stat
   final String value;
 
+  /// The color of value of the stat
+  final Color? color;
+
   /// Width to use for the stat value
   final double valueWidth;
 
@@ -19,6 +22,7 @@ class PlayerStatCard extends StatelessWidget {
     required this.emoji,
     required this.title,
     required this.value,
+    this.color,
     this.valueWidth = 135.0,
   });
 
@@ -43,9 +47,9 @@ class PlayerStatCard extends StatelessWidget {
           Expanded(
             child: Text(value,
                 textAlign: TextAlign.right,
-                style: const TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xff00734A),
+                    color: color ?? const Color(0xff00734A),
                     fontSize: 18.0)),
           )
         ],

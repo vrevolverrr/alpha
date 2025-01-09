@@ -1,6 +1,8 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// Creates a custom alert dialog widget in the style of the game.\
@@ -20,12 +22,16 @@ class AlphaAlertDialog extends StatelessWidget {
   /// Whether or not to show the dialog.
   final bool show;
 
+  /// The height of the dialog.
+  final double? height;
+
   const AlphaAlertDialog(
       {super.key,
       required this.title,
       required this.child,
       this.next,
       this.cancel,
+      this.height,
       this.show = false});
 
   @override
@@ -38,7 +44,7 @@ class AlphaAlertDialog extends StatelessWidget {
       /// Animates the dialog expanding and closing, when the
       /// widget's `show` property changes
       width: show ? 650.0 : 0.0,
-      height: show ? 380.0 : 0.0,
+      height: show ? (height ?? 380.0) : 0.0,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
           color: const Color(0xffFCF7E8),
@@ -52,14 +58,13 @@ class AlphaAlertDialog extends StatelessWidget {
       child: RenderIfTrue(
         condition: show,
         child: FittedBox(
-          fit: BoxFit.contain,
-          child: _AlertDialogContents(
-            title: title,
-            next: next,
-            cancel: cancel,
-            child: child,
-          ),
-        ),
+            fit: BoxFit.contain,
+            child: _AlertDialogContents(
+              title: title,
+              next: next,
+              cancel: cancel,
+              child: child,
+            )),
       ),
     );
   }
@@ -106,56 +111,75 @@ class _AlertDialogContents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(
-          title.toUpperCase(),
-          style: const TextStyle(
-              fontFamily: "LexendMega",
-              fontWeight: FontWeight.w700,
-              fontSize: 34.0),
-        ),
-        const SizedBox(height: 10.0),
-        Container(
-          height: 3.0,
-          width: 300.0,
-          decoration: BoxDecoration(
-              color: Colors.black45, borderRadius: BorderRadius.circular(10.0)),
-        ),
-        const SizedBox(height: 20.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [child],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            cancel != null
-                ? AlphaButton(
-                    width: cancel!.width,
-                    height: cancel!.height,
-                    title: cancel!.title,
-                    onTap: cancel!.onTap,
-                    icon: Icons.arrow_forward_rounded,
-                  )
-                : const SizedBox(),
-            RenderIfAllNotNull(
-                nullables: [next, cancel], child: const SizedBox(width: 20.0)),
-            next != null
-                ? AlphaButton(
-                    width: next!.width,
-                    height: next!.height,
-                    title: next!.title,
-                    color: const Color.fromARGB(255, 164, 211, 151),
-                    onTap: next!.onTap,
-                    icon: Icons.arrow_forward_rounded,
-                  )
-                : const SizedBox()
-          ],
-        )
-      ],
+    return SizedBox(
+      height: 323.0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            title.toUpperCase(),
+            style: const TextStyle(
+                fontFamily: "LexendMega",
+                fontWeight: FontWeight.w700,
+                fontSize: 34.0),
+          ),
+          const SizedBox(height: 10.0),
+          Container(
+            height: 3.0,
+            width: 300.0,
+            decoration: BoxDecoration(
+                color: Colors.black45,
+                borderRadius: BorderRadius.circular(10.0)),
+          ),
+          const SizedBox(height: 10.0),
+          Expanded(
+              child: RawScrollbar(
+            thumbColor: AlphaColors.red,
+            trackColor: const Color(0xFFE0E0E0),
+            trackVisibility: true,
+            thumbVisibility: true,
+            thickness: 10.0,
+            shape: const StadiumBorder(
+                side: BorderSide(color: Colors.black, width: 2.0)),
+            trackRadius: const Radius.circular(15.0),
+            trackBorderColor: Colors.transparent,
+            child: SingleChildScrollView(
+                child: SizedBox(
+              width: 585.0,
+              child: Center(child: child),
+            )),
+          )),
+          const SizedBox(height: 10.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              cancel != null
+                  ? AlphaButton(
+                      width: cancel!.width,
+                      height: cancel!.height,
+                      title: cancel!.title,
+                      onTap: cancel!.onTap,
+                      icon: Icons.arrow_forward_rounded,
+                    )
+                  : const SizedBox(),
+              RenderIfAllNotNull(
+                  nullables: [next, cancel],
+                  child: const SizedBox(width: 20.0)),
+              next != null
+                  ? AlphaButton(
+                      width: next!.width,
+                      height: next!.height,
+                      title: next!.title,
+                      color: const Color.fromARGB(255, 164, 211, 151),
+                      onTap: next!.onTap,
+                      icon: Icons.arrow_forward_rounded,
+                    )
+                  : const SizedBox()
+            ],
+          )
+        ],
+      ),
     );
   }
 }

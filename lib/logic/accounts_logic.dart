@@ -13,7 +13,6 @@ class Account extends ChangeNotifier {
   Account(double balance, {this.interest = 1.0}) : _balance = balance;
 
   double get balance => _balance;
-  String get sBalance => _balance.toStringAsFixed(2);
 
   void returnOnInterest() {
     _balance =
@@ -32,6 +31,29 @@ class Account extends ChangeNotifier {
     _balance += amount;
     notifyListeners();
   }
+}
+
+class DebtAccount extends Account {
+  DebtAccount({double initial = 0.0}) : super(initial, interest: 0.0);
+
+  @override
+  double get balance => -1 * super.balance;
+
+  void repay(double amount) {
+    if (amount > balance) {
+      amount = balance;
+    }
+
+    deduct(amount);
+  }
+
+  void borrow(double amount) {
+    add(amount);
+  }
+}
+
+class CPFAccount extends Account {
+  CPFAccount({double initial = 0.0}) : super(initial, interest: 12.0);
 }
 
 class SavingsAccount extends Account {

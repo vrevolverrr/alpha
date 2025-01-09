@@ -7,6 +7,7 @@ class DashboardPlayerStatCard<T extends num> extends StatelessWidget {
   final String emoji;
   final T value;
   final double valueWidth;
+  final Color? valueColor;
   final bool isCurrency;
 
   const DashboardPlayerStatCard(
@@ -15,6 +16,7 @@ class DashboardPlayerStatCard<T extends num> extends StatelessWidget {
       required this.title,
       required this.value,
       this.valueWidth = 135.0,
+      this.valueColor,
       this.isCurrency = false});
 
   @override
@@ -41,12 +43,11 @@ class DashboardPlayerStatCard<T extends num> extends StatelessWidget {
             child: AnimatedNumber<T>(
               value,
               formatCurrency: isCurrency,
-              duration:
-                  Durations.long1, // TODO make duration a function of value
+              duration: Durations.long1,
               delay: Durations.medium2,
-              style: const TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Color(0xff00734A),
+                  color: valueColor ?? const Color(0xff00734A),
                   fontSize: 18.0),
               textAlign: TextAlign.right,
             ),
@@ -54,5 +55,21 @@ class DashboardPlayerStatCard<T extends num> extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class DashboardExpandablePlayerStatCard<T extends num> extends StatefulWidget {
+  const DashboardExpandablePlayerStatCard({super.key});
+
+  @override
+  State<StatefulWidget> createState() =>
+      _DashboardExpandablePlayerStatCardState<T>();
+}
+
+class _DashboardExpandablePlayerStatCardState<T extends num>
+    extends State<DashboardExpandablePlayerStatCard> {
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox();
   }
 }

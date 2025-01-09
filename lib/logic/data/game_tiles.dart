@@ -17,7 +17,7 @@ enum GameTile {
           "protection during a mishap"),
 
   oppurtunityTile(
-      tileName: "Oppurtunity",
+      tileName: "Opportunity",
       tileDescription: "You will be given a random oppurtunity that may "
           "provide you with significant help"),
 

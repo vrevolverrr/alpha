@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/education.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
@@ -8,6 +9,7 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/common/alpha_skill_bar.dart';
 import 'package:alpha/ui/common/alpha_stat_cards.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
+import 'package:alpha/ui/screens/education/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/education/widgets/education_card.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +105,13 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
     return AlphaScaffold(
       title: "Choose Education",
       landingMessage: "🎓 Choose whether or not to pursue an education.",
+      landingDialog: (hintsManager.shouldShowHint(activePlayer, Hint.education))
+          ? AlphaDialogBuilder.dismissable(
+              title: "Education",
+              dismissText: "Continue",
+              width: 350.0,
+              child: const EducationLandingDialog())
+          : null,
       onTapBack: () => Navigator.of(context).pop(),
       next: Builder(
         builder: (context) =>

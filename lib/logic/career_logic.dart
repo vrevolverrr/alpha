@@ -1,15 +1,135 @@
+import 'dart:math';
+
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/careers.dart';
-import 'package:flutter/foundation.dart';
+import 'package:alpha/logic/players_logic.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
-class Career extends ChangeNotifier {
-  late Job _job;
+class CareerEmployment {
+  final Job job;
+  final int startRound;
 
-  Career({required Job initial}) : _job = initial;
+  CareerEmployment({
+    required this.job,
+    required this.startRound,
+  });
+}
 
-  Job get job => _job;
-  double get salary => _job.salary;
-  String get sSalary => _job.salary.toStringAsFixed(2);
-  double get cpf => 0.20 * _job.salary;
+class CareerManager implements IManager {
+  @override
+  final Logger log = Logger("CareerManager");
 
-  void set(Job newJob) => _job = newJob;
+  static const kCPFContributionRate = 0.2;
+
+  final Map<Player, CareerEmployment> _employments = {};
+
+  bool isEmployed(Player player) => _employments.containsKey(player);
+
+  bool isQualified(Player player, Job job) {
+    final skillLevel = player.skill.totalExp;
+    final requiredSkill = job.skillRequirement;
+
+    return skillLevel >= requiredSkill;
+  }
+
+  Job getPlayerJob(Player player) {
+    final employment = _employments[player];
+
+    if (employment == null) {
+      return Job.unemployed;
+    }
+
+    return employment.job;
+  }
+
+  Job getNextTierJob(Job job) {
+    return Job.values.firstWhere(
+        (j) => (j.tier == job.tier + 1) && job.career == j.career,
+        orElse: () => Job.unemployed);
+  }
+
+  bool canPromote(Player player) {
+    Job nextJob = getNextTierJob(getPlayerJob(player));
+    return nextJob != Job.unemployed;
+  }
+
+  void employ(Player player, Job job, int round) {
+    if (isEmployed(player)) {
+      log.warning(
+          "Called employ on Player ${player.name} who is already employed, call resign first");
+      return;
+    }
+
+    if (!isQualified(player, job)) {
+      log.warning(
+          "Called employ on Player ${player.name} who is not qualified for $job");
+      return;
+    }
+
+    _employments[player] = CareerEmployment(
+      job: job,
+      startRound: round,
+    );
+  }
+
+  bool resign(Player player) {
+    final employment = _employments[player];
+
+    if (employment == null) {
+      log.warning("Called resign on Player ${player.name} who is not employed");
+      return false;
+    }
+
+    _employments.remove(player);
+    return true;
+  }
+
+  Job promote(Player player) {
+    final employment = _employments[player];
+
+    if (employment == null) {
+      log.warning(
+          "Called promote on Player ${player.name} who is not employed");
+      return Job.unemployed;
+    }
+
+    final currentJob = employment.job;
+    final nextJob = getNextTierJob(currentJob);
+
+    if (nextJob == Job.unemployed) {
+      log.warning("Called promote on Player ${player.name} who is at max tier");
+
+      return employment.job;
+    }
+
+    _employments[player] = CareerEmployment(
+      job: nextJob,
+      startRound: employment.startRound,
+    );
+
+    return nextJob;
+  }
+
+  void creditSalary() {
+    log.info("Crediting salaries to employed players");
+
+    for (final player in _employments.keys) {
+      final employment = _employments[player];
+      if (employment == null) {
+        log.warning("Employment record missing for ${player.name}");
+        continue;
+      }
+
+      final salary = employment.job.salary;
+      final cpf = salary * kCPFContributionRate;
+      final balance = salary - cpf;
+
+      player.savings.addUnbudgeted(balance);
+      player.cpf.add(cpf);
+
+      log.info(
+          "Credited salary of $salary to ${player.name}, current Savings: ${player.savings.balance}, current CPF: ${player.cpf.balance}");
+    }
+  }
 }

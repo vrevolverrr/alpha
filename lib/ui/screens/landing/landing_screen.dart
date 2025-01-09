@@ -1,6 +1,7 @@
 import 'package:alpha/assets.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
-import 'package:alpha/ui/common/alpha_title.dart';
+import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -9,54 +10,56 @@ class LandingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Positioned(
-              bottom: 0.0,
-              right: -40.0,
-              child: Image.asset(
-                AlphaAssets.bgLandingCities.path,
-                scale: 1.65,
-              )),
-          Align(
+    return AlphaScaffold(title: "", children: [
+      Expanded(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              children: [
+                const SizedBox(height: 30.0),
+                SizedBox(
+                    width: 800.0,
+                    height: 450.0,
+                    child: Image.asset(AlphaAssets.logoCashflow.path)),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AlphaButton(
+                      width: 340.0,
+                      title: "Start Game",
+                      color: AlphaColors.green,
+                      onTap: onTapNext,
+                    ),
+                    const SizedBox(width: 20.0),
+                    const AlphaButton(width: 240.0, title: "About")
+                  ],
+                ),
+              ],
+            ),
+            Align(
               alignment: Alignment.bottomRight,
+              child: SizedBox(
+                  width: 140.0,
+                  height: 140.0,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 15.0, bottom: 15.0),
+                    child: Image.asset(AlphaAssets.logoNcf.path),
+                  )),
+            ),
+            const Align(
+              alignment: Alignment.bottomCenter,
               child: Padding(
-                  padding: const EdgeInsets.only(right: 50.0, bottom: 50.0),
-                  child: AlphaButton.next(
-                    onTap: onTapNext,
-                  ))),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(height: 30.0),
-              const Center(
-                child: AlphaTitle(
-                  "ALPHA",
-                  color: Color(0xff7FBC8C),
-                  fontSize: 30.0,
-                ),
-              ),
-              const SizedBox(height: 0.0),
-              const AlphaTitle(
-                "NCF",
-                fontSize: 200.0,
-                shadowOffset: Offset(8.0, 8.0),
-                strokeWidth: 8.0,
-              ),
-              Transform.translate(
-                offset: const Offset(45, -60),
-                child: const AlphaTitle(
-                  "2025.",
-                  fontSize: 200.0,
-                  shadowOffset: Offset(8.0, 8.0),
-                  strokeWidth: 8.0,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                  padding: EdgeInsets.only(bottom: 20.0),
+                  child: Text(
+                    "version 0.1.1 Build 1 (Alpha)",
+                    style: TextStyles.medium18,
+                  )),
+            )
+          ],
+        ),
+      )
+    ]);
   }
 }

@@ -13,7 +13,7 @@ import 'package:alpha/ui/screens/dashboard/widgets/dashboard_career_card.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_card.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_stats.dart';
 import 'package:alpha/ui/screens/investments/investments_screen.dart';
-import 'package:alpha/ui/screens/players_menu/players_menu_screen.dart';
+import 'package:alpha/ui/screens/next_turn/next_turn_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
@@ -98,11 +98,12 @@ class _DashboardPlayerStats extends StatelessWidget {
           ),
         ),
         ListenableBuilder(
-          listenable: activePlayer.investments,
+          listenable: activePlayer.savings,
           builder: (context, child) => DashboardPlayerStatCard(
             emoji: "💵",
-            title: "Investments",
-            value: activePlayer.investments.balance,
+            title: "Debt",
+            valueColor: const Color(0xFFB52F26),
+            value: activePlayer.debt.balance,
             isCurrency: true,
           ),
         ),
@@ -122,6 +123,14 @@ class _DashboardPlayerStats extends StatelessWidget {
               value: activePlayer.stats.time,
               valueWidth: 50.0),
         ),
+        ListenableBuilder(
+          listenable: activePlayer.stats,
+          builder: (context, child) => DashboardPlayerStatCard(
+              emoji: "🌏",
+              title: "ESG",
+              value: activePlayer.stats.time,
+              valueWidth: 50.0),
+        ),
       ],
     );
   }
@@ -138,7 +147,7 @@ class _DashboardContents extends StatelessWidget {
       children: <Widget>[
         Column(
           children: <Widget>[
-            const DashboardPlayerCard(playerName: "Michelle"),
+            DashboardPlayerCard(playerName: activePlayer.name),
             const SizedBox(height: 50.0),
             DashboardCurrentCareerCard(player: activePlayer)
           ],

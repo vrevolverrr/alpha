@@ -66,7 +66,13 @@ class _DiceRollScreenState extends State<DiceRollScreen>
     setState(() {
       _hasRolledDice = true;
       _animController.reset();
-      _animController.forward().then((_) => context.showDialog(dialog));
+      _animController.forward();
+
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (!mounted) return;
+        // ignore: use_build_context_synchronously
+        context.showDialog(dialog);
+      });
     });
   }
 

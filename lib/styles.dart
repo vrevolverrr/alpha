@@ -130,3 +130,10 @@ class TextStyles {
   static const black39 = TextStyle(fontWeight: FontWeight.w900, fontSize: 39.0);
   static const black40 = TextStyle(fontWeight: FontWeight.w900, fontSize: 40.0);
 }
+
+@immutable
+class AlphaColors {
+  static const red = Color(0xffFF6B6B);
+  static const green = Color(0xff96DE9D);
+  static const grey = Color(0xFFBCBCBC);
+}

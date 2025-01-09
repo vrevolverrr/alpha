@@ -2,6 +2,7 @@ import 'package:alpha/assets.dart';
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/personal_life.dart';
 import 'package:alpha/services.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
@@ -37,22 +38,19 @@ class CurrentLifeStageCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
-                  AlphaAssets.jobProgrammer.path,
+                  status.image.path,
                   height: height * 0.6,
                 ),
                 if (focused)
                   Expanded(
                     child: Center(
                       child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 5, right: 5, top: 15),
+                        padding: const EdgeInsets.only(
+                            left: 12.0, right: 12.0, top: 20.0),
                         child: Text(
                           status.statusDescription,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              fontFamily: "Sansation",
-                              fontWeight: FontWeight.w500),
+                          textAlign: TextAlign.justify,
+                          style: TextStyles.medium16,
                         ),
                       ),
                     ),
@@ -91,12 +89,12 @@ class CurrentLifeStageCard extends StatelessWidget {
                       ),
                       Align(
                         alignment: Alignment.center,
-                        child: Text(
-                          status.title.toUpperCase(),
-                          style: const TextStyle(
-                              fontSize: 20,
-                              fontFamily: "LexendMega",
-                              fontWeight: FontWeight.bold),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(
+                            status.title.toUpperCase(),
+                            style: TextStyles.bold22,
+                          ),
                         ),
                       )
                     ],

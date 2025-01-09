@@ -77,7 +77,7 @@ class _AlphaButtonState extends State<AlphaButton> {
                   : null,
               color: !widget.disabled
                   ? (widget.color ?? const Color(0xffFF6B6B))
-                  : const Color.fromARGB(255, 188, 188, 188),
+                  : const Color(0xFFBCBCBC),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,7 +85,7 @@ class _AlphaButtonState extends State<AlphaButton> {
                 Expanded(
                   child: AutoSizeText(
                     widget.title.toUpperCase(),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                     style: TextStyle(
                         fontFamily: "PublicSans",
                         fontWeight: FontWeight.w900,

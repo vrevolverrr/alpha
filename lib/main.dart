@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:alpha/logic/game_logic.dart';
-import 'package:alpha/ui/pages/main_menu_page.dart';
+import 'package:alpha/ui/screens/main_menu/main_menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -32,11 +32,11 @@ class MyApp extends StatelessWidget {
       title: 'Alpha Game',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xffFCF7E8),
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xffFCF7E8),
         fontFamily: "MazzardH",
       ),
-      home: const MainMenuPage(),
+      home: const MainMenuScreen(),
     );
   }
 }
