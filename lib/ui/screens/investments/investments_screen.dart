@@ -14,6 +14,8 @@ import 'package:alpha/ui/screens/investments/widgets/stock_listing.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_price_change.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_risk_label.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_unit_controller.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
@@ -25,22 +27,20 @@ class InvestmentsScreen extends StatefulWidget {
 }
 
 class _InvestmentsScreenState extends State<InvestmentsScreen> {
-  int _stockUnits = 10;
   Stock _selectedStock = marketManager.stocks.first;
 
-  bool _isUnitIncreaseButtonHeld = false;
-  bool _isUnitDecreaseButtonHeld = false;
+  final StockUnitController _controller = StockUnitController();
 
   final InvestmentAccount investments =
       accountsManager.getInvestmentAccount(activePlayer);
 
   void _handleBuyShare(BuildContext context) {
-    if (_stockUnits <= 0) {
+    if (_controller.units <= 0) {
       context.showSnackbar(message: "Please select a valid number of units");
       return;
     }
 
-    final double totalValue = _selectedStock.price * _stockUnits;
+    final double totalValue = _selectedStock.price * _controller.units;
 
     if (investments.balance < totalValue) {
       context.showSnackbar(message: "Insufficient funds");
@@ -48,7 +48,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
     }
 
     final AlphaDialogBuilder dialog = _buildConfirmBuyDialog(context, () {
-      investments.purchaseShare(_selectedStock, _stockUnits);
+      investments.purchaseShare(_selectedStock, _controller.units);
       context.dismissDialog();
     });
 
@@ -56,20 +56,20 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   }
 
   void _handleSellShare(BuildContext context) {
-    if (_stockUnits <= 0) {
+    if (_controller.units <= 0) {
       context.showSnackbar(message: "Please select a valid number of units");
       return;
     }
 
     final int units = investments.getStockUnits(_selectedStock.item);
 
-    if (units < _stockUnits) {
+    if (units < _controller.units) {
       context.showSnackbar(message: "Insufficient shares to sell");
       return;
     }
 
     final AlphaDialogBuilder dialog = _buildConfirmSellDialog(context, () {
-      investments.sellShare(_selectedStock, _stockUnits);
+      investments.sellShare(_selectedStock, _controller.units);
       context.dismissDialog();
     });
 
@@ -90,7 +90,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               : null,
       onTapBack: () => Navigator.of(context).pop(),
       children: <Widget>[
-        const SizedBox(height: 30.0),
+        const SizedBox(height: 20.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -116,7 +116,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
         const SizedBox(height: 5.0),
         SizedBox(
           height: 640.0,
-          width: 360.0,
+          width: 358.0,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +145,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
         Row(
           children: <Widget>[
             _buildStockDetailsContainer(),
-            const SizedBox(width: 30.0),
+            const SizedBox(width: 10.0),
             _buildInvestmentAccountContainer(),
           ],
         ),
@@ -157,7 +157,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
   Widget _buildStockDetailsContainer() {
     return AlphaContainer(
-      width: 410.0,
+      width: 370.0,
       height: 450.0,
       padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
       child: Column(
@@ -214,7 +214,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
                     return "${(owned * _selectedStock.price).prettyCurrency} ($owned)";
                   })(),
-                  width: 240.0,
+                  width: 200.0,
                 ),
               ),
             ],
@@ -222,7 +222,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
           const SizedBox(height: 45.0),
           Center(
             child: LargeStockGraph(
-              width: 350.0,
+              width: 310.0,
               height: 200.0,
               stock: _selectedStock,
             ),
@@ -234,7 +234,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
   Widget _buildInvestmentAccountContainer() {
     return AlphaContainer(
-      width: 310.0,
+      width: 290.0,
       height: 450.0,
       padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
       child: Column(
@@ -300,11 +300,9 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
     );
   }
 
-  /// TODO REFACTOR THIS WIDGET OUT AND INTRODUCE A CONTROLLER
-  /// TODO make it faster the longer it is held
   Widget _buildTransactionControls(BuildContext context) {
     return AlphaContainer(
-      width: 750.0,
+      width: 665.0,
       height: 200.0,
       padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
       child: Row(
@@ -322,59 +320,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                 ),
               ),
               const SizedBox(height: 5.0),
-              AlphaContainer(
-                width: 260.0,
-                height: 70.0,
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                shadowOffset: const Offset(0.5, 2.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTapDown: (_) => Future.doWhile(() {
-                        if (_stockUnits <= 0) return false;
-
-                        setState(() {
-                          _stockUnits--;
-                          _isUnitDecreaseButtonHeld = true;
-                        });
-
-                        return Future.delayed(const Duration(milliseconds: 100))
-                            .then((_) => _isUnitDecreaseButtonHeld);
-                      }),
-                      onTapUp: (_) =>
-                          setState(() => _isUnitDecreaseButtonHeld = false),
-                      onTapCancel: () =>
-                          setState(() => _isUnitDecreaseButtonHeld = false),
-                      child: const Icon(Icons.remove),
-                    ),
-                    Text(
-                      "${_stockUnits.toString()} ",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 40.0,
-                        height: 1.75,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTapDown: (_) => Future.doWhile(() {
-                        setState(() {
-                          _stockUnits++;
-                          _isUnitIncreaseButtonHeld = true;
-                        });
-
-                        return Future.delayed(const Duration(milliseconds: 100))
-                            .then((_) => _isUnitIncreaseButtonHeld);
-                      }),
-                      onTapUp: (_) =>
-                          setState(() => _isUnitIncreaseButtonHeld = false),
-                      onTapCancel: () =>
-                          setState(() => _isUnitIncreaseButtonHeld = false),
-                      child: const Icon(Icons.add),
-                    ),
-                  ],
-                ),
-              ),
+              StockUnitSelector(controller: _controller),
             ],
           ),
           Column(
@@ -389,10 +335,13 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 2.0),
-                child: AnimatedNumber(
-                  _selectedStock.price * _stockUnits,
-                  formatCurrency: true,
-                  style: TextStyles.bold40,
+                child: ListenableBuilder(
+                  listenable: _controller,
+                  builder: (context, _) => AnimatedNumber(
+                    _selectedStock.price * _controller.units,
+                    formatCurrency: true,
+                    style: TextStyles.bold40,
+                  ),
                 ),
               ),
               const SizedBox(height: 2.0),
@@ -400,7 +349,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                 builder: (context) => Row(
                   children: <Widget>[
                     AlphaButton(
-                      width: 180.0,
+                      width: 165.0,
                       height: 60.0,
                       title: "Buy",
                       icon: Icons.shopping_cart_outlined,
@@ -409,7 +358,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                     ),
                     const SizedBox(width: 20.0),
                     AlphaButton(
-                      width: 180.0,
+                      width: 165.0,
                       height: 60.0,
                       title: "Sell",
                       icon: Icons.close,
@@ -438,12 +387,12 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
           ),
           const SizedBox(height: 10.0),
           Text(
-            "${_stockUnits.toString()} units of ${_selectedStock.name} stock for",
+            "${_controller.units.toString()} units of ${_selectedStock.name} stock for",
             style: TextStyles.bold22,
           ),
           const SizedBox(height: 10.0),
           Text(
-            (_stockUnits * _selectedStock.price).prettyCurrency,
+            (_controller.units * _selectedStock.price).prettyCurrency,
             style: const TextStyle(
               color: Color(0xFFDF3737),
               fontSize: 48.0,
@@ -470,12 +419,12 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
           ),
           const SizedBox(height: 10.0),
           Text(
-            "${_stockUnits.toString()} units of ${_selectedStock.name} stock for",
+            "${_controller.units.toString()} units of ${_selectedStock.name} stock for",
             style: TextStyles.bold22,
           ),
           const SizedBox(height: 10.0),
           Text(
-            (_stockUnits * _selectedStock.price).prettyCurrency,
+            (_controller.units * _selectedStock.price).prettyCurrency,
             style: const TextStyle(
               color: Color.fromARGB(255, 59, 182, 43),
               fontSize: 48.0,
@@ -568,8 +517,8 @@ class _PortfolioTable extends StatelessWidget {
         columnWidths: const {
           0: FixedColumnWidth(53.0),
           1: FixedColumnWidth(85.0),
-          2: FixedColumnWidth(60.0),
-          3: FixedColumnWidth(68.0),
+          2: FixedColumnWidth(48.0),
+          3: FixedColumnWidth(60.0),
         },
         children: <TableRow>[
           _buildTableHeader(),
@@ -637,11 +586,11 @@ TableRow _buildTableRow(
     Padding(
         padding:
             const EdgeInsets.only(top: 3.0, bottom: 2.0, left: 5.0, right: 5.0),
-        child: Text(value, style: TextStyles.medium15)),
+        child: AutoSizeText(value, maxLines: 1, style: TextStyles.medium15)),
     Padding(
         padding:
             const EdgeInsets.only(top: 3.0, bottom: 2.0, left: 5.0, right: 5.0),
-        child: Text(units, style: TextStyles.medium15)),
+        child: AutoSizeText(units, maxLines: 1, style: TextStyles.medium15)),
     Padding(
         padding:
             const EdgeInsets.only(top: 3.0, bottom: 2.0, left: 5.0, right: 5.0),

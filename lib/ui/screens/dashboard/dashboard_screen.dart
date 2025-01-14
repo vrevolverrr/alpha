@@ -16,11 +16,12 @@ import 'package:alpha/ui/screens/assets/assets_screen.dart';
 import 'package:alpha/ui/screens/budgeting/budgeting_screen.dart';
 import 'package:alpha/ui/screens/business/business_owned_screen.dart';
 import 'package:alpha/ui/screens/dashboard/dialog/budgeting_dialog.dart';
+import 'package:alpha/ui/screens/dashboard/dialog/economic_cycle_info_dialog.dart';
 import 'package:alpha/ui/screens/dashboard/widgets/dashboard_action_card.dart';
 import 'package:alpha/ui/screens/investments/investments_screen.dart';
 import 'package:alpha/ui/screens/next_turn/next_turn_screen.dart';
 import 'package:alpha/ui/screens/next_turn/widgets/player_avatar.dart';
-import 'package:alpha/ui/screens/world_event/dialogs/world_event_dialog.dart';
+import 'package:alpha/ui/screens/world_event/world_event_dialog.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -85,6 +86,13 @@ class _DashboardPlayerInfo extends StatelessWidget {
   final PlayerAccount accounts = accountsManager.getPlayerAccount(activePlayer);
   final PlayerDebt debt = loanManager.getPlayerDebt(activePlayer);
 
+  void _handleShowEconomyInfo(BuildContext context) {
+    context.showDialog(buildEconomicCycleInfoDialog(
+        context, economyManager.current, economyManager.next, () {
+      context.dismissDialog();
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -104,12 +112,27 @@ class _DashboardPlayerInfo extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const SizedBox(
-                height: 28.0,
-                width: 90.0,
-                child: Text(
-                  "Round 1",
-                  style: TextStyles.bold18,
+            SizedBox(
+                height: 30.0,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Round ${gameManager.round}: ${economyManager.current.description}",
+                        style: TextStyles.bold18,
+                      ),
+                      const SizedBox(width: 10.0),
+                      GestureDetector(
+                        onTap: () => _handleShowEconomyInfo(context),
+                        child: const Icon(
+                          Icons.info_outline_rounded,
+                        ),
+                      )
+                    ],
+                  ),
                 )),
             PlayerCareerStatCard(careerManager.getPlayerJob(activePlayer)),
           ],

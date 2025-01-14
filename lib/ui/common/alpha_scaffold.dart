@@ -119,7 +119,11 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     setState(() => _snackbarMessage = message);
 
     _snackbarController.forward();
-    Future.delayed(duration, () => _snackbarController.reverse());
+    Future.delayed(
+        duration,
+        () => {
+              if (mounted) {dismissSnackbar()}
+            });
   }
 
   /// Dismisses the [AlphaSnackbar] if it is being animated.

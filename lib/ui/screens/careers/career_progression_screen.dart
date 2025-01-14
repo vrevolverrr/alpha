@@ -63,7 +63,7 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
               options: CarouselOptions(
                   initialPage: careerManager.getPlayerJob(activePlayer).tier,
                   height: 500.0,
-                  viewportFraction: 0.35,
+                  viewportFraction: 0.40,
                   enlargeCenterPage: true,
                   enlargeStrategy: CenterPageEnlargeStrategy.scale,
                   enlargeFactor: 0.2,
@@ -75,8 +75,8 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AlphaButton(
-                  width: 340.0,
-                  title: "Change Career",
+                  width: 240.0,
+                  title: "Resign",
                   icon: Icons.swap_horiz_rounded,
                   color: const Color(0xFF74BDF8),
                   onTap: () => _handleResign(context),
@@ -84,7 +84,7 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
                 const SizedBox(width: 20.0),
                 (careerManager.canPromote(activePlayer))
                     ? AlphaButton(
-                        width: 300.0,
+                        width: 240.0,
                         title: "Promote",
                         color: const Color(0xFF77D1EA),
                         icon: Icons.arrow_upward_rounded,

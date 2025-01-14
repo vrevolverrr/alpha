@@ -1,6 +1,6 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
+import 'package:alpha/ui/common/alpha_scrollbar.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -135,27 +135,15 @@ class _AlertDialogContents extends StatelessWidget {
           ),
           const SizedBox(height: 15.0),
           Expanded(
-              child: LayoutBuilder(
-            builder: (context, constraints) => RawScrollbar(
-              thumbColor: AlphaColors.red,
-              trackColor: const Color(0xFFE0E0E0),
-              trackVisibility: true,
-              thumbVisibility: true,
-              thickness: 10.0,
-              shape: const StadiumBorder(
-                  side: BorderSide(color: Colors.black, width: 2.0)),
-              trackRadius: const Radius.circular(15.0),
-              trackBorderColor: Colors.transparent,
-              child: SingleChildScrollView(
-                  child: ConstrainedBox(
-                constraints:
-                    const BoxConstraints(maxWidth: 585.0, minHeight: 195.0),
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Center(child: child)),
-              )),
-            ),
-          )),
+              child: AlphaScrollbar(
+                  child: SingleChildScrollView(
+                      child: ConstrainedBox(
+            constraints:
+                const BoxConstraints(maxWidth: 585.0, minHeight: 195.0),
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Center(child: child)),
+          )))),
           const SizedBox(height: 10.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

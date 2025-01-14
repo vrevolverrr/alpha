@@ -96,7 +96,6 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
       next:
           AlphaButton.next(onTap: () => context.navigateTo(DashboardScreen())),
       children: [
-        const SizedBox(height: 20.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -116,7 +115,8 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
                 businessManager.getBusinessState(business.sector);
 
             return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                 child: BusinessSelectionCard(
                   business,
                   sectorState,
@@ -125,7 +125,6 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
           options: CarouselOptions(
               onPageChanged: (index, _) => _handlePageChanged(index),
               height: 375.0,
-              enlargeCenterPage: true,
               enlargeFactor: 0.25,
               viewportFraction: 0.4),
         ),

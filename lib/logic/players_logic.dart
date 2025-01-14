@@ -3,15 +3,16 @@ import 'dart:collection';
 import 'package:alpha/assets.dart';
 import 'package:alpha/logic/budget_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
+import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 enum PlayerGoals {
-  family("Family", "Get married and start a family", AlphaAssets.goalFamily),
-  career("Career", "Reach level 15 in skill level", AlphaAssets.goalCareer),
-  wealth("Wealth", "Become a millionaire", AlphaAssets.goalWealth),
+  family("Family", "Reach Family in personal life", AlphaAssets.goalFamily),
+  career("Career", "Reach Level 15 in skill level", AlphaAssets.goalCareer),
+  wealth("Wealth", "Have \$500k in total assets", AlphaAssets.goalWealth),
   ;
 
   final String title;
@@ -49,6 +50,8 @@ enum PlayerColor {
 
 /// The managing class for all [Player] related functionality.
 class PlayerManager implements IManager {
+  static const int kMaxPlayers = 5;
+
   final playersList = PlayersList();
   late Player _active;
 
@@ -87,10 +90,14 @@ class PlayerManager implements IManager {
         .toList();
   }
 
-  void createPlayer(
-      String name, PlayerAvatar avatar, PlayerColor color, PlayerGoals goal) {
+  void createPlayer(String name, PlayerAvatar avatar, PlayerColor color,
+      PlayerGoals goal, Job startingCareer) {
     final newPlayer = Player(
-        name: name, playerAvatar: avatar, playerColor: color, goal: goal);
+        name: name,
+        playerAvatar: avatar,
+        playerColor: color,
+        goal: goal,
+        startingCareer: startingCareer);
     playersList.addPlayer(newPlayer);
 
     log.info("New player $name added to PlayerList");
@@ -131,12 +138,14 @@ class Player extends Equatable {
   final PlayerColor playerColor;
   final PlayerAvatar playerAvatar;
   final PlayerGoals goal;
+  final Job startingCareer;
 
   Player(
       {required this.name,
       required this.playerColor,
       required this.playerAvatar,
-      required this.goal});
+      required this.goal,
+      required this.startingCareer});
 
   @override
   List<Object?> get props => [name, playerColor, playerAvatar];

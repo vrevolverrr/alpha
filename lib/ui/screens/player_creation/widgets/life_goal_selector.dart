@@ -17,9 +17,11 @@ class LifeGoalSelector extends StatelessWidget {
       duration: Durations.short3,
       curve: Curves.easeInOut,
       child: AlphaContainer(
-        width: 190.0,
-        height: 210.0,
+        width: 180.0,
+        height: 205.0,
+        color: const Color(0xFFFFFFEC),
         padding: const EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+        shadowOffset: selected ? const Offset(0.0, 5.0) : null,
         child: Column(
           children: [
             Stack(
@@ -56,11 +58,11 @@ class LifeGoalSelector extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 12.0),
             Text(goal.title, style: TextStyles.bold16),
             Text(goal.description,
                 textAlign: TextAlign.center,
-                style: TextStyles.medium14.copyWith(height: 1.6)),
+                style: TextStyles.medium13.copyWith(height: 1.6)),
           ],
         ),
       ),

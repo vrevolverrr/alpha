@@ -1,6 +1,5 @@
 import 'package:alpha/ui/screens/landing/landing_screen.dart';
 import 'package:alpha/ui/screens/player_creation/player_creation_menu_screen.dart';
-import 'package:alpha/ui/screens/player_creation/player_creation_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainMenuScreen extends StatefulWidget {

@@ -105,6 +105,7 @@ class GameManager implements IManager {
     loanManager.initialisePlayerDebts(players);
     personalLifeManager.initialisePlayerPersonalLife(players);
     statsManager.initialisePlayerStats(players);
+    careerManager.initialisePlayerCareers(players);
 
     log.info("Game has started with ${playerManager.getPlayerCount()} players");
     nextTurn();

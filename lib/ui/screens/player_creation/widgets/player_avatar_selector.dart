@@ -57,8 +57,8 @@ class _PlayerAvatarSelectorState extends State<PlayerAvatarSelector> {
     return ListenableBuilder(
       listenable: _controller,
       builder: (context, child) => Container(
-        width: 340.0,
-        height: 340.0,
+        width: 315.0,
+        height: 315.0,
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         decoration: BoxDecoration(
           shape: BoxShape.circle,

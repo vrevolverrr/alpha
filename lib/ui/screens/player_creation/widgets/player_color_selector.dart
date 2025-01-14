@@ -16,8 +16,8 @@ class PlayerColorSelector extends StatelessWidget {
       child: AnimatedContainer(
         duration: Durations.short4,
         curve: Curves.easeInOut,
-        width: 100.0,
-        height: 100.0,
+        width: 70.0,
+        height: 70.0,
         decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,

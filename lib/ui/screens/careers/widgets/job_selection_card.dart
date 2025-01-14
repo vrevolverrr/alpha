@@ -198,7 +198,7 @@ class JobDescriptionTagCollection extends StatelessWidget {
             disabled: disabled,
           ),
           _JobDescriptionTag(
-            title: "💵 \$${job.salary}",
+            title: "💵 \$${job.salary.toInt()}",
             disabled: disabled,
           ),
         ],

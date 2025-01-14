@@ -33,6 +33,12 @@ class CareerManager implements IManager {
     return skillLevel >= requiredSkill;
   }
 
+  void initialisePlayerCareers(List<Player> players) {
+    for (final player in players) {
+      employ(player, player.startingCareer, 1);
+    }
+  }
+
   Job getPlayerJob(Player player) {
     final employment = _employments[player];
 
@@ -71,6 +77,8 @@ class CareerManager implements IManager {
       job: job,
       startRound: round,
     );
+
+    log.info("Employed ${player.name} as ${job.name}");
   }
 
   bool resign(Player player) {

@@ -118,7 +118,7 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
         ),
         const SizedBox(height: 15.0),
         _buildRealEstateDetails(),
-        const SizedBox(height: 15.0),
+        const SizedBox(height: 20.0),
         _buildPurchaseControls(context),
       ],
     );
@@ -127,7 +127,7 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
   Widget _buildRealEstateDetails() {
     return AlphaContainer(
       width: 650.0,
-      height: 310.0,
+      height: 280.0,
       padding: const EdgeInsets.all(25.0),
       child: Row(
         children: [
@@ -164,14 +164,20 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
                 ],
               ),
               const SizedBox(height: 8.0),
-              _GenericTitleValue(
-                  title: "Property Value",
-                  value: _selectedRealEstate.propertyValue.prettyCurrency),
+              Row(
+                children: [
+                  _GenericTitleValue(
+                      width: 185.0,
+                      title: "Property Value",
+                      value: _selectedRealEstate.propertyValue.prettyCurrency),
+                  _GenericTitleValue(
+                      width: 100.0,
+                      title: "Growth Rate",
+                      value:
+                          "${((_selectedRealEstate.growthRate - 1.0) * 100).toStringAsFixed(1)}%"),
+                ],
+              ),
               const SizedBox(height: 8.0),
-              _GenericTitleValue(
-                  title: "Growth Rate (per round)",
-                  value:
-                      "${((_selectedRealEstate.growthRate - 1.0) * 100).toStringAsFixed(1)}%"),
               const SizedBox(height: 6.0),
               _GenericTitleValue(
                   title: "Mortgage Amount",

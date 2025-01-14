@@ -280,9 +280,7 @@ class BusinessManager implements IManager {
     double earnings =
         (state.totalMarketRevenue / state.numberOfBusinesses) - scaledCosts;
 
-    return earnings *
-        economyManager.getCycleMultiplier() *
-        worldEventMultiplier;
+    return earnings * worldEventMultiplier;
   }
 
   /// Calculate the cost of starting a business in a sector.

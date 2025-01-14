@@ -42,7 +42,9 @@ class PersonalLifeScreen extends StatelessWidget {
     return AlphaScaffold(
         title: "Personal Life",
         onTapBack: () => Navigator.pop(context),
-        next: AlphaButton.next(
+        next: AlphaButton(
+            title: "Skip",
+            width: 190.0,
             onTap: () => context.navigateTo(DashboardScreen())),
         children: [
           const SizedBox(height: 20.0),

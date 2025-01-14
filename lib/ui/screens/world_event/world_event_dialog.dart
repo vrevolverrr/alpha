@@ -34,11 +34,6 @@ class WorldEventDialog extends StatelessWidget {
           style: TextStyles.medium20,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 15.0),
-        Text(
-          "Business Multiplier: ${worldEvent.multiplier}x",
-          style: TextStyles.bold22,
-        ),
         const SizedBox(height: 5.0),
         Text(
           "Sectors Affected: ${worldEvent.sectorsAffected.length == BusinessSector.values.length ? "Everyone" : worldEvent.sectorsAffected.map((sector) => sector.name).join(", ")}",

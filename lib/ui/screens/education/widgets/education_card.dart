@@ -55,15 +55,14 @@ class EducationCard extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           Text(title, style: TextStyles.bold22),
-                          const SizedBox(height: 8.0),
+                          const SizedBox(height: 4.0),
                           Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 50.0),
                             child: Text(
                               description,
                               textAlign: TextAlign.center,
-                              style:
-                                  const TextStyle(fontSize: 14.0, height: 1.8),
+                              style: TextStyles.medium15.copyWith(height: 1.6),
                             ),
                           )
                         ],

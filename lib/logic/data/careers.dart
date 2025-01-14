@@ -14,7 +14,7 @@ enum Job {
   foodDelivery(
     title: "Delivery Rider",
     career: CareerSector.foodDelivery,
-    salary: 3500.0,
+    salary: 6400.0,
     levelRequirement: 1,
     asset: AlphaAssets.careerFoodDelivery,
     tier: 0,
@@ -22,16 +22,16 @@ enum Job {
 
   // Marketing
   marketingAssistant(
-    title: "Assistant",
+    title: "Marketing Assistant",
     career: CareerSector.marketing,
     salary: 4500.0,
-    levelRequirement: 2,
+    levelRequirement: 1,
     asset: AlphaAssets.careerMarketingAssistant,
     tier: 0,
   ),
 
   marketingManager(
-    title: "Manager",
+    title: "Marketing Manager",
     career: CareerSector.marketing,
     salary: 7200.0,
     levelRequirement: 2,
@@ -44,7 +44,7 @@ enum Job {
     title: "Assistant Chef",
     career: CareerSector.culinaryChef,
     salary: 4100.0,
-    levelRequirement: 2,
+    levelRequirement: 1,
     asset: AlphaAssets.careerCulinaryChefAssistant,
     tier: 0,
   ),
@@ -52,7 +52,7 @@ enum Job {
   culinaryChefExecutive(
     title: "Executive Chef",
     career: CareerSector.culinaryChef,
-    salary: 7400.0,
+    salary: 7900.0,
     levelRequirement: 4,
     asset: AlphaAssets.careerCulinaryExecutiveChef,
     tier: 1,
@@ -60,16 +60,16 @@ enum Job {
 
   // Banking
   bankingAssociate(
-    title: "Associate",
+    title: "Banking Associate",
     career: CareerSector.banking,
     salary: 5700.0,
-    levelRequirement: 3,
+    levelRequirement: 1,
     asset: AlphaAssets.careerBankingAssociate,
     tier: 0,
   ),
 
   bankingAnalyst(
-    title: "Analyst",
+    title: "Banking Analyst",
     career: CareerSector.banking,
     salary: 6800.0,
     levelRequirement: 4,
@@ -90,7 +90,7 @@ enum Job {
       title: "Junior Programmer",
       career: CareerSector.programmer,
       salary: 5800.0,
-      levelRequirement: 3,
+      levelRequirement: 1,
       asset: AlphaAssets.careerProgrammerJunior,
       tier: 0),
 
@@ -115,7 +115,7 @@ enum Job {
       title: "Junior Engineer",
       career: CareerSector.engineer,
       salary: 6100.0,
-      levelRequirement: 4,
+      levelRequirement: 1,
       asset: AlphaAssets.careerEngineerJunior,
       tier: 0),
 
@@ -128,7 +128,7 @@ enum Job {
       tier: 1),
 
   engineerExecutive(
-      title: "Executive",
+      title: "Executive Engineer",
       career: CareerSector.engineer,
       salary: 12000.0,
       levelRequirement: 7,
@@ -140,7 +140,7 @@ enum Job {
       title: "Houseman",
       career: CareerSector.medicine,
       salary: 7800.0,
-      levelRequirement: 6,
+      levelRequirement: 1,
       asset: AlphaAssets.careerMedicineHouseman,
       tier: 0),
 

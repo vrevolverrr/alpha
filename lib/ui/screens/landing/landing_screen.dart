@@ -53,7 +53,7 @@ class LandingScreen extends StatelessWidget {
               child: Padding(
                   padding: EdgeInsets.only(bottom: 20.0),
                   child: Text(
-                    "version 0.1.1 Build 1 (Alpha)",
+                    "version 0.1.1 Build 4 (Alpha)",
                     style: TextStyles.medium18,
                   )),
             )

@@ -13,7 +13,7 @@ import 'package:alpha/ui/screens/education/education_selection_screen.dart';
 import 'package:alpha/ui/screens/opportunity/opportunity_screen.dart';
 import 'package:alpha/ui/screens/personal_life/personal_life_screen.dart';
 import 'package:alpha/ui/screens/real_estate/real_estate_screen.dart';
-import 'package:alpha/ui/screens/world_event/dialogs/world_event_dialog.dart';
+import 'package:alpha/ui/screens/world_event/world_event_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 

@@ -8,7 +8,6 @@ import 'package:alpha/ui/common/alpha_skill_bar.dart';
 import 'package:alpha/ui/screens/dice_roll/dice_roll_screen.dart';
 import 'package:alpha/ui/screens/game_end/game_end_screen.dart';
 import 'package:alpha/ui/screens/next_turn/widgets/player_avatar.dart';
-import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 
 class PlayersMenuScreen extends StatelessWidget {

@@ -142,9 +142,9 @@ class _CarScreenState extends State<CarScreen> {
             PlayerDebtStatCard(loanManager.getPlayerDebt(activePlayer)),
           ],
         ),
-        const SizedBox(height: 15.0),
+        const SizedBox(height: 20.0),
         _buildCarDetails(),
-        const SizedBox(height: 15.0),
+        const SizedBox(height: 20.0),
         _buildPurchaseControls(context),
       ],
     );
@@ -153,7 +153,7 @@ class _CarScreenState extends State<CarScreen> {
   Widget _buildCarDetails() {
     return AlphaContainer(
       width: 650.0,
-      height: 310.0,
+      height: 250.0,
       padding: const EdgeInsets.all(25.0),
       child: Row(
         children: [
@@ -180,22 +180,38 @@ class _CarScreenState extends State<CarScreen> {
                           maxHeight: 35.0, maxWidth: 260.0),
                       child: AutoSizeText(
                         _selectedCar.name,
-                        style: TextStyles.bold25,
+                        style: TextStyles.bold24,
                       ),
                     ),
                   )
                 ],
               ),
               const SizedBox(height: 8.0),
-              _GenericTitleValue(
-                  title: "Price", value: _selectedCar.price.prettyCurrency),
+              Row(
+                children: [
+                  _GenericTitleValue(
+                      width: 170.0,
+                      title: "Price",
+                      value: _selectedCar.price.prettyCurrency),
+                  _GenericTitleValue(
+                      width: 100.0,
+                      title: "Happiness",
+                      value: "${_selectedCar.happinessBonus} ❤️"),
+                ],
+              ),
               const SizedBox(height: 8.0),
-              _GenericTitleValue(
-                  title: "Maintenance Cost", value: 100.0.prettyCurrency),
-              const SizedBox(height: 6.0),
-              _GenericTitleValue(
-                  title: "Depreciation Rate (per round)",
-                  value: "${_selectedCar.depreciationRate}%"),
+              Row(
+                children: [
+                  _GenericTitleValue(
+                      width: 170.0,
+                      title: "Depreciation Rate",
+                      value: "${_selectedCar.depreciationRate}% 🔻"),
+                  _GenericTitleValue(
+                      width: 100.0,
+                      title: "ESG Bonus",
+                      value: "${_selectedCar.esgBonus} 🌎"),
+                ],
+              )
             ],
           )
         ],

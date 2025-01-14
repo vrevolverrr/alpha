@@ -178,7 +178,7 @@ class AlphaSkillBarMedium extends StatelessWidget {
                     builder: (context, _) => TweenAnimationBuilder(
                         tween: Tween<double>(
                             begin: 0.0, end: skill.levelPercent * xpWidth),
-                        duration: Durations.medium1,
+                        duration: const Duration(milliseconds: 800),
                         curve: Curves.elasticOut,
                         builder: (context, value, _) => Container(
                               width: value.clamp(0.0, xpWidth),

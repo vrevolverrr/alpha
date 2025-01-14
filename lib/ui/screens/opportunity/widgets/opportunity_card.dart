@@ -160,27 +160,29 @@ class CardFront extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlphaContainer(
         color: getOpportunityColor(opportunity),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            width: 230.0,
-            height: 230.0,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: const [
-                  BoxShadow(color: Colors.black, offset: Offset(0, 3.0))
-                ],
-                border: Border.all(color: Colors.black87, width: 4.0)),
-            child: Image.asset(
-              opportunity.image.path,
-              fit: BoxFit.contain,
+        child: Center(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Container(
+              width: 230.0,
+              height: 230.0,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black, offset: Offset(0, 3.0))
+                  ],
+                  border: Border.all(color: Colors.black87, width: 4.0)),
+              child: Image.asset(
+                opportunity.image.path,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
-          const SizedBox(height: 30.0),
-          Text(opportunity.title, style: TextStyles.bold30),
-          const SizedBox(height: 10.0),
-          Text(opportunity.description, style: TextStyles.bold18),
-        ]));
+            const SizedBox(height: 30.0),
+            Text(opportunity.title, style: TextStyles.bold30),
+            const SizedBox(height: 10.0),
+            Text(opportunity.description, style: TextStyles.bold18),
+          ]),
+        ));
   }
 }
 

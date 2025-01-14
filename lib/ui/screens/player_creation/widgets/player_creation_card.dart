@@ -17,7 +17,6 @@ class PlayerCreationCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: AlphaAnimatedContainer(
           width: 400.0,
-          height: 520.0,
           child: Column(
             children: <Widget>[
               Container(
@@ -63,7 +62,6 @@ class PlayerAddCard extends StatelessWidget {
         onTap: onTap,
         child: AlphaAnimatedContainer(
           width: 400.0,
-          height: 520.0,
           child: Center(
               child: Container(
             width: 50.0,

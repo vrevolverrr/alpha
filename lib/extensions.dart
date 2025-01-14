@@ -1,4 +1,3 @@
-import 'package:alpha/services.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -6,10 +5,6 @@ import 'package:intl/intl.dart';
 extension PrettyFormatNumber on double {
   String get prettyCurrency =>
       NumberFormat.currency(symbol: "\$", decimalDigits: 2).format(this);
-}
-
-extension EconomicAdjustedValue on double {
-  double get adjustedValue => gameManager.economyManager.adjustValue(this);
 }
 
 extension GetScreenDimensions on BuildContext {

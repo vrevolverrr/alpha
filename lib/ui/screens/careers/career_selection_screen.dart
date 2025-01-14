@@ -1,20 +1,21 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/careers.dart';
-import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/common/alpha_scrollbar.dart';
 import 'package:alpha/ui/screens/careers/dialogs/job_success_dialog.dart';
-import 'package:alpha/ui/screens/careers/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/careers/widgets/job_selection_card.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 
 class JobSelectionScreen extends StatefulWidget {
-  const JobSelectionScreen({super.key});
+  final bool chooseStartingJob;
+
+  const JobSelectionScreen({super.key, this.chooseStartingJob = false});
 
   @override
   State<JobSelectionScreen> createState() => _JobSelectionScreenState();
@@ -47,6 +48,11 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
     /// This function maps to the action of the CONFIRM button of the screen
     if (_selectedJob == Job.unemployed) {
       context.showSnackbar(message: "✋🏼 Please select a job to continue");
+      return;
+    }
+
+    if (widget.chooseStartingJob) {
+      Navigator.pop(context, _selectedJob);
       return;
     }
 
@@ -92,14 +98,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
         title: "Choose a Career",
         onTapBack: () => Navigator.of(context).pop(),
         landingMessage: "🎯 Choose a career you would like to pursue",
-        landingDialog:
-            (hintsManager.shouldShowHint(activePlayer, Hint.careerSelection))
-                ? AlphaDialogBuilder.dismissable(
-                    title: "Choose A Career",
-                    dismissText: "Continue",
-                    width: 350.0,
-                    child: const CareerSelectionLandingDialog())
-                : null,
         next: Builder(
             builder: (BuildContext context) => AlphaButton(
                 width: 230.0,
@@ -109,11 +107,13 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           const SizedBox(height: 10),
           // This is the list of job cards of the jobs from career type
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                children: _buildJobCards(),
+            child: AlphaScrollbar(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                physics: const ClampingScrollPhysics(),
+                child: Column(
+                  children: _buildJobCards(),
+                ),
               ),
             ),
           )
@@ -221,8 +221,12 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           next: DialogButtonData.confirm(onTap: onTapConfirm));
 
   /// Utility Methods
-  static bool _isQualified(Job job) =>
-      careerManager.isQualified(activePlayer, job);
+  bool _isQualified(Job job) {
+    if (widget.chooseStartingJob) {
+      return job.tier == 0;
+    }
+    return careerManager.isQualified(activePlayer, job);
+  }
 
   List<CareerSector> _getSortedCareers() {
     List<CareerSector> careerSectors = List.from(CareerSector.values)
