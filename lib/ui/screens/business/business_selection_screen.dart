@@ -1,10 +1,14 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/data/business.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/common/alpha_stat_cards.dart';
+import 'package:alpha/ui/common/alpha_stat_card.dart';
+import 'package:alpha/ui/screens/business/dialogs/confirm_loan_dialog.dart';
+import 'package:alpha/ui/screens/business/dialogs/confirm_purchase_business_dialog.dart';
+import 'package:alpha/ui/screens/business/dialogs/landing_dialog_selection.dart';
 import 'package:alpha/ui/screens/business/widgets/business_selection_card.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -21,12 +25,17 @@ class BusinessSelectionScren extends StatefulWidget {
 }
 
 class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
-  final List<Business> _businesses =
-      businessManager.generateBusinesses(BusinessSector.technology, 5);
+  late final List<Business> _businesses =
+      businessManager.generateBusinesses(widget.sector, 5);
 
   final CarouselSliderController _controller = CarouselSliderController();
 
   late Business _selectedBusiness = _businesses[0];
+
+  final ValueNotifier<bool> hasPurchasedBusiness = ValueNotifier(false);
+  final ValueNotifier<bool> hasTookLoan = ValueNotifier(false);
+
+  get width => null;
 
   @override
   void initState() {
@@ -39,25 +48,36 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
     });
   }
 
-  bool _handleCanPurchase() {
-    if (activePlayer.savings.balance < _selectedBusiness.initialCost) {
-      return true;
-    }
-
-    return false;
+  bool _canPurchase() {
+    return accountsManager.getAvailableBalance(activePlayer) <
+        _selectedBusiness.initialCost;
   }
 
   void _handlePurchase(BuildContext context) {
-    if (_handleCanPurchase()) {
+    if (_canPurchase()) {
       context.showSnackbar(
           message: "✋🏼 Insufficients funds to start this business");
       return;
     }
+    context.showDialog(buildConfirmBuyBusinessDialog(context, _selectedBusiness,
+        businessManager.getBusinessState(_selectedBusiness.sector), () {
+      businessManager.buyBusiness(_selectedBusiness, activePlayer);
+      context.dismissDialog();
+      hasPurchasedBusiness.value = true;
+      context.showSnackbar(
+          message:
+              "🎉 Business purchased successfully. Press Next to continue.");
+    }));
+  }
 
-    businessManager.buyBusiness(_selectedBusiness, activePlayer);
-    context.showSnackbar(
-        message:
-            "🎉 Congratulations! You are now the proud owner of ${_selectedBusiness.name}");
+  void _handleApplyLoan(BuildContext context) {
+    context.showDialog(buildConfirmBusinessLoanDialog(context, () {
+      loanManager.applyBusinessLoan(activePlayer);
+      hasTookLoan.value = true;
+      context.dismissDialog();
+      context.showSnackbar(
+          message: "🎉 Loan success. You can now purchase a business.");
+    }));
   }
 
   @override
@@ -65,24 +85,25 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
     return AlphaScaffold(
       title: "Choose A Business",
       onTapBack: () => Navigator.pop(context),
+      landingDialog: hintsManager.shouldShowHint(activePlayer, Hint.buyBusiness)
+          ? AlphaDialogBuilder.dismissable(
+              title: "Welcome",
+              dismissText: "Confirm",
+              width: 350.0,
+              child: const BusinessesLandingDialog())
+          : null,
       mainAxisAlignment: MainAxisAlignment.center,
-      next: AlphaButton.next(
-          onTap: () => context.navigateTo(const DashboardScreen())),
+      next:
+          AlphaButton.next(onTap: () => context.navigateTo(DashboardScreen())),
       children: [
         const SizedBox(height: 20.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-                width: 280.0,
-                height: 45.0,
-                child: ListenableBuilder(
-                  listenable: activePlayer.savings,
-                  builder: (context, child) => PlayerStatCard(
-                      emoji: "💵",
-                      title: "Savings",
-                      value: activePlayer.savings.balance.prettyCurrency),
-                )),
+            PlayerAccountBalanceStatCard(
+                accountsManager.getPlayerAccount(activePlayer)),
+            const SizedBox(width: 20.0),
+            PlayerDebtStatCard(loanManager.getPlayerDebt(activePlayer)),
           ],
         ),
         const SizedBox(height: 20.0),
@@ -95,44 +116,50 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
                 businessManager.getBusinessState(business.sector);
 
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: (business == _selectedBusiness)
-                  ? BusinessSelectionCard(
-                      business,
-                      sectorState,
-                      width: MediaQuery.sizeOf(context).width,
-                    )
-                  : BusinessSelectionCardSm(business, sectorState,
-                      width: MediaQuery.sizeOf(context).width),
-            );
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: BusinessSelectionCard(
+                  business,
+                  sectorState,
+                ));
           },
           options: CarouselOptions(
               onPageChanged: (index, _) => _handlePageChanged(index),
-              height: 480.0,
+              height: 375.0,
               enlargeCenterPage: true,
+              enlargeFactor: 0.25,
               viewportFraction: 0.4),
         ),
         const SizedBox(height: 30.0),
-        Builder(
-            builder: (context) => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    AlphaButton(
-                        width: 260.0,
-                        title: "Apply loan",
-                        color: const Color(0xFF91CE77),
-                        onTap: () => context.showSnackbar(
-                            message: "🚧 This feature is under construction")),
-                    const SizedBox(width: 20.0),
-                    AlphaButton(
-                        width: 380.0,
-                        title: "Purchase Business",
-                        disabled: _handleCanPurchase(),
-                        onTapDisabled: () => _handlePurchase(context),
-                        onTap: () => _handlePurchase(context)),
-                    const SizedBox(width: 60.0),
-                  ],
-                )),
+        ValueListenableBuilder(
+            valueListenable: hasPurchasedBusiness,
+            builder: (context, purchased, _) => !purchased
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ListenableBuilder(
+                          listenable: hasTookLoan,
+                          builder: (context, _) => (!hasTookLoan.value)
+                              ? AlphaButton(
+                                  width: 260.0,
+                                  title: "Apply loan",
+                                  color: const Color(0xFF91CE77),
+                                  onTap: () => _handleApplyLoan(context))
+                              : const SizedBox.shrink()),
+                      const SizedBox(width: 20.0),
+                      ListenableBuilder(
+                        listenable:
+                            accountsManager.getPlayerAccount(activePlayer),
+                        builder: (context, _) => AlphaButton(
+                            width: 380.0,
+                            title: "Purchase Business",
+                            disabled: _canPurchase(),
+                            onTapDisabled: () => _handlePurchase(context),
+                            onTap: () => _handlePurchase(context)),
+                      ),
+                      const SizedBox(width: 60.0),
+                    ],
+                  )
+                : const SizedBox(height: 70.0)),
         const SizedBox(height: 60.0),
       ],
     );

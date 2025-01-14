@@ -1,9 +1,8 @@
-import 'dart:math';
-
+import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/logic/players_logic.dart';
-import 'package:flutter/material.dart';
+import 'package:alpha/services.dart';
 import 'package:logging/logging.dart';
 
 class CareerEmployment {
@@ -20,15 +19,16 @@ class CareerManager implements IManager {
   @override
   final Logger log = Logger("CareerManager");
 
-  static const kCPFContributionRate = 0.2;
+  static const kCPFContributionRate = 0.055;
+  static const kCareerProgressionHappinessBonus = 5;
 
   final Map<Player, CareerEmployment> _employments = {};
 
   bool isEmployed(Player player) => _employments.containsKey(player);
 
   bool isQualified(Player player, Job job) {
-    final skillLevel = player.skill.totalExp;
-    final requiredSkill = job.skillRequirement;
+    final skillLevel = skillManager.getPlayerSkill(player).level;
+    final requiredSkill = job.levelRequirement;
 
     return skillLevel >= requiredSkill;
   }
@@ -108,6 +108,8 @@ class CareerManager implements IManager {
       startRound: employment.startRound,
     );
 
+    statsManager.addHappiness(player, kCareerProgressionHappinessBonus);
+
     return nextJob;
   }
 
@@ -123,13 +125,14 @@ class CareerManager implements IManager {
 
       final salary = employment.job.salary;
       final cpf = salary * kCPFContributionRate;
-      final balance = salary - cpf;
 
-      player.savings.addUnbudgeted(balance);
-      player.cpf.add(cpf);
+      final PlayerAccount account = accountsManager.getPlayerAccount(player);
+
+      account.savings.addUnbudgeted(salary);
+      account.cpf.add(cpf);
 
       log.info(
-          "Credited salary of $salary to ${player.name}, current Savings: ${player.savings.balance}, current CPF: ${player.cpf.balance}");
+          "Credited salary of $salary to ${player.name}, current Savings: ${account.savings.balance}, current CPF: ${account.cpf.balance}");
     }
   }
 }

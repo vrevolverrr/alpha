@@ -2,15 +2,16 @@ import 'package:alpha/logic/common/interfaces.dart';
 import 'package:logging/logging.dart';
 
 enum EconomicCycle {
-  recession("Recession", multiplier: 0.80),
-  depression("Depression", multiplier: 0.60),
-  recovery("Recovery", multiplier: 1.0),
-  boom("Boom", multiplier: 1.5);
+  recession("Recession", "Economy is in recession", multiplier: 0.80),
+  depression("Depression", "Economy is in depression", multiplier: 0.60),
+  recovery("Recovery", "Economy is recovering", multiplier: 1.0),
+  boom("Boom", "Economy is booming", multiplier: 1.35);
 
   final String name;
+  final String description;
   final double multiplier;
 
-  const EconomicCycle(this.name, {required this.multiplier});
+  const EconomicCycle(this.name, this.description, {required this.multiplier});
 }
 
 class EconomyManager implements IManager {
@@ -24,20 +25,25 @@ class EconomyManager implements IManager {
   double _inflation = 1 + (inflationRate / 100);
 
   /// The current [EconomicCycle], which also acts as a multiplier for prices
-  EconomicCycle current = EconomicCycle.recovery;
+  EconomicCycle _current = EconomicCycle.recovery;
+  EconomicCycle get current => _current;
 
   double get inflation => _inflation;
 
   /// Updates the economic cycle, which does two things:
   void updateCycle() {
     /// 1. Increments the economic cycle
-    current = EconomicCycle.values[
+    _current = EconomicCycle.values[
         (EconomicCycle.recovery.index + 1) % EconomicCycle.values.length];
 
     /// 2. Increases the inflation by the [inflationRate]
     _inflation = _inflation * (1 + (inflationRate / 100));
     log.info(
         "Incremented economic cycle, current cycle: ${current.name} @ ${current.multiplier}, inflation multiplier: $inflation");
+  }
+
+  double getCycleMultiplier() {
+    return current.multiplier;
   }
 
   /// Get economic cycle and inflation adjusted value

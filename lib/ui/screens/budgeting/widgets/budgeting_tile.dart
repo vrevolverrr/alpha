@@ -1,3 +1,4 @@
+import 'package:alpha/assets.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class BudgetingTile extends StatelessWidget {
   final double amount;
   final void Function()? onIncrement;
   final void Function()? onDecrement;
+  final void Function()? showInfo;
 
   const BudgetingTile(
       {super.key,
@@ -15,7 +17,8 @@ class BudgetingTile extends StatelessWidget {
       required this.proportion,
       required this.amount,
       this.onIncrement,
-      this.onDecrement});
+      this.onDecrement,
+      this.showInfo});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +37,19 @@ class BudgetingTile extends StatelessWidget {
         const SizedBox(height: 20.0),
         AlphaContainer(
           width: 200.0,
-          height: 200.0,
+          padding: const EdgeInsets.only(bottom: 15.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: showInfo,
+                    child: const Padding(
+                        padding:
+                            EdgeInsets.only(top: 8.0, right: 10.0, bottom: 2.0),
+                        child: Icon(Icons.info_outline_rounded)),
+                  )),
               Text(
                 title,
                 style: TextStyles.bold19,
@@ -51,7 +63,31 @@ class BudgetingTile extends StatelessWidget {
                   "\$${value.toStringAsFixed(2)}",
                   style: TextStyles.bold30,
                 ),
-              )
+              ),
+              SizedBox(
+                  width: 120.0,
+                  height: 120.0,
+                  child: () {
+                    double proportion = this.proportion * 10;
+
+                    if (proportion >= 80) {
+                      return Image.asset(AlphaAssets.budgetingJar100.path);
+                    }
+
+                    if (proportion >= 50) {
+                      return Image.asset(AlphaAssets.budgetingJar75.path);
+                    }
+
+                    if (proportion >= 30) {
+                      return Image.asset(AlphaAssets.budgetingJar50.path);
+                    }
+
+                    if (proportion >= 10) {
+                      return Image.asset(AlphaAssets.budgetingJar25.path);
+                    }
+
+                    return Image.asset(AlphaAssets.budgetingJar0.path);
+                  }()),
             ],
           ),
         ),

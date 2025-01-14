@@ -2,7 +2,6 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// Creates a custom alert dialog widget in the style of the game.\
@@ -36,35 +35,38 @@ class AlphaAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      constraints: const BoxConstraints(minWidth: 0.0, minHeight: 0.0),
-      duration: show ? const Duration(milliseconds: 800) : Durations.short4,
-      curve: show ? Curves.elasticOut : Curves.decelerate,
+    return ClipRRect(
+      child: AnimatedContainer(
+        margin: show ? const EdgeInsets.all(10.0) : EdgeInsets.zero,
+        constraints: const BoxConstraints(minWidth: 0.0, minHeight: 0.0),
+        duration: show ? const Duration(milliseconds: 800) : Durations.short4,
+        curve: show ? Curves.elasticOut : Curves.decelerate,
 
-      /// Animates the dialog expanding and closing, when the
-      /// widget's `show` property changes
-      width: show ? 650.0 : 0.0,
-      height: show ? (height ?? 380.0) : 0.0,
-      padding: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-          color: const Color(0xffFCF7E8),
-          borderRadius: BorderRadius.circular(20.0),
-          border: Border.all(color: Colors.black, width: 4.0),
-          boxShadow: const <BoxShadow>[
-            BoxShadow(color: Colors.black, offset: Offset(1.0, 5.0))
-          ]),
+        /// Animates the dialog expanding and closing, when the
+        /// widget's `show` property changes
+        width: show ? 650.0 : 0.0,
+        height: show ? (height ?? 400.0) : 0.0,
+        padding: const EdgeInsets.all(15.0),
+        decoration: BoxDecoration(
+            color: const Color(0xffFCF7E8),
+            borderRadius: BorderRadius.circular(20.0),
+            border: Border.all(color: Colors.black, width: 4.5),
+            boxShadow: const <BoxShadow>[
+              BoxShadow(color: Colors.black, offset: Offset(1.0, 5.0))
+            ]),
 
-      /// Scale the contents of the dialog as it expands and closes.
-      child: RenderIfTrue(
-        condition: show,
-        child: FittedBox(
-            fit: BoxFit.contain,
-            child: _AlertDialogContents(
-              title: title,
-              next: next,
-              cancel: cancel,
-              child: child,
-            )),
+        /// Scale the contents of the dialog as it expands and closes.
+        child: RenderIfTrue(
+          condition: show,
+          child: FittedBox(
+              fit: BoxFit.contain,
+              child: _AlertDialogContents(
+                title: title,
+                next: next,
+                cancel: cancel,
+                child: child,
+              )),
+        ),
       ),
     );
   }
@@ -112,7 +114,7 @@ class _AlertDialogContents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 323.0,
+      height: 348.0,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -131,23 +133,28 @@ class _AlertDialogContents extends StatelessWidget {
                 color: Colors.black45,
                 borderRadius: BorderRadius.circular(10.0)),
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 15.0),
           Expanded(
-              child: RawScrollbar(
-            thumbColor: AlphaColors.red,
-            trackColor: const Color(0xFFE0E0E0),
-            trackVisibility: true,
-            thumbVisibility: true,
-            thickness: 10.0,
-            shape: const StadiumBorder(
-                side: BorderSide(color: Colors.black, width: 2.0)),
-            trackRadius: const Radius.circular(15.0),
-            trackBorderColor: Colors.transparent,
-            child: SingleChildScrollView(
-                child: SizedBox(
-              width: 585.0,
-              child: Center(child: child),
-            )),
+              child: LayoutBuilder(
+            builder: (context, constraints) => RawScrollbar(
+              thumbColor: AlphaColors.red,
+              trackColor: const Color(0xFFE0E0E0),
+              trackVisibility: true,
+              thumbVisibility: true,
+              thickness: 10.0,
+              shape: const StadiumBorder(
+                  side: BorderSide(color: Colors.black, width: 2.0)),
+              trackRadius: const Radius.circular(15.0),
+              trackBorderColor: Colors.transparent,
+              child: SingleChildScrollView(
+                  child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints(maxWidth: 585.0, minHeight: 195.0),
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Center(child: child)),
+              )),
+            ),
           )),
           const SizedBox(height: 10.0),
           Row(

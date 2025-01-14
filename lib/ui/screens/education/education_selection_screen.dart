@@ -1,5 +1,5 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/data/education.dart';
+import 'package:alpha/logic/education_logic.dart';
 import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
@@ -7,7 +7,7 @@ import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/common/alpha_skill_bar.dart';
-import 'package:alpha/ui/common/alpha_stat_cards.dart';
+import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/education/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/education/widgets/education_card.dart';
@@ -24,28 +24,29 @@ class EducationSelectionScreen extends StatefulWidget {
 
 class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   _EducationSelection? _selection;
-  late ConfettiController confettiController;
+  late final ConfettiController confettiController;
+
+  late final PlayerEducation education =
+      educationManager.getEducation(activePlayer);
 
   /// All possible education selection options
-  final List<_EducationSelection> _selections = [
+  late final List<_EducationSelection> _selections = [
     _EducationSelection(0,
-        title: "Pursue ${activePlayer.education.getNext().title}",
+        title: "Pursue ${education.getNext().title}",
         description:
             "Further your education to significantly improve your skill XP and unlock more job oppurtunities.",
-        cost: activePlayer.education.getNext().cost,
-        xp: activePlayer.education.getNext().xp,
-
-        /// Pursue degree on activePlayer
-        action: () => activePlayer.pursueDegree()),
+        cost: education.getNext().cost,
+        xp: education.getNext().xp,
+        action: () => educationManager.pursueNext(activePlayer)),
     _EducationSelection(1,
         title: "Study Online Course",
         description:
             "Study an online course to slightly improve your skill XP.",
-        cost: OnlineCourse.basic.cost,
-        xp: OnlineCourse.basic.xp,
+        cost: EducationManager.kOnlineCoursePrice,
+        xp: EducationManager.kOnlineCourseXP,
 
         /// Pursue online course on activePlayer
-        action: () => activePlayer.pursueOnlineCourse()),
+        action: () => educationManager.pursueOnlineCourse(activePlayer)),
     _EducationSelection(2,
         title: "Skip Education",
         description:
@@ -76,7 +77,7 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
         () => _selection!.action()); // At this point, _selection is never null
 
     AlphaDialogBuilder successDialog = _buildSuccessDialog(
-        context, () => context.navigateAndPopTo(const DashboardScreen()));
+        context, () => context.navigateAndPopTo(DashboardScreen()));
 
     Future.delayed(Durations.short2, () {
       context.showDialog(successDialog);
@@ -122,27 +123,20 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-                width: 280.0,
-                height: 45.0,
-                child: ListenableBuilder(
-                  listenable: activePlayer.savings,
-                  builder: (context, child) => PlayerStatCard(
-                      emoji: "💵",
-                      title: "Savings",
-                      value: activePlayer.savings.balance.prettyCurrency),
-                )),
+            PlayerAccountBalanceStatCard(
+                accountsManager.getPlayerAccount(activePlayer)),
             const SizedBox(width: 20.0),
             ListenableBuilder(
-                listenable: activePlayer.skill,
-                builder: (context, child) => AlphaSkillBar(activePlayer))
+                listenable: skillManager.getPlayerSkill(activePlayer),
+                builder: (context, child) => AlphaSkillBarMedium(
+                    skillManager.getPlayerSkill(activePlayer)))
           ],
         ),
         const SizedBox(height: 40.0),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 30.0,
-          runSpacing: 30.0,
+          runSpacing: 45.0,
           children: _selections
               .map((selectable) => _buildEducationCardWithGestures(
                   context, selectable, _selection?.index ?? -1))
@@ -154,7 +148,8 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
 
   Widget _buildEducationCardWithGestures(
       BuildContext context, _EducationSelection selection, int current) {
-    bool affordable = activePlayer.savings.balance >= selection.cost;
+    bool affordable =
+        accountsManager.getAvailableBalance(activePlayer) >= selection.cost;
 
     return Builder(
       builder: (BuildContext context) => GestureDetector(
@@ -259,8 +254,9 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
                 width: 440.0,
                 child: FittedBox(
                   child: ListenableBuilder(
-                    listenable: activePlayer.skill,
-                    builder: (context, child) => AlphaSkillBar(activePlayer),
+                    listenable: skillManager.getPlayerSkill(activePlayer),
+                    builder: (context, child) => AlphaSkillBarMedium(
+                        skillManager.getPlayerSkill(activePlayer)),
                   ),
                 ),
               ),

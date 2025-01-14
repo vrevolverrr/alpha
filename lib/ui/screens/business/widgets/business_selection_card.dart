@@ -6,134 +6,68 @@ import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
 
 class BusinessSelectionCard extends StatelessWidget {
-  final double width;
   final Business business;
   final BusinessSectorState businessSectorState;
 
   const BusinessSelectionCard(this.business, this.businessSectorState,
-      {super.key, required this.width});
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return AlphaContainer(
-      width: width,
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 50.0,
-            decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15.0),
-                    topRight: Radius.circular(15.0)),
-                color: Color(0xffFEA079)),
-          ),
-          const SizedBox(height: 20.0),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(business.name, style: TextStyles.bold30),
-              const SizedBox(height: 10.0),
-              Wrap(spacing: 12.0, children: [
-                _CardTag(getSectorEmoji(business.sector), business.sector.name),
-                _CardTag("♻️", "ESG ${business.esgRating}"),
-              ]),
-              const SizedBox(height: 20.0),
-              Text("Est. Revenue",
-                  style: TextStyles.bold20
-                      .copyWith(color: const Color(0xFF383838))),
-              Text(
-                (businessSectorState.grossProfit - business.operationalCosts)
-                    .prettyCurrency,
-                style: TextStyles.bold38,
-              ),
-              const SizedBox(height: 15.0),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _GenericTitleValue(
-                        "Total Market Revenue",
-                        businessSectorState.totalMarketRevenue.prettyCurrency,
-                      ),
-                      const SizedBox(width: 10.0),
-                      _GenericTitleValue(
-                        "Market Share",
-                        "${business.marketShare}%",
-                        width: 180.0,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _GenericTitleValue(
-                        "Initial Costs",
-                        (business.initialCost).prettyCurrency,
-                      ),
-                      const SizedBox(width: 10.0),
-                      _GenericTitleValue(
-                        "Operational Costs",
-                        business.operationalCosts.prettyCurrency,
-                        width: 180.0,
-                      ),
-                    ],
-                  ),
-                ],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BusinessSelectionCardSm extends StatelessWidget {
-  final double width;
-  final Business business;
-  final BusinessSectorState businessSectorState;
-
-  const BusinessSelectionCardSm(this.business, this.businessSectorState,
-      {super.key, required this.width});
-
-  @override
-  Widget build(BuildContext context) {
-    return AlphaContainer(
-      width: width,
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 50.0,
-            decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15.0),
-                    topRight: Radius.circular(15.0)),
-                color: Color(0xffFEA079)),
-          ),
-          const SizedBox(height: 20.0),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(business.name, style: TextStyles.bold30),
-              const SizedBox(height: 10.0),
-              Wrap(spacing: 12.0, children: [
-                _CardTag(getSectorEmoji(business.sector), business.sector.name),
-                _CardTag("♻️", "ESG ${business.esgRating}"),
-              ]),
-              const SizedBox(height: 25.0),
-              Text("Est. Revenue",
-                  style: TextStyles.bold20
-                      .copyWith(color: const Color(0xFF383838))),
-              Text(
-                (businessSectorState.grossProfit - business.operationalCosts)
-                    .prettyCurrency,
-                style: TextStyles.bold40,
-              ),
-            ],
-          ),
-        ],
+    return SizedBox(
+      child: AlphaContainer(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 45.0,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0)),
+                  color: Color(0xffFEA079)),
+            ),
+            const SizedBox(height: 20.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(business.name, style: TextStyles.bold30),
+                const SizedBox(height: 10.0),
+                Wrap(spacing: 12.0, children: [
+                  _CardTag(
+                      getSectorEmoji(business.sector), business.sector.name),
+                  _CardTag("♻️", "ESG ${business.esgRating}"),
+                ]),
+                const SizedBox(height: 20.0),
+                Text("Est. Revenue",
+                    style: TextStyles.bold20
+                        .copyWith(color: const Color(0xFF383838))),
+                Text(
+                  ((businessSectorState.grossProfit -
+                              business.operationalCosts) *
+                          0.75)
+                      .prettyCurrency,
+                  style: TextStyles.bold38,
+                ),
+                const SizedBox(height: 12.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _GenericTitleValue(
+                      "Operational Costs",
+                      business.operationalCosts.prettyCurrency,
+                      width: 180.0,
+                    ),
+                    _GenericTitleValue(
+                      "Initial Costs",
+                      (business.initialCost).prettyCurrency,
+                      width: 180.0,
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -151,7 +85,7 @@ class _GenericTitleValue extends StatelessWidget {
     return SizedBox(
       width: width,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(title,
@@ -212,7 +146,5 @@ String getSectorEmoji(BusinessSector sector) {
       return "💊";
     case BusinessSector.noBusiness:
       return "❌";
-    default:
-      return "❓";
   }
 }

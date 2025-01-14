@@ -6,6 +6,7 @@ class AlphaContainer extends StatelessWidget {
   final double? height;
   final EdgeInsetsGeometry? padding;
   final Color? color;
+  final Alignment alignment;
 
   /// The [Offset] to use for the [BoxShadow] of the container.
   final Offset? shadowOffset;
@@ -19,6 +20,7 @@ class AlphaContainer extends StatelessWidget {
       this.padding,
       this.color,
       this.shadowOffset,
+      this.alignment = Alignment.topLeft,
       this.child});
 
   @override
@@ -27,6 +29,7 @@ class AlphaContainer extends StatelessWidget {
       width: width,
       height: height,
       padding: padding,
+      alignment: alignment,
       decoration: BoxDecoration(
           color: color ?? Colors.white,
           borderRadius: BorderRadius.circular(20.0),

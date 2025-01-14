@@ -174,16 +174,6 @@ class AlphaScaffoldState extends State<AlphaScaffold>
     if (widget.landingDialog != null) {
       AlphaDialogBuilder oldDialog = widget.landingDialog!;
 
-      if (oldDialog.next != null && oldDialog.next!.onTap != null) {
-        throw FlutterError(
-            "The next button in the landing dialog should not have an onTap function.");
-      }
-
-      if (oldDialog.cancel != null && oldDialog.cancel!.onTap != null) {
-        throw FlutterError(
-            "The cancel button in the landing dialog should not have an onTap function.");
-      }
-
       Widget child = oldDialog.child;
       AlphaDialogBuilder dialog = AlphaDialogBuilder(
         title: oldDialog.title,
@@ -194,7 +184,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
                 title: oldDialog.next!.title,
                 width: oldDialog.next!.width,
                 height: oldDialog.next!.height,
-                onTap: () => dismissDialog(),
+                onTap: oldDialog.next!.onTap ?? () => dismissDialog(),
               ),
         cancel: oldDialog.cancel == null
             ? null
@@ -202,7 +192,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
                 title: oldDialog.cancel!.title,
                 width: oldDialog.cancel!.width,
                 height: oldDialog.cancel!.height,
-                onTap: () => dismissDialog(),
+                onTap: oldDialog.cancel!.onTap ?? () => dismissDialog(),
               ),
       );
 
@@ -384,7 +374,7 @@ class _AlphaScaffoldDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 60.0),
+      padding: const EdgeInsets.only(bottom: 50.0),
       child: Align(
         alignment: Alignment.center,
         child: AlphaAlertDialog(

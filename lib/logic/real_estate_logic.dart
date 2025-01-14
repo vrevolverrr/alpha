@@ -2,8 +2,11 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:alpha/assets.dart';
+import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
+import 'package:alpha/logic/data/personal_life.dart';
 import 'package:alpha/logic/data/real_estate.dart';
+import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:logging/logging.dart';
@@ -35,7 +38,7 @@ class RealEstate {
       {required this.name,
       required this.type,
       required this.propertyValue,
-      this.repaymentPeriod = 12,
+      this.repaymentPeriod = 16,
       this.growthRate = 1.5,
       this.interestRate = 1.2});
 }
@@ -60,27 +63,57 @@ class RealEstateOwnership {
 }
 
 class RealEstateManager implements IManager {
+  static const kPurchaseRealEstateHappinessBonus = 10;
+
   @override
   Logger log = Logger("RealEstateManager");
 
   final List<RealEstateOwnership> _ownedRealEstates = [];
 
-  void buyRealEstate(Player player, RealEstate realEstate) {
-    bool bought = player.savings.deduct(realEstate.downPayment);
+  /// Whether the player can buy the real estate based on their current financial status.
+  /// The player must have enough savings to pay the down payment and be able to take a loan.
+  bool canPlayerBuyRealEstate(Player player, RealEstate realEstate) {
+    final double availableBalance = accountsManager.getAvailableBalance(player);
 
-    if (!bought) {
+    if (availableBalance < realEstate.downPayment) {
+      return false;
+    }
+
+    LoanApplicationOutcome outcome = loanManager.canPlayerTakeLoan(player,
+        newLoanRepaymentPerRound: realEstate.repaymentPerRound,
+        reason: LoanReason.mortgage);
+
+    return outcome.isApproved;
+  }
+
+  /// Buy the real estate for the player.
+  void buyRealEstate(Player player, RealEstate realEstate) {
+    final SavingsAccount savings = accountsManager.getSavingsAccount(player);
+
+    if (savings.balance < realEstate.downPayment) {
       log.warning("${player.name} does not have enough savings to buy");
       return;
     }
 
-    player.debt.borrow(realEstate.loanAmount);
+    /// Pay the downpayment of the real estate
+    savings.deduct(realEstate.downPayment);
 
+    /// Take a loan for the remaining mortgage
+    loanManager.issueLoan(player,
+        amount: realEstate.loanAmount,
+        repaymentPeriod: realEstate.repaymentPeriod,
+        reason: LoanReason.mortgage);
+
+    /// Add the real estate to the player's ownership
     _ownedRealEstates.add(RealEstateOwnership(
         realEstate: realEstate, player: player, ownedRound: gameManager.round));
 
     log.info("${player.name} bought ${realEstate.name}");
   }
 
+  /// Sell the real estate for the player.
+  /// The player will use the current property value to repay the remaining mortgage
+  /// and receive the profit from selling the real estate.
   void sellRealEstate(Player player, RealEstate realEstate) {
     RealEstateOwnership ownership;
 
@@ -92,69 +125,95 @@ class RealEstateManager implements IManager {
       return;
     }
 
-    double propertyValue = getCurrentPropertyValue(
-        realEstate, gameManager.round - ownership.ownedRound);
+    /// Get the current property value
+    double propertyValue = getCurrentPropertyValue(player, realEstate);
 
     double remainingMortgage =
-        ownership.remainingRepaymentTerms * realEstate.repaymentPerRound;
-    double profit = propertyValue - remainingMortgage;
+        loanManager.getRemainingLoanAmount(player, reason: LoanReason.mortgage);
 
-    player.savings.add(profit);
-    log.info("Added profit of $profit to ${player.name}");
+    /// Repay the remaining mortgage
+    loanManager.repayLoan(player,
+        amount: remainingMortgage, reason: LoanReason.mortgage);
 
-    player.debt.repay(remainingMortgage);
     log.info(
         "Repaid remaining mortgage of $remainingMortgage for ${player.name}");
 
+    /// Credit the profit to the player's savings
+    double profit = propertyValue - remainingMortgage;
+    accountsManager.creditToSavings(player, profit);
+    log.info(
+        "Added profit of $profit to ${player.name} from selling ${realEstate.name}");
+
+    /// Remove the real estate from the player's ownership
     _ownedRealEstates.remove(ownership);
     log.info("${player.name} sold ${realEstate.name}");
   }
 
-  bool payRealEstateMortgage(Player player, RealEstate realEstate) {
+  /// Get the list of real estates owned by the player.
+  List<RealEstate> getOwnedRealEstates(Player player) {
+    return _ownedRealEstates
+        .where((element) => element.player == player)
+        .map((e) => e.realEstate)
+        .toList();
+  }
+
+  /// Get the current property value of the real estate given its growth.
+  double getCurrentPropertyValue(Player player, RealEstate realEstate) {
     RealEstateOwnership ownership;
 
     try {
-      ownership = _ownedRealEstates.firstWhere((element) =>
-          element.realEstate == realEstate && element.player == player);
+      ownership = _ownedRealEstates
+          .firstWhere((o) => o.realEstate == realEstate && o.player == player);
     } catch (e) {
       log.warning("${player.name} does not own ${realEstate.name}");
-      return false;
+      return 0.0;
     }
 
-    if (ownership.remainingRepaymentTerms == 0) {
-      log.warning("${player.name} has fully repaid ${realEstate.name}");
-      return false;
-    }
-
-    bool paid = player.savings.deduct(realEstate.repaymentPerRound);
-
-    if (!paid) {
-      log.warning("${player.name} does not have enough savings to repay");
-      return false;
-    }
-
-    player.debt.repay(realEstate.repaymentPerRound);
-    ownership.deductRepaymentTerm();
-
-    log.info("${player.name} repaid a term of ${realEstate.name}");
-    return true;
-  }
-
-  List<RealEstate> getOwnedRealEstates(Player player) {
-    return UnmodifiableListView(_ownedRealEstates
-        .where((element) => element.player == player)
-        .map((e) => e.realEstate)
-        .toList());
-  }
-
-  double getCurrentPropertyValue(RealEstate realEstate, int rounds) {
+    final rounds = gameManager.round - ownership.ownedRound;
     return realEstate.propertyValue * pow(realEstate.growthRate, rounds);
   }
 
+  /// Get the list of real estates that are available for purchase by the player.
+  /// The player cannot buy the same real estate twice.
   List<RealEstate> getAvailableRealEstates(Player player) {
-    return UnmodifiableListView(RealEstates.listings
-        .where((element) => !_ownedRealEstates
-            .any((e) => e.realEstate == element && e.player == player))
-        .toList());
+    bool isMarried = personalLifeManager.getPersonalLife(player).status ==
+        PersonalLifeStatus.marriage;
+
+    return UnmodifiableListView(RealEstates.listings.where((realEstate) {
+      // Check if player already owns this property
+      bool notOwned = !_ownedRealEstates.any((ownership) =>
+          ownership.realEstate == realEstate && ownership.player == player);
+
+      // Filter HDB properties based on marriage status
+      if (realEstate.type == RealEstateType.hdb && !isMarried) {
+        return false;
+      }
+
+      return notOwned;
+    }).toList());
+  }
+
+  int getOwnedRounds(Player player, RealEstate realEstate) {
+    RealEstateOwnership ownership;
+
+    try {
+      ownership = _ownedRealEstates
+          .firstWhere((o) => o.realEstate == realEstate && o.player == player);
+    } catch (e) {
+      log.warning("${player.name} does not own ${realEstate.name}");
+      return 0;
+    }
+
+    return gameManager.round - ownership.ownedRound;
+  }
+
+  double getTotalAssetValue(Player player) {
+    double total = 0.0;
+
+    for (RealEstate realEstate in getOwnedRealEstates(player)) {
+      total += getCurrentPropertyValue(player, realEstate);
+    }
+
+    return total;
   }
 }

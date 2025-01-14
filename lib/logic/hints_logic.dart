@@ -2,7 +2,14 @@ import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:logging/logging.dart';
 
-enum Hint { investment, opportunity, education, careerSelection }
+enum Hint {
+  investment,
+  opportunity,
+  education,
+  careerSelection,
+  manageBusiness,
+  buyBusiness,
+}
 
 class HintStorage {
   final Map<Hint, bool> _hints = {};

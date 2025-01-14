@@ -5,14 +5,15 @@ import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/common/alpha_stat_cards.dart';
+import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/common/animated_value.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/real_estate/dialogs/confirm_buy_dialog.dart';
-import 'package:alpha/ui/screens/real_estate/dialogs/success_bought_dialog.dart';
+import 'package:alpha/ui/screens/real_estate/dialogs/purchase_success_dialog.dart';
 import 'package:alpha/ui/screens/real_estate/widgets/real_estate_listing.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class RealEstateScreen extends StatefulWidget {
   const RealEstateScreen({super.key});
@@ -29,10 +30,14 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
     context.showDialog(
         buildConfirmBuyRealEstateDialog(context, _selectedRealEstate, () {
       realEstateManager.buyRealEstate(activePlayer, _selectedRealEstate);
-      context.showDialog(buildBoughtRealEstateDialog(
-          context,
-          _selectedRealEstate,
-          () => context.navigateAndPopTo(const DashboardScreen())));
+
+      context.dismissDialog();
+      Future.delayed(Durations.medium1, () {
+        context.showDialog(buildBoughtRealEstateDialog(
+            context,
+            _selectedRealEstate,
+            () => context.navigateAndPopTo(DashboardScreen())));
+      });
     }));
   }
 
@@ -42,7 +47,7 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
       title: "Real Estate",
       onTapBack: () => Navigator.of(context).pop(),
       next: AlphaButton.next(
-          onTap: () => context.navigateAndPopTo(const DashboardScreen())),
+          onTap: () => context.navigateAndPopTo(DashboardScreen())),
       children: <Widget>[
         const SizedBox(height: 30.0),
         Row(
@@ -77,13 +82,22 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
             runSpacing: 15.0,
             children: realEstateManager
                 .getAvailableRealEstates(activePlayer)
-                .map((realEstate) => GestureDetector(
+                .asMap()
+                .map((index, realEstate) => MapEntry(
+                    index,
+                    GestureDetector(
                       onTap: () =>
                           setState(() => _selectedRealEstate = realEstate),
                       child: RealEstateListing(
-                          realEstate: realEstate,
-                          selected: realEstate == _selectedRealEstate),
-                    ))
+                              realEstate: realEstate,
+                              selected: realEstate == _selectedRealEstate)
+                          .animate()
+                          .slideX(
+                              curve: Curves.easeOut,
+                              duration: Durations.medium2,
+                              delay: Duration(milliseconds: 100 * index + 100)),
+                    )))
+                .values
                 .toList(),
           )),
         ),
@@ -96,24 +110,10 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
       children: <Widget>[
         Row(
           children: [
-            SizedBox(
-              width: 280.0,
-              height: 45.0,
-              child: PlayerStatCard(
-                  emoji: "💵",
-                  title: "Savings",
-                  value: activePlayer.savings.balance.prettyCurrency),
-            ),
+            PlayerAccountBalanceStatCard(
+                accountsManager.getPlayerAccount(activePlayer)),
             const SizedBox(width: 20.0),
-            SizedBox(
-              width: 280.0,
-              height: 45.0,
-              child: PlayerStatCard(
-                  emoji: "💵",
-                  title: "Debt",
-                  color: const Color(0xFFB52F26),
-                  value: activePlayer.debt.balance.prettyCurrency),
-            )
+            PlayerDebtStatCard(loanManager.getPlayerDebt(activePlayer)),
           ],
         ),
         const SizedBox(height: 15.0),
@@ -170,7 +170,8 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
               const SizedBox(height: 8.0),
               _GenericTitleValue(
                   title: "Growth Rate (per round)",
-                  value: "${_selectedRealEstate.growthRate}%"),
+                  value:
+                      "${((_selectedRealEstate.growthRate - 1.0) * 100).toStringAsFixed(1)}%"),
               const SizedBox(height: 6.0),
               _GenericTitleValue(
                   title: "Mortgage Amount",
@@ -228,10 +229,11 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
                       builder: (context) => AlphaButton(
                         width: 205.0,
                         height: 60.0,
-                        disabled: _selectedRealEstate.downPayment >
-                            activePlayer.savings.balance,
+                        disabled: !realEstateManager.canPlayerBuyRealEstate(
+                            activePlayer, _selectedRealEstate),
                         onTapDisabled: () => context.showSnackbar(
-                            message: "✋🏼 Insufficient funds for downpayment"),
+                            message:
+                                "✋🏼 Insufficient funds for downpayment or ineligible for loan."),
                         title: "Buy",
                         icon: Icons.shopping_cart_outlined,
                         color: const Color(0xff96DE9D),

@@ -1,31 +1,40 @@
 import 'package:alpha/extensions.dart';
-import 'package:alpha/logic/data/personal_life.dart';
+import 'package:alpha/logic/personal_life_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/dashboard/widgets/dashboard_player_stats.dart';
-import 'package:alpha/ui/screens/personal_life/widgets/life_stage_card.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:alpha/ui/screens/personal_life/dialogs/confirm_progress_life_dialog.dart';
+import 'package:alpha/ui/screens/personal_life/dialogs/progress_life_success_dialog.dart';
+import 'package:alpha/ui/screens/personal_life/widgets/personal_life_card.dart';
 import 'package:flutter/material.dart';
 
-class PersonalLifeScreen extends StatefulWidget {
-  const PersonalLifeScreen({super.key});
+class PersonalLifeScreen extends StatelessWidget {
+  final PersonalLife personalLife =
+      personalLifeManager.getPersonalLife(activePlayer);
 
-  @override
-  State<PersonalLifeScreen> createState() => _PersonalLifeScreenState();
-}
+  final ValueNotifier<bool> hasProgressed = ValueNotifier(false);
 
-class _PersonalLifeScreenState extends State<PersonalLifeScreen> {
-  late final List<PersonalLifeStatus> carouselItems;
-  late final PersonalLifeStatus currentStatus;
-  bool onCurrentStatus = true;
+  PersonalLifeScreen({super.key});
 
-  @override
-  void initState() {
-    super.initState();
-    carouselItems = playerManager.getActivePlayer().personalLife.getList();
-    currentStatus = playerManager.getActivePlayer().personalLife.status;
+  void _handleProgressPersonalLife(BuildContext context) {
+    context.showDialog(buildConfirmProgressLifeDialog(
+        context,
+        personalLife.status,
+        personalLifeManager.getNextLifeStage(activePlayer), () {
+      personalLifeManager.nextLifeStage(activePlayer);
+
+      Future.delayed(Durations.medium1, () {
+        hasProgressed.value = false;
+        context.showDialog(buildSuccessProgressLifeDialog(
+            context, personalLifeManager.getPersonalLife(activePlayer).status,
+            () {
+          context.dismissDialog();
+          context.navigateTo(DashboardScreen());
+        }));
+      });
+    }));
   }
 
   @override
@@ -33,101 +42,36 @@ class _PersonalLifeScreenState extends State<PersonalLifeScreen> {
     return AlphaScaffold(
         title: "Personal Life",
         onTapBack: () => Navigator.pop(context),
-        mainAxisAlignment: MainAxisAlignment.start,
+        next: AlphaButton.next(
+            onTap: () => context.navigateTo(DashboardScreen())),
         children: [
           const SizedBox(height: 20.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ListenableBuilder(
-                listenable: activePlayer.savings,
-                builder: (context, child) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-                  child: DashboardPlayerStatCard(
-                    emoji: "💵",
-                    title: "Savings",
-                    value: activePlayer.savings.balance,
-                    isCurrency: true,
-                  ),
-                ),
-              ),
-              ListenableBuilder(
-                listenable: activePlayer.stats,
-                builder: (context, child) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                  child: DashboardPlayerStatCard(
-                      emoji: "❤️",
-                      title: "Happiness",
-                      value: activePlayer.stats.happiness,
-                      valueWidth: 50.0),
-                ),
-              ),
-              ListenableBuilder(
-                listenable: activePlayer.stats,
-                builder: (context, child) => Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                  child: DashboardPlayerStatCard(
-                      emoji: "🕙",
-                      title: "Time",
-                      value: activePlayer.stats.time,
-                      valueWidth: 50.0),
-                ),
-              ),
+            children: [
+              PlayerAccountBalanceStatCard(
+                  accountsManager.getPlayerAccount(activePlayer)),
+              const SizedBox(width: 15.0),
+              PlayerHappinessStatCard(
+                  statsManager.getPlayerStats(activePlayer)),
             ],
           ),
-          const SizedBox(height: 20.0),
-          CarouselSlider.builder(
-              itemCount: carouselItems.length,
-              itemBuilder: (context, index, _) {
-                final temp = carouselItems[index];
-
-                return Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: currentStatus == carouselItems[index]
-                      ? CurrentLifeStageCard(
-                          focused: onCurrentStatus,
-                          status: temp,
-                          width: 350,
-                          height: 500,
-                        )
-                      : LifeStageCard(
-                          status: temp,
-                          width: 350,
-                          height: 500,
-                          toPursue:
-                              index > carouselItems.indexOf(currentStatus),
-                        ),
-                );
-              },
-              options: CarouselOptions(
-                onPageChanged: (index, _) {
-                  setState(() {
-                    if (currentStatus == carouselItems[index]) {
-                      onCurrentStatus = true;
-                    } else {
-                      onCurrentStatus = false;
-                    }
-                  });
-                },
-                initialPage: carouselItems.indexOf(currentStatus),
-                height: 500,
-                enlargeCenterPage: true,
-                enlargeFactor: 0.2,
-                viewportFraction: 0.35,
-                enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                enableInfiniteScroll: false,
-              )),
-          const SizedBox(height: 20.0),
-          if (onCurrentStatus)
-            AlphaButton(
-              color: const Color.fromARGB(255, 106, 202, 196),
-              width: 300,
-              title: "Remain ${currentStatus.title}",
-              onTap: () => context.navigateTo(const DashboardScreen()),
-            ),
+          const SizedBox(height: 25.0),
+          ListenableBuilder(
+              listenable: personalLife,
+              builder: (context, _) => PersonalLifeCard(personalLife.status)),
+          const SizedBox(height: 30.0),
+          ValueListenableBuilder(
+            valueListenable: hasProgressed,
+            builder: (context, progressed, _) => !progressed
+                ? AlphaButton(
+                    width: 280.0,
+                    title: personalLife.status.action,
+                    color: const Color(0xFF71C5F6),
+                    onTap: () => _handleProgressPersonalLife(context),
+                  )
+                : const SizedBox.shrink(),
+          )
         ]);
   }
 }

@@ -5,39 +5,36 @@ enum Job {
     title: "Unemployed",
     career: CareerSector.unemployed,
     salary: 0.0,
-    skillRequirement: 0,
-    timeConsumed: 0,
+    levelRequirement: 0,
     tier: 0,
+    asset: AlphaAssets.careerBankingAnalyst,
   ),
 
   // Food Delivery
   foodDelivery(
     title: "Delivery Rider",
     career: CareerSector.foodDelivery,
-    salary: 2000.0,
-    skillRequirement: 0,
-    timeConsumed: 100,
+    salary: 3500.0,
+    levelRequirement: 1,
     asset: AlphaAssets.careerFoodDelivery,
     tier: 0,
   ),
 
   // Marketing
   marketingAssistant(
-    title: "Marketing Assistant",
+    title: "Assistant",
     career: CareerSector.marketing,
-    salary: 3000.0,
-    skillRequirement: 1000,
-    timeConsumed: 120,
+    salary: 4500.0,
+    levelRequirement: 2,
     asset: AlphaAssets.careerMarketingAssistant,
     tier: 0,
   ),
 
   marketingManager(
-    title: "Marketing Manager",
+    title: "Manager",
     career: CareerSector.marketing,
-    salary: 5000.0,
-    skillRequirement: 2000,
-    timeConsumed: 150,
+    salary: 7200.0,
+    levelRequirement: 2,
     asset: AlphaAssets.careerMarketingManager,
     tier: 1,
   ),
@@ -46,9 +43,8 @@ enum Job {
   culinaryChefAssistant(
     title: "Assistant Chef",
     career: CareerSector.culinaryChef,
-    salary: 3500.0,
-    skillRequirement: 1000,
-    timeConsumed: 120,
+    salary: 4100.0,
+    levelRequirement: 2,
     asset: AlphaAssets.careerCulinaryChefAssistant,
     tier: 0,
   ),
@@ -56,9 +52,8 @@ enum Job {
   culinaryChefExecutive(
     title: "Executive Chef",
     career: CareerSector.culinaryChef,
-    salary: 5000.0,
-    skillRequirement: 2000,
-    timeConsumed: 150,
+    salary: 7400.0,
+    levelRequirement: 4,
     asset: AlphaAssets.careerCulinaryExecutiveChef,
     tier: 1,
   ),
@@ -67,9 +62,8 @@ enum Job {
   bankingAssociate(
     title: "Associate",
     career: CareerSector.banking,
-    salary: 4000.0,
-    skillRequirement: 1000,
-    timeConsumed: 120,
+    salary: 5700.0,
+    levelRequirement: 3,
     asset: AlphaAssets.careerBankingAssociate,
     tier: 0,
   ),
@@ -77,9 +71,8 @@ enum Job {
   bankingAnalyst(
     title: "Analyst",
     career: CareerSector.banking,
-    salary: 6000.0,
-    skillRequirement: 2000,
-    timeConsumed: 150,
+    salary: 6800.0,
+    levelRequirement: 4,
     asset: AlphaAssets.careerBankingAnalyst,
     tier: 1,
   ),
@@ -87,9 +80,8 @@ enum Job {
   bankingManager(
       title: "Managing Director",
       career: CareerSector.banking,
-      salary: 8000.0,
-      skillRequirement: 3000,
-      timeConsumed: 180,
+      salary: 8400.0,
+      levelRequirement: 6,
       asset: AlphaAssets.careerBankingManager,
       tier: 2),
 
@@ -97,111 +89,106 @@ enum Job {
   programmerJunior(
       title: "Junior Programmer",
       career: CareerSector.programmer,
-      salary: 3000.0,
-      skillRequirement: 1000,
-      timeConsumed: 120,
+      salary: 5800.0,
+      levelRequirement: 3,
+      asset: AlphaAssets.careerProgrammerJunior,
       tier: 0),
 
   programmerSenior(
       title: "Senior Programmer",
       career: CareerSector.programmer,
-      salary: 4500.0,
-      skillRequirement: 1000,
-      timeConsumed: 140,
+      salary: 7600.0,
+      levelRequirement: 5,
+      asset: AlphaAssets.careerProgrammerSenior,
       tier: 1),
 
   programmerManager(
       title: "Project Manager",
       career: CareerSector.programmer,
-      salary: 6000.0,
-      skillRequirement: 2000,
-      timeConsumed: 150,
+      salary: 9900.0,
+      levelRequirement: 7,
+      asset: AlphaAssets.careerProgrammerManager,
       tier: 2),
 
   // Engineer
   engineerJunior(
       title: "Junior Engineer",
       career: CareerSector.engineer,
-      salary: 3500.0,
-      skillRequirement: 1000,
-      timeConsumed: 120,
+      salary: 6100.0,
+      levelRequirement: 4,
+      asset: AlphaAssets.careerEngineerJunior,
       tier: 0),
 
   engineerSenior(
       title: "Senior Engineer",
       career: CareerSector.engineer,
-      salary: 5000.0,
-      skillRequirement: 1000,
-      timeConsumed: 140,
+      salary: 7900.0,
+      levelRequirement: 5,
+      asset: AlphaAssets.careerEngineerSenior,
       tier: 1),
 
   engineerExecutive(
-      title: "Executive Engineer",
+      title: "Executive",
       career: CareerSector.engineer,
-      salary: 7000.0,
-      skillRequirement: 2000,
-      timeConsumed: 150,
+      salary: 12000.0,
+      levelRequirement: 7,
+      asset: AlphaAssets.careerEngineerExecutive,
       tier: 2),
 
   // Medicine
   medicineHouseman(
       title: "Houseman",
       career: CareerSector.medicine,
-      salary: 3000.0,
-      skillRequirement: 2000,
-      timeConsumed: 120,
-      asset: AlphaAssets.jobHouseman,
+      salary: 7800.0,
+      levelRequirement: 6,
+      asset: AlphaAssets.careerMedicineHouseman,
       tier: 0),
 
   medicineResident(
       title: "Resident",
       career: CareerSector.medicine,
-      salary: 5000.0,
-      skillRequirement: 2000,
-      asset: AlphaAssets.jobResident,
-      timeConsumed: 140,
+      salary: 15000.0,
+      levelRequirement: 8,
+      asset: AlphaAssets.careerMedicineResident,
       tier: 1),
 
   medicineDoctor(
       title: "Doctor",
       career: CareerSector.medicine,
-      salary: 8000.0,
-      skillRequirement: 3000,
-      timeConsumed: 160,
-      asset: AlphaAssets.jobDoctor,
+      salary: 19000,
+      levelRequirement: 10,
+      asset: AlphaAssets.careerMedicineDoctor,
       tier: 2),
 
   medicineSpecialist(
       title: "Specialist",
       career: CareerSector.medicine,
-      salary: 12000.0,
-      skillRequirement: 3000,
-      timeConsumed: 180,
+      salary: 25000,
+      levelRequirement: 12,
+      asset: AlphaAssets.careerMedicineSpecialist,
       tier: 3),
 
   medicineSurgeon(
       title: "Surgeon",
       career: CareerSector.medicine,
       salary: 20000.0,
-      skillRequirement: 3000,
-      timeConsumed: 200,
+      levelRequirement: 15,
+      asset: AlphaAssets.careerMedicineSurgeon,
       tier: 4);
 
   const Job({
     required this.title,
     required this.career,
     required this.salary,
-    required this.skillRequirement,
-    required this.timeConsumed,
+    required this.levelRequirement,
     required this.tier,
-    this.asset = AlphaAssets.jobProgrammer,
+    required this.asset,
   });
 
   final String title;
   final double salary;
   final CareerSector career;
-  final int skillRequirement;
-  final int timeConsumed;
+  final int levelRequirement;
   final int tier;
   final AlphaAssets asset;
 }

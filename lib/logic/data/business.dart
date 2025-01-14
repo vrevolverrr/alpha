@@ -3,7 +3,7 @@ import 'package:alpha/assets.dart';
 enum BusinessSector {
   foodAndBeverage(
       name: "Food and Beverages",
-      initialMarketRevenue: 50000.0,
+      initialMarketRevenue: 40000.0,
       growthRate: 1.25,
       timeConsumed: 100,
       baseOperationalCosts: 10000.0,
@@ -35,7 +35,7 @@ enum BusinessSector {
 
   influencer(
       name: "Influencer",
-      initialMarketRevenue: 10000.0,
+      initialMarketRevenue: 1200.0,
       growthRate: 1.2,
       timeConsumed: 100,
       baseOperationalCosts: 1000.0,
@@ -46,6 +46,7 @@ enum BusinessSector {
       initialMarketRevenue: 0,
       growthRate: 0,
       baseOperationalCosts: 0,
+      asset: AlphaAssets.businessTechnology,
       timeConsumed: 0);
 
   const BusinessSector({
@@ -54,7 +55,7 @@ enum BusinessSector {
     required this.growthRate,
     required this.timeConsumed,
     required this.baseOperationalCosts,
-    this.asset = AlphaAssets.jobProgrammer,
+    required this.asset,
   });
 
   final String name;

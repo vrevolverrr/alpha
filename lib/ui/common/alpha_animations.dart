@@ -1,4 +1,5 @@
 import 'package:alpha/extensions.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 /// An animated number widget that animates from 0 to the given number, and its
@@ -30,7 +31,8 @@ class AnimatedNumber<T extends num> extends StatelessWidget {
               tween: Tween<double>(begin: 0.0, end: value.toDouble()),
               duration: this.duration ?? Durations.medium4,
               builder: (BuildContext context, double anim, Widget? child) =>
-                  Text(
+                  AutoSizeText(
+                maxLines: 1,
                 formatCurrency
                     ? anim.toDouble().prettyCurrency
                     : anim.toStringAsFixed(T == int ? 0 : 2),
@@ -42,7 +44,8 @@ class AnimatedNumber<T extends num> extends StatelessWidget {
             );
           }
 
-          return Text(
+          return AutoSizeText(
+            maxLines: 1,
             formatCurrency ? "\$0.00" : "0",
             textAlign: textAlign,
             style: style ??

@@ -1,16 +1,21 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/car_logic.dart';
+import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/common/alpha_stat_cards.dart';
+import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/common/animated_value.dart';
+import 'package:alpha/ui/screens/car/dialogs/confirm_buy_dialog.dart';
+import 'package:alpha/ui/screens/car/dialogs/confirm_buy_no_debt_dialog.dart';
+import 'package:alpha/ui/screens/car/dialogs/purchase_success_dialog.dart';
 import 'package:alpha/ui/screens/car/widgets/car_listing.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class CarScreen extends StatefulWidget {
   const CarScreen({super.key});
@@ -22,15 +27,56 @@ class CarScreen extends StatefulWidget {
 class _CarScreenState extends State<CarScreen> {
   Car _selectedCar = carManager.getAvailableCars(activePlayer).first;
 
-  void _handleBuyRealEstate(BuildContext context) {}
+  void _handleBuyCar(BuildContext context, Car car) {
+    if (accountsManager.getAvailableBalance(activePlayer) >= car.price) {
+      context
+          .showDialog(buildBuyCarWithoutDebtDialog(context, onTapConfirm: () {
+        carManager.buyCar(activePlayer, car, takeLoan: false);
+        context.dismissDialog();
+
+        Future.delayed(Durations.medium1, () {
+          if (!mounted) return;
+          // ignore: use_build_context_synchronously
+          context.showDialog(buildPurchaseCarSuccessDialog(context, () {
+            context.navigateAndPopTo(DashboardScreen());
+          }));
+        });
+      }, onTapCancel: () {
+        context.dismissDialog();
+
+        Future.delayed(Durations.medium1, () {
+          if (!mounted) return;
+          // ignore: use_build_context_synchronously
+          _handleBuyCarWithLoan(context, car);
+        });
+      }));
+    } else {
+      _handleBuyCarWithLoan(context, car);
+    }
+  }
+
+  void _handleBuyCarWithLoan(BuildContext context, Car car) {
+    context.showDialog(buildConfirmBuyCarDialog(context, car, () {
+      carManager.buyCar(activePlayer, car);
+      context.dismissDialog();
+
+      Future.delayed(Durations.medium1, () {
+        if (!mounted) return;
+        // ignore: use_build_context_synchronously
+        context.showDialog(buildPurchaseCarSuccessDialog(context, () {
+          context.navigateAndPopTo(DashboardScreen());
+        }));
+      });
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
     return AlphaScaffold(
-      title: "Entitlements",
+      title: "Purchase Car",
       onTapBack: () => Navigator.of(context).pop(),
       next: AlphaButton.next(
-          onTap: () => context.navigateAndPopTo(const DashboardScreen())),
+          onTap: () => context.navigateAndPopTo(DashboardScreen())),
       children: <Widget>[
         const SizedBox(height: 30.0),
         Row(
@@ -65,11 +111,19 @@ class _CarScreenState extends State<CarScreen> {
             runSpacing: 15.0,
             children: carManager
                 .getAvailableCars(activePlayer)
-                .map((car) => GestureDetector(
+                .asMap()
+                .map((index, car) => MapEntry(
+                    index,
+                    GestureDetector(
                       onTap: () => setState(() => _selectedCar = car),
-                      child:
-                          CarListing(car: car, selected: car == _selectedCar),
-                    ))
+                      child: CarListing(car: car, selected: car == _selectedCar)
+                          .animate()
+                          .slideX(
+                              curve: Curves.easeOut,
+                              duration: Durations.medium2,
+                              delay: Duration(milliseconds: 100 * index + 100)),
+                    )))
+                .values
                 .toList(),
           )),
         ),
@@ -80,13 +134,13 @@ class _CarScreenState extends State<CarScreen> {
   Widget _buildCarDetailsColumn(BuildContext context) {
     return Column(
       children: <Widget>[
-        SizedBox(
-          width: 280.0,
-          height: 45.0,
-          child: PlayerStatCard(
-              emoji: "💵",
-              title: "Savings",
-              value: activePlayer.savings.balance.prettyCurrency),
+        Row(
+          children: [
+            PlayerAccountBalanceStatCard(
+                accountsManager.getPlayerAccount(activePlayer)),
+            const SizedBox(width: 10.0),
+            PlayerDebtStatCard(loanManager.getPlayerDebt(activePlayer)),
+          ],
         ),
         const SizedBox(height: 15.0),
         _buildCarDetails(),
@@ -137,8 +191,7 @@ class _CarScreenState extends State<CarScreen> {
                   title: "Price", value: _selectedCar.price.prettyCurrency),
               const SizedBox(height: 8.0),
               _GenericTitleValue(
-                  title: "Maintenance Cost",
-                  value: _selectedCar.maintenanceCost.prettyCurrency),
+                  title: "Maintenance Cost", value: 100.0.prettyCurrency),
               const SizedBox(height: 6.0),
               _GenericTitleValue(
                   title: "Depreciation Rate (per round)",
@@ -196,14 +249,19 @@ class _CarScreenState extends State<CarScreen> {
                       builder: (context) => AlphaButton(
                         width: 205.0,
                         height: 60.0,
-                        disabled: _selectedCar.upfrontPayment >
-                            activePlayer.savings.balance,
+                        disabled: !loanManager
+                            .canPlayerTakeLoan(activePlayer,
+                                newLoanRepaymentPerRound:
+                                    _selectedCar.repaymentPerRound,
+                                reason: LoanReason.car)
+                            .isApproved,
                         onTapDisabled: () => context.showSnackbar(
-                            message: "✋🏼 Insufficient funds for downpayment"),
+                            message:
+                                "✋🏼 Insufficient funds for downpayment or ineligible for loan."),
                         title: "Buy",
                         icon: Icons.shopping_cart_outlined,
                         color: const Color(0xff96DE9D),
-                        onTap: () => _handleBuyRealEstate(context),
+                        onTap: () => _handleBuyCar(context, _selectedCar),
                       ),
                     ),
                   ]),

@@ -102,38 +102,3 @@ class _GenericTitleValue extends StatelessWidget {
     );
   }
 }
-
-class _CardTag extends StatelessWidget {
-  final String title;
-  final String emoji;
-
-  const _CardTag(this.emoji, this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-      width: 75.0,
-      height: 20.0,
-      decoration: BoxDecoration(
-          color: const Color(0xffB5D2AD),
-          borderRadius: BorderRadius.circular(18.0),
-          border: Border.all(color: Colors.black, width: 2.5),
-          boxShadow: const <BoxShadow>[
-            BoxShadow(color: Colors.black, offset: Offset(1.0, 2.0))
-          ]),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Transform.translate(
-              offset: const Offset(-2.5, -3.0),
-              child: Text(emoji, style: TextStyles.medium14)),
-          Text(
-            title,
-            style: TextStyles.medium13,
-          )
-        ],
-      ),
-    );
-  }
-}

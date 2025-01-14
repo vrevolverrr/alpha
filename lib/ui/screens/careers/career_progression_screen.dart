@@ -6,7 +6,9 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/careers/career_selection_screen.dart';
 import 'package:alpha/ui/screens/careers/dialogs/confirm_promote_dialog.dart';
 import 'package:alpha/ui/screens/careers/dialogs/confirm_resign_dialog.dart';
+import 'package:alpha/ui/screens/careers/dialogs/promotion_success_dialog.dart';
 import 'package:alpha/ui/screens/careers/widgets/career_progression_card.dart';
+import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -19,30 +21,29 @@ class CareerProgressionScreen extends StatefulWidget {
 }
 
 class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
-  int _selectedIndex = careerManager.getPlayerJob(activePlayer).tier;
-
-  void _handlePageChanged(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   void _handlePromote(BuildContext context) {
-    Job currentJob = careerManager.getPlayerJob(activePlayer);
-    Job nextJob = careerManager.getNextTierJob(currentJob);
-
-    context.showDialog(buildConfirmPromoteDialog(context, nextJob, () {
+    context.showDialog(buildConfirmPromoteDialog(context, () {
       careerManager.promote(activePlayer);
       context.dismissDialog();
+
+      Future.delayed(Durations.medium1, () {
+        if (!mounted) return;
+        // ignore: use_build_context_synchronously
+        _handlePromoted(context);
+      });
+    }));
+  }
+
+  void _handlePromoted(BuildContext context) {
+    context.showDialog(buildPromotionSuccessDialog(
+        context, careerManager.getPlayerJob(activePlayer), () {
+      context.navigateAndPopTo(DashboardScreen());
     }));
   }
 
   void _handleResign(BuildContext context) {
-    Job currentJob = careerManager.getPlayerJob(activePlayer);
-
-    context.showDialog(buildConfirmResignDialog(context, currentJob, () {
-      careerManager.resign(activePlayer);
-      context.navigateAndPopTo(const JobSelectionScreen());
+    context.showDialog(buildConfirmResignDialog(context, () {
+      context.navigateTo(const JobSelectionScreen());
     }));
   }
 
@@ -51,11 +52,15 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
     return AlphaScaffold(
         title: "Career",
         onTapBack: () => Navigator.pop(context),
+        next: Builder(
+          builder: (context) => AlphaButton.next(
+            onTap: () => context.navigateTo(DashboardScreen()),
+          ),
+        ),
         children: <Widget>[
           const SizedBox(height: 45.0),
           CarouselSlider(
               options: CarouselOptions(
-                  onPageChanged: (index, _) => _handlePageChanged(index),
                   initialPage: careerManager.getPlayerJob(activePlayer).tier,
                   height: 500.0,
                   viewportFraction: 0.35,
@@ -70,9 +75,10 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AlphaButton(
-                  width: 230.0,
-                  title: "Resign",
-                  icon: Icons.close,
+                  width: 340.0,
+                  title: "Change Career",
+                  icon: Icons.swap_horiz_rounded,
+                  color: const Color(0xFF74BDF8),
                   onTap: () => _handleResign(context),
                 ),
                 const SizedBox(width: 20.0),

@@ -1,6 +1,7 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
-import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
@@ -30,6 +31,9 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   bool _isUnitIncreaseButtonHeld = false;
   bool _isUnitDecreaseButtonHeld = false;
 
+  final InvestmentAccount investments =
+      accountsManager.getInvestmentAccount(activePlayer);
+
   void _handleBuyShare(BuildContext context) {
     if (_stockUnits <= 0) {
       context.showSnackbar(message: "Please select a valid number of units");
@@ -38,13 +42,13 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
     final double totalValue = _selectedStock.price * _stockUnits;
 
-    if (activePlayer.investments.balance < totalValue) {
+    if (investments.balance < totalValue) {
       context.showSnackbar(message: "Insufficient funds");
       return;
     }
 
     final AlphaDialogBuilder dialog = _buildConfirmBuyDialog(context, () {
-      activePlayer.investments.purchaseShare(_selectedStock, _stockUnits);
+      investments.purchaseShare(_selectedStock, _stockUnits);
       context.dismissDialog();
     });
 
@@ -57,8 +61,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
       return;
     }
 
-    final int units =
-        activePlayer.investments.getStockUnits(_selectedStock.item);
+    final int units = investments.getStockUnits(_selectedStock.item);
 
     if (units < _stockUnits) {
       context.showSnackbar(message: "Insufficient shares to sell");
@@ -66,7 +69,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
     }
 
     final AlphaDialogBuilder dialog = _buildConfirmSellDialog(context, () {
-      activePlayer.investments.sellShare(_selectedStock, _stockUnits);
+      investments.sellShare(_selectedStock, _stockUnits);
       context.dismissDialog();
     });
 
@@ -77,11 +80,14 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   Widget build(BuildContext context) {
     return AlphaScaffold(
       title: "Investments",
-      landingDialog: AlphaDialogBuilder.dismissable(
-          title: "Welcome",
-          dismissText: "Start Investing",
-          width: 350.0,
-          child: const InvestmentsLandingDialog()),
+      landingDialog:
+          (hintsManager.shouldShowHint(activePlayer, Hint.investment))
+              ? AlphaDialogBuilder.dismissable(
+                  title: "Welcome",
+                  dismissText: "Start Investing",
+                  width: 350.0,
+                  child: const InvestmentsLandingDialog())
+              : null,
       onTapBack: () => Navigator.of(context).pop(),
       children: <Widget>[
         const SizedBox(height: 30.0),
@@ -199,12 +205,12 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                 width: 120.0,
               ),
               ListenableBuilder(
-                listenable: activePlayer.investments,
+                listenable: investments,
                 builder: (context, _) => _GenericTitleValue(
                   title: "Shares Owned",
                   value: (() {
-                    final owned = activePlayer.investments
-                        .getStockUnits(_selectedStock.item);
+                    final owned =
+                        investments.getStockUnits(_selectedStock.item);
 
                     return "${(owned * _selectedStock.price).prettyCurrency} ($owned)";
                   })(),
@@ -239,9 +245,9 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
             style: TextStyles.bold20,
           ),
           ListenableBuilder(
-            listenable: activePlayer.investments,
+            listenable: investments,
             builder: (context, child) => AnimatedNumber(
-              activePlayer.investments.balance,
+              investments.balance,
               style: TextStyles.bold30,
               formatCurrency: true,
             ),
@@ -253,9 +259,9 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
           ),
           const SizedBox(height: 2.0),
           ListenableBuilder(
-              listenable: activePlayer.investments,
+              listenable: investments,
               builder: (builder, _) => AnimatedNumber(
-                    activePlayer.investments.getPortfolioValue(),
+                    investments.getPortfolioValue(),
                     style: TextStyles.bold30,
                     formatCurrency: true,
                   )),
@@ -274,8 +280,8 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               ),
               const SizedBox(width: 2.0),
               Text(
-                "${activePlayer.investments.getPortfolioProfitChange(startNth: 1).prettyCurrency} "
-                "(${activePlayer.investments.getPortfolioProfitPercentChange(startNth: 1)}%)",
+                "${investments.getPortfolioProfitChange(startNth: 1).prettyCurrency} "
+                "(${investments.getPortfolioProfitPercentChange(startNth: 1)}%)",
                 style: const TextStyle(
                   color: Color(0xff3AB59E),
                   fontWeight: FontWeight.bold,
@@ -287,8 +293,8 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
           const SizedBox(height: 10.0),
           Expanded(
               child: ListenableBuilder(
-                  listenable: activePlayer.investments,
-                  builder: (context, _) => _PortfolioTable(activePlayer))),
+                  listenable: investments,
+                  builder: (context, _) => _PortfolioTable(investments))),
         ],
       ),
     );
@@ -549,9 +555,9 @@ class _ESGLabel extends StatelessWidget {
 // A table that displays the player's portfolio, listing each stock on the market,
 //and the number of shares owned, with the total value.
 class _PortfolioTable extends StatelessWidget {
-  final Player player;
+  final InvestmentAccount investments;
 
-  const _PortfolioTable(this.player);
+  const _PortfolioTable(this.investments);
 
   @override
   Widget build(BuildContext context) {
@@ -568,8 +574,7 @@ class _PortfolioTable extends StatelessWidget {
         children: <TableRow>[
           _buildTableHeader(),
           ...marketManager.stocks.map((stock) {
-            final int units =
-                activePlayer.investments.getStockUnits(stock.item);
+            final int units = investments.getStockUnits(stock.item);
 
             final double totalValue = stock.price * units;
 
@@ -577,7 +582,7 @@ class _PortfolioTable extends StatelessWidget {
                 stock.code,
                 totalValue.prettyCurrency,
                 units.toString(),
-                activePlayer.investments.getStockProfitPercent(stock.item));
+                investments.getStockProfitPercent(stock.item));
           })
         ],
       ),

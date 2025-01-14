@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:alpha/assets.dart';
 import 'package:alpha/extensions.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -26,14 +27,23 @@ class AssetsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                  onTap: () => context.navigateTo(const OwnedCarsScreen()),
-                  child: SelectableAsset()),
+              SelectableAsset(
+                title: "Manage Owned Cars",
+                description:
+                    "Manage and sell the cars you own. Check the car's value, happiness bonus and more.",
+                image: AlphaAssets.car,
+                color: const Color(0xFFEBFFE4),
+                onTap: () => context.navigateTo(const OwnedCarsScreen()),
+              ),
               SizedBox(width: 40.0),
-              GestureDetector(
-                  onTap: () =>
-                      context.navigateTo(const OwnedRealEstateScreen()),
-                  child: SelectableAsset())
+              SelectableAsset(
+                title: "Manage Owned Real Estate",
+                description:
+                    "Manage and sell the real estate you own. Check the property's value, mortgage and more.",
+                image: AlphaAssets.realEstateBungalow,
+                color: const Color(0xFFE4F1FF),
+                onTap: () => context.navigateTo(const OwnedRealEstateScreen()),
+              )
             ],
           )
         ]);

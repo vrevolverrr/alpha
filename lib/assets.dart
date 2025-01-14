@@ -7,23 +7,51 @@ enum AlphaAssets {
   logoCashflow(path: "${ImagePaths.root}/logo/cashflow.png"),
   logoNcf(path: "${ImagePaths.root}/logo/ncf.png"),
 
+  // Goals
+  goalFamily(path: "${ImagePaths.root}/goals/family.png"),
+  goalCareer(path: "${ImagePaths.root}/goals/career.png"),
+  goalWealth(path: "${ImagePaths.root}/goals/wealth.png"),
+
   // Avatars
   avatarBrownHair(path: "${ImagePaths.root}/avatars/avatar1.png"),
   avatarBlackGuy(path: "${ImagePaths.root}/avatars/avatar2.png"),
-  avatarPinkHair(path: "${ImagePaths.root}/avatars/avatar3.png"),
   avatarGreenBuns(path: "${ImagePaths.root}/avatars/avatar4.png"),
   avatarOrangePonytail(path: "${ImagePaths.root}/avatars/avatar5.png"),
+  avatarBlueTShirt(path: "${ImagePaths.root}/avatars/avatar6.png"),
+  avatarOrangeHoodie(path: "${ImagePaths.root}/avatars/avatar7.png"),
+  avatarBlueEarphones(path: "${ImagePaths.root}/avatars/avatar8.png"),
+  avatarBlueHairWhiteBlouse(path: "${ImagePaths.root}/avatars/avatar9.png"),
+
+  // Board Tiles
+  careerTile(path: "${ImagePaths.root}/board_tiles/career.png"),
+  educationTile(path: "${ImagePaths.root}/board_tiles/education.png"),
+  opportunityTile(path: "${ImagePaths.root}/board_tiles/opportunity.png"),
+  personalLifeTile(path: "${ImagePaths.root}/board_tiles/personal_life.png"),
+  worldEventTile(path: "${ImagePaths.root}/board_tiles/world_event.png"),
+  realEstatesTile(path: "${ImagePaths.root}/board_tiles/real_estate.png"),
+  businessTechnologyTile(
+      path: "${ImagePaths.root}/board_tiles/business_technology.png"),
+  businessEcommerceTile(
+      path: "${ImagePaths.root}/board_tiles/business_ecommerce.png"),
+  businessFnBTile(path: "${ImagePaths.root}/board_tiles/business_fnb.png"),
+  businessPharmaTile(
+      path: "${ImagePaths.root}/board_tiles/business_pharma.png"),
+  businessSocialMediaTile(
+      path: "${ImagePaths.root}/board_tiles/business_social_media.png"),
+  carTile(path: "${ImagePaths.root}/board_tiles/car.png"),
 
   // Budgeting
   budgetingJar0(path: "${ImagePaths.root}/budgeting/0.png"),
   budgetingJar25(path: "${ImagePaths.root}/budgeting/25.png"),
   budgetingJar50(path: "${ImagePaths.root}/budgeting/50.png"),
+  budgetingJar75(path: "${ImagePaths.root}/budgeting/75.png"),
   budgetingJar100(path: "${ImagePaths.root}/budgeting/100.png"),
 
   // Dashboard Icons
   dashboardBusiness(path: "${ImagePaths.root}/dashboard/business.png"),
   dashboardInvestment(path: "${ImagePaths.root}/dashboard/investments.png"),
   dashboardAssets(path: "${ImagePaths.root}/dashboard/assets.png"),
+  dashboardWorldEvent(path: "${ImagePaths.root}/dashboard/world_event.png"),
 
   // Business Sectors
   businessFoodAndBeverages(path: "${ImagePaths.root}/business_fnb.png"),
@@ -60,22 +88,25 @@ enum AlphaAssets {
       path: "${ImagePaths.root}/career/medicine_specialist.png"),
   careerMedicineSurgeon(path: "${ImagePaths.root}/career/medicine_surgeon.png"),
 
+  careerProgrammerJunior(
+      path: "${ImagePaths.root}/career/programmer_junior.png"),
+  careerProgrammerSenior(
+      path: "${ImagePaths.root}/career/programmer_senior.png"),
+  careerProgrammerManager(
+      path: "${ImagePaths.root}/career/programmer_manager.png"),
+
+  careerEngineerJunior(path: "${ImagePaths.root}/career/engineer_junior.png"),
+  careerEngineerSenior(path: "${ImagePaths.root}/career/engineer_senior.png"),
+  careerEngineerExecutive(
+      path: "${ImagePaths.root}/career/engineer_executive.png"),
+
   // Opportunity Icons
   opportunityQuestionMark(path: "${ImagePaths.root}/question_mark_icon.png"),
-  opportunityMoneyBag(path: "${ImagePaths.root}/opportunity_money_bag.png"),
-  opportunityCdcVoucher(path: "${ImagePaths.root}/opportunity_cdc_voucher.png"),
-  opportunityQuiz(path: "${ImagePaths.root}/opportunity_quiz.png"),
-  opportunityFined(path: "${ImagePaths.root}/opportunity_fined.png"),
-
-  // Jobs Hero Images
-  jobProgrammer(path: "${ImagePaths.root}/job_programmer.png"),
-
-  jobAssistantChef(path: "${ImagePaths.root}/job_assistant_chef.png"),
-  jobExecutiveChef(path: "${ImagePaths.root}/job_executive_chef.png"),
-
-  jobHouseman(path: "${ImagePaths.root}/job_houseman.png"),
-  jobResident(path: "${ImagePaths.root}/job_resident.png"),
-  jobDoctor(path: "${ImagePaths.root}/job_doctor.png"),
+  opportunityAudited(path: "${ImagePaths.root}/opportunity/audit.png"),
+  opportunityLottery(path: "${ImagePaths.root}/opportunity/lottery.png"),
+  opportunityLawsuit(path: "${ImagePaths.root}/opportunity/lawsuit.png"),
+  opportunityCharity(path: "${ImagePaths.root}/opportunity/charity.png"),
+  opportunityAngelInvestor(path: "${ImagePaths.root}/opportunity/lawsuit.png"),
 
   // Real Estate
   realEstateHdb(path: "${ImagePaths.root}/real_estate/hdb.png"),
@@ -83,6 +114,7 @@ enum AlphaAssets {
   realEstateBungalow(path: "${ImagePaths.root}/real_estate/bungalow.png"),
 
   // Car
+  car(path: "${ImagePaths.root}/car/car.png"),
   carPetrol(path: "${ImagePaths.root}/car/petrol.png"),
   carElectric(path: "${ImagePaths.root}/car/electric.png"),
   carHybrid(path: "${ImagePaths.root}/car/hybrid.png"),

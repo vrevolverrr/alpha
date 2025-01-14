@@ -10,19 +10,32 @@ class PlayerAvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: radius * 2,
-      height: radius * 2,
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: player.playerColor.color.withAlpha(160),
-        border: Border.all(width: (4.5 / 200.0) * radius),
-        image: DecorationImage(
-          image: AssetImage(player.playerAvatar.image.path),
-          fit: BoxFit.contain,
+    return Stack(
+      children: [
+        Container(
+          width: radius * 2,
+          height: radius * 2,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            border: Border.all(width: (4.5 / 200.0) * radius),
+          ),
         ),
-      ),
+        Container(
+          width: radius * 2,
+          height: radius * 2,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: player.playerColor.color.withAlpha(160),
+            border: Border.all(width: (4.5 / 200.0) * radius),
+            image: DecorationImage(
+              image: AssetImage(player.playerAvatar.image.path),
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

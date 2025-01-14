@@ -1,5 +1,9 @@
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/personal_life.dart';
+import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
 class PersonalLife extends ChangeNotifier {
   PersonalLifeStatus _status;
@@ -8,60 +12,64 @@ class PersonalLife extends ChangeNotifier {
 
   PersonalLifeStatus get status => _status;
 
-  /// Map to define the next possible status for each state
-  static const Map<PersonalLifeStatus, PersonalLifeStatus> nextStatusMap = {
-    PersonalLifeStatus.single: PersonalLifeStatus.dating,
-    PersonalLifeStatus.divorced: PersonalLifeStatus.dating,
-    PersonalLifeStatus.dating: PersonalLifeStatus.marriage,
-    PersonalLifeStatus.marriage: PersonalLifeStatus.family,
-  };
-
-  /// Map to define the previous possible status for each state
-  static const Map<PersonalLifeStatus, PersonalLifeStatus> previousStatusMap = {
-    PersonalLifeStatus.dating: PersonalLifeStatus.single,
-    PersonalLifeStatus.marriage: PersonalLifeStatus.divorced,
-  };
-
-  // Get the next stage in life, return the current status if invalid input
-  PersonalLifeStatus getNext() {
-    return nextStatusMap[status] ?? status;
-  }
-
-  // Get the previous stage in life, return the current status if invalid input
-  PersonalLifeStatus getPrevious() {
-    return previousStatusMap[status] ?? status;
-  }
-
   /// Advance the player's [PersonalLifeStatus] to the next
-  void pursueNext() {
-    _status = getNext();
+  void pursue(PersonalLifeStatus next) {
+    _status = next;
     notifyListeners();
   }
+}
 
-  void revert() {
-    _status = getPrevious();
-    notifyListeners();
+class PersonalLifeManager implements IManager {
+  static const PersonalLifeStatus initialStatus = PersonalLifeStatus.single;
+
+  @override
+  Logger log = Logger("PersonalLifeManager");
+
+  final Map<Player, PersonalLife> _personalLife = {};
+
+  void initialisePlayerPersonalLife(List<Player> players) {
+    for (final player in players) {
+      _personalLife[player] = PersonalLife(initial: initialStatus);
+    }
   }
 
-  List<PersonalLifeStatus> getList() {
-    List<PersonalLifeStatus> list =
-        List<PersonalLifeStatus>.empty(growable: true);
-    PersonalLifeStatus tempStatus = getPrevious();
+  PersonalLife getPersonalLife(Player player) {
+    return _personalLife[player]!;
+  }
 
-    // append the revertable status to the list
-    if (tempStatus != status) {
-      list.add(tempStatus);
+  bool canAffordNextStage(Player player) {
+    final double availableBalance = accountsManager.getAvailableBalance(player);
+    final next = getNextLifeStage(player);
+
+    return availableBalance >= next.cost;
+  }
+
+  void nextLifeStage(Player player) {
+    final personalLife = _personalLife[player]!;
+    final PersonalLifeStatus next = getNextLifeStage(player);
+
+    if (!canAffordNextStage(player)) {
+      log.warning("Player ${player.name} cannot afford next life stage");
+      return;
     }
 
-    // append the current status
-    list.add(status);
+    accountsManager.deductAny(player, next.cost);
+    statsManager.addHappiness(player, next.happinessBonus);
+    personalLife.pursue(next);
+  }
 
-    // append the pursueable status to the list
-    tempStatus = getNext();
-    if (tempStatus != status) {
-      list.add(tempStatus);
+  PersonalLifeStatus getNextLifeStage(Player player) {
+    final personalLife = _personalLife[player]!;
+
+    switch (personalLife.status) {
+      case PersonalLifeStatus.single:
+        return PersonalLifeStatus.dating;
+      case PersonalLifeStatus.dating:
+        return PersonalLifeStatus.marriage;
+      case PersonalLifeStatus.marriage:
+        return PersonalLifeStatus.family;
+      case PersonalLifeStatus.family:
+        return PersonalLifeStatus.family;
     }
-
-    return list;
   }
 }

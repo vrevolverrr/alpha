@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
@@ -53,7 +54,7 @@ class PlayerCard extends StatelessWidget {
                     border: Border.all(color: Colors.black, width: 2.0),
                     borderRadius: BorderRadius.circular(50.0)),
                 child: Text(
-                  player.skill.level.toString(),
+                  skillManager.getPlayerSkill(player).level.toString(),
                   style: TextStyles.bold20,
                 ),
               )
@@ -78,12 +79,12 @@ class PlayerCard extends StatelessWidget {
               ),
               const SizedBox(height: 15.0),
               Text(
-                "💵 ${player.savings.balance.prettyCurrency}",
+                "💵 ${accountsManager.getAvailableBalance(player).prettyCurrency}",
                 style: TextStyles.medium20,
               ),
               const SizedBox(height: 5.0),
               Text(
-                "❤️ ${player.stats.happiness}",
+                "❤️ ${statsManager.getPlayerStats(player).happiness}",
                 style: TextStyles.medium20,
               )
             ],

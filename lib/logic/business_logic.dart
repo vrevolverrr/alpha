@@ -1,10 +1,14 @@
 import 'dart:collection';
-import 'dart:math';
+import 'dart:math' hide log;
+import 'dart:math' as math;
 
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/business.dart';
+import 'package:alpha/logic/economy_logic.dart';
+import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
@@ -38,10 +42,30 @@ class BusinessSectorState {
         _numberOfBusinesses = 0,
         _state = SectorEconomicState.stable;
 
-  void updateState(SectorEconomicState newState) => _state = newState;
+  /// The economic state of the sector is updated by [EconomyManager] every round.
+  void updateState(EconomicCycle cycle) {
+    SectorEconomicState newState;
+
+    switch (cycle) {
+      case EconomicCycle.recession:
+        newState = SectorEconomicState.recession;
+        break;
+      case EconomicCycle.depression:
+        newState = SectorEconomicState.depression;
+        break;
+      case EconomicCycle.recovery:
+        newState = SectorEconomicState.stable;
+        break;
+      case EconomicCycle.boom:
+        newState = SectorEconomicState.growth;
+        break;
+    }
+
+    _state = newState;
+  }
 
   /// Increases the total market revenue of the sector based on the growth rate and sector state.
-  /// Total Market Revenue = Total Market Revenue * (Sector Economic State  + Growth Rate - 1)
+  /// Total Market Revenue = Total Market Revenue * (Sector Economic State + Growth Rate - 1)
   void updateMarketRevenue() {
     _totalMarketRevenue *= (_state.rate + sector.growthRate - 1);
   }
@@ -52,15 +76,18 @@ class BusinessSectorState {
 }
 
 class BusinessManager implements IManager {
-  late final Map<BusinessSector, BusinessSectorState> businessStates = {};
+  /// The maximum number of businesses there can be in a sector
+  static const int kMaxBusinesses = 10;
+
+  final Map<BusinessSector, BusinessSectorState> businessStates = {};
+
+  final Map<Player, BusinessVenture> _businessVentures = {};
 
   /// A list of businesses that have been created for the current turn.
   /// This allows us to always give the same businesses to the player in his turn.
   final List<Business> _cachedBusinesses = [];
   int _cachedTurn = -1;
 
-  /// The maximum number of businesses there can be in a sector
-  static const int kMaxBusinesses = 10;
   final Random _random = Random();
 
   @override
@@ -72,63 +99,166 @@ class BusinessManager implements IManager {
     }
   }
 
+  /// Initialise the business ventures for all players.
+  void initialisePlayerBusinesses(List<Player> players) {
+    for (Player player in players) {
+      _businessVentures[player] = BusinessVenture();
+    }
+  }
+
+  BusinessVenture getBusinessVenture(Player player) {
+    return _businessVentures[player]!;
+  }
+
+  /// Update the economic state of all business sectors.
   void updateBusinessStates() {
     for (BusinessSectorState state in businessStates.values) {
       state.updateMarketRevenue();
     }
   }
 
+  /// Get the state of a business sector.
   BusinessSectorState getBusinessState(BusinessSector sector) {
     return businessStates[sector]!;
   }
 
+  double getMarketShare(Business business) {
+    return 1 / (getBusinessState(business.sector).numberOfBusinesses);
+  }
+
+  /// Gets the number of businesses in a given business sector.
   int getBusinessCount(BusinessSector sector) {
     return getBusinessState(sector).numberOfBusinesses;
   }
 
-  bool buyBusiness(Business business, Player player) {
+  /// Buy a business in a sector for a player.
+  void buyBusiness(Business business, Player player) {
     BusinessSector sector = business.sector;
 
     if (getBusinessCount(sector) >= kMaxBusinesses) {
       log.warning(
           'Player ${player.name} tried to buy a business in sector $sector but the maximum number of businesses has been reached');
-      return false;
+      return;
     }
 
     final double cost = business.initialCost;
 
-    if (player.savings.balance < cost) {
+    final availableBalance = accountsManager.getAvailableBalance(player);
+
+    if (availableBalance < cost) {
       log.warning(
           'Player ${player.name} tried to buy a business in sector $sector but they do not have enough money');
-      return false;
+      return;
     }
 
-    player.savings.deduct(cost);
-    player.business.addBusiness(business);
+    accountsManager.deductAny(player, cost);
+    _businessVentures[player]!.addBusiness(business);
+    statsManager.addESG(player, business.esgRating);
+    businessStates[sector]!.incrementBusinessCount();
 
-    getBusinessState(sector).incrementBusinessCount();
-
-    return true;
+    log.info(
+        'Player ${player.name} bought business ${business.name} in sector $sector, ${businessStates[sector]!.numberOfBusinesses} businesses in sector');
   }
 
-  void sellBusiness(Business business, Player player) {}
+  /// Sell a business owned by a player.
+  void sellBusiness(Player player, Business business) {
+    final double businessValuation = calculateBusinessValuation(business);
+    _businessVentures[player]!.removeBusiness(business);
 
+    LoanRepaymentReceipt receipt =
+        loanManager.repayBusinessDebt(player, businessValuation);
+
+    final double netProfit = businessValuation - receipt.amountPaid;
+
+    /// Credit net profit if any
+    if (netProfit > 0) {
+      accountsManager.creditToSavings(player, netProfit);
+    }
+
+    statsManager.deductESG(player, business.esgRating);
+    businessStates[business.sector]!.decrementBusinessCount();
+
+    log.info(
+        'Player ${player.name} sold business ${business.name} for a profit of $netProfit, business debt: ${receipt.amountRemaining}');
+  }
+
+  /// Credit the earnings of all businesses to the player's savings account.
+  /// We first repay the business loan, then credit the net earnings to the player.
   void creditBusinessEarnings() {
     final players = playerManager.getAllPlayers();
 
     for (Player player in players) {
-      if (player.business.numBusinesses == 0) continue;
+      BusinessVenture venture = _businessVentures[player]!;
 
-      log.info("Crediting business earnings to player ${player.name}");
+      if (venture.numBusinesses == 0) continue;
 
-      for (Business business in player.business.ownedBusinesses) {
-        final double earnings = calculateBusinessEarnings(business);
-        player.savings.add(earnings);
+      double totalEarnings = 0.0;
+
+      for (Business business in venture.ownedBusinesses) {
+        totalEarnings += calculateBusinessEarnings(business);
       }
 
       log.info(
-          "Credited business earnings of ${player.business.numBusinesses} to player ${player.name}");
+          "Total earnings for player ${player.name}, ${venture.numBusinesses} businesses: $totalEarnings");
+
+      /// If the player has a loss, incur more business debt
+      if (totalEarnings < 0) {
+        loanManager.incurBusinessDebt(player, totalEarnings.abs());
+        log.info(
+            "Player ${player.name} incurred business debt of $totalEarnings");
+        continue;
+      }
+
+      /// Use business earnings to pay off business debt first
+      LoanRepaymentReceipt receipt =
+          loanManager.repayBusinessDebt(player, totalEarnings);
+
+      /// Clamp net earnings at zero, even if the player has a loss
+      /// The business loan is still paid regardless.
+      final double netEarnings = totalEarnings - receipt.amountPaid;
+
+      if (netEarnings > 0) {
+        accountsManager.creditToSavings(player, netEarnings);
+      }
+
+      log.info(
+          "Credited business earnings of ${venture.numBusinesses} businesses to player ${player.name}");
     }
+  }
+
+  double calculateBusinessValuation(Business business) {
+    // Base multiplier per sector
+    final Map<BusinessSector, double> sectorMultipliers = {
+      BusinessSector.technology: 3.0,
+      BusinessSector.eCommerce: 2.5,
+      BusinessSector.foodAndBeverage: 1.5,
+      BusinessSector.pharmaceutical: 2.8,
+      BusinessSector.influencer: 3.2,
+    };
+
+    // Calculate components
+    double revenue = calculateBusinessEarnings(business);
+    double marketShare =
+        1 / (getBusinessState(business.sector).numberOfBusinesses);
+
+    // Base valuation
+    double baseValue = revenue * (sectorMultipliers[business.sector] ?? 5.0);
+
+    // Market share impact (exponential scaling)
+    double marketShareMultiplier = 1 + (marketShare / 100) * 2;
+
+    // Final valuation
+    return max(1000.0, baseValue * marketShareMultiplier);
+  }
+
+  double getTotalBusinessValuation(Player player) {
+    double totalValuation = 0.0;
+
+    for (Business business in _businessVentures[player]!.ownedBusinesses) {
+      totalValuation += calculateBusinessValuation(business);
+    }
+
+    return totalValuation;
   }
 
   /// Calculate the earnings of a business in a sector.
@@ -139,7 +269,20 @@ class BusinessManager implements IManager {
 
     if (state.numberOfBusinesses == 0) return 0;
 
-    return state.totalMarketRevenue / state.numberOfBusinesses;
+    final double worldEventMultiplier =
+        worldEventManager.getSectorMultiplier(business.sector);
+
+    // Increased operational costs for dominant players
+    // to balance dominant businesses
+    double scaledCosts =
+        business.operationalCosts * (1 + (getMarketShare(business) * 1.2)); //
+
+    double earnings =
+        (state.totalMarketRevenue / state.numberOfBusinesses) - scaledCosts;
+
+    return earnings *
+        economyManager.getCycleMultiplier() *
+        worldEventMultiplier;
   }
 
   /// Calculate the cost of starting a business in a sector.
@@ -162,9 +305,6 @@ class BusinessManager implements IManager {
 
     businessCost = (businessCost / 100).round() * 100.0;
 
-    print(
-        "Business cost: $businessCost, base cost: $baseCost, esg penalty: $esgCostPenalty, random factor: $randomFactor");
-
     return businessCost.clamp(1000.0, double.infinity);
   }
 
@@ -177,7 +317,10 @@ class BusinessManager implements IManager {
     } while (_cachedBusinesses.any((business) => business.name == name));
 
     // Generate a random ESG rating rounded to 10
-    final int esgRating = ((Random().nextInt(100) + 1) / 10).round() * 10;
+    final double rawValue =
+        -50 * math.log(Random().nextDouble()); // Exponential distribution
+    final int esgRating =
+        (min(max(rawValue, 0), 100) / 10).round() * 10; // Clamp and round
 
     // Calculate the ESG scale factor, up to 45% reduction in costs
     final double esgScaleFactor = 1 - pow(esgRating / 100, 2) * 0.45;
@@ -243,15 +386,13 @@ class BusinessManager implements IManager {
   }
 }
 
-class BusinessVentures extends ChangeNotifier {
+class BusinessVenture extends ChangeNotifier {
   final List<Business> _ownedBusinesses = [];
 
   UnmodifiableListView get ownedBusinesses =>
       UnmodifiableListView(_ownedBusinesses);
 
   int get numBusinesses => _ownedBusinesses.length;
-
-  BusinessVentures();
 
   void addBusiness(Business business) {
     _ownedBusinesses.add(business);
@@ -264,7 +405,7 @@ class BusinessVentures extends ChangeNotifier {
   }
 }
 
-class Business {
+class Business extends Equatable {
   final String name;
   final BusinessSector sector;
   final int marketShare;
@@ -272,13 +413,17 @@ class Business {
   final double initialCost;
   final double operationalCosts;
 
-  Business(
+  const Business(
       {required this.name,
       required this.sector,
       required this.marketShare,
       required this.esgRating,
       required this.initialCost,
       required this.operationalCosts});
+
+  @override
+  List<Object?> get props =>
+      [name, sector, marketShare, esgRating, initialCost, operationalCosts];
 }
 
 class BusinessNameGenerator {

@@ -1,19 +1,93 @@
 import 'package:alpha/assets.dart';
-import 'package:alpha/logic/data/opportunity.dart';
+import 'package:alpha/logic/opportunity_logic.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
+import 'package:flip_card/flip_card.dart';
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 
-class OpportunityCardBack extends StatelessWidget {
+final List<Color> cardColors = [
+  const Color(0xFFE57373),
+  const Color(0xFF5ED4C8),
+  const Color(0xFFFFB74D),
+  const Color(0xFFAAB8FD),
+];
+
+enum OCardSide { front, back }
+
+class OpportunityCardController {
+  final FlipCardController controller = FlipCardController();
+
+  OCardSide _side = OCardSide.back;
+  OCardSide get side => _side;
+
+  void openCard() {
+    if (_side == OCardSide.front) {
+      return;
+    }
+
+    controller.toggleCard();
+    _side = OCardSide.front;
+  }
+
+  void closeCard() {
+    if (_side == OCardSide.back) {
+      return;
+    }
+
+    controller.toggleCard();
+    _side = OCardSide.back;
+  }
+}
+
+class FlippableOpportunityCard extends StatefulWidget {
+  final OpportunityCardController controller;
   final Opportunity opportunity;
-  const OpportunityCardBack({super.key, required this.opportunity});
+
+  const FlippableOpportunityCard(
+      {super.key, required this.controller, required this.opportunity});
+
+  @override
+  State<FlippableOpportunityCard> createState() =>
+      _FlippableOpportunityCardState();
+}
+
+class _FlippableOpportunityCardState extends State<FlippableOpportunityCard> {
+  late final OpportunityCardController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlipCard(
+      side: CardSide.BACK,
+      flipOnTouch: false,
+      controller: _controller.controller,
+      direction: FlipDirection.HORIZONTAL,
+      front: OpportunityCardFront(opportunity: widget.opportunity),
+      back: OpportunityCardBack(
+        cardColor: getOpportunityColor(widget.opportunity),
+      ),
+    );
+  }
+}
+
+class OpportunityCardBack extends StatelessWidget {
+  final Color cardColor;
+  const OpportunityCardBack({super.key, required this.cardColor});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 350,
-      height: 450,
-      child: CardBack(opportunity: opportunity),
+      width: 350.0,
+      height: 450.0,
+      child: CardBack(
+        cardColor: cardColor,
+      ),
     );
   }
 }
@@ -25,8 +99,8 @@ class OpportunityCardFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 350,
-      height: 450,
+      width: 350.0,
+      height: 450.0,
       child: CardFront(opportunity: opportunity),
     );
   }
@@ -53,36 +127,15 @@ class _QuestionMarkIcon extends StatelessWidget {
   }
 }
 
-class _CardIcon extends StatelessWidget {
-  // Widget for the question mark icon on each card
-  final Opportunity opportunity;
-
-  const _CardIcon({required this.opportunity});
-
-  @override
-  Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: const Offset(0.0, 35.0),
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Image.asset(
-          opportunity.asset.path,
-          height: 300.0,
-        ),
-      ),
-    );
-  }
-}
-
 class CardBack extends StatelessWidget {
-  final Opportunity opportunity;
+  final Color cardColor;
 
-  const CardBack({super.key, required this.opportunity});
+  const CardBack({super.key, required this.cardColor});
 
   @override
   Widget build(BuildContext context) {
-    return AlphaAnimatedContainer(
-        color: opportunity.colorPrimary,
+    return AlphaContainer(
+        color: cardColor,
         child: Stack(children: [
           Container(
             width: double.infinity,
@@ -105,62 +158,32 @@ class CardFront extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlphaAnimatedContainer(
-        color: opportunity.colorPrimary,
-        child: Stack(alignment: Alignment.topCenter, children: [
+    return AlphaContainer(
+        color: getOpportunityColor(opportunity),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Container(
-            width: double.infinity,
-            height: 500.0,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0)),
-            ),
-          ),
-          _CardIcon(opportunity: opportunity),
-          Padding(
-            padding: const EdgeInsets.only(top: 280),
-            child: Container(
-              width: 290,
-              height: 70,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: opportunity.colorSecondary,
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.grey.shade600, offset: const Offset(0, 2.5))
+            width: 230.0,
+            height: 230.0,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: const [
+                  BoxShadow(color: Colors.black, offset: Offset(0, 3.0))
                 ],
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10.0),
-                    topRight: Radius.circular(10.0),
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0)),
-              ),
-              child: Container(
-                width: 250,
-                height: 80,
-                alignment: Alignment.center,
-                child: Text(
-                  textAlign: TextAlign.center,
-                  opportunity.titleName,
-                  style: TextStyles.bold20,
-                ),
-              ),
+                border: Border.all(color: Colors.black87, width: 4.0)),
+            child: Image.asset(
+              opportunity.image.path,
+              fit: BoxFit.contain,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 350),
-            child: Container(
-              width: 250,
-              height: 80,
-              alignment: Alignment.center,
-              child: Text(
-                textAlign: TextAlign.center,
-                opportunity.description,
-                style: const TextStyle(fontSize: 12),
-              ),
-            ),
-          )
+          const SizedBox(height: 30.0),
+          Text(opportunity.title, style: TextStyles.bold30),
+          const SizedBox(height: 10.0),
+          Text(opportunity.description, style: TextStyles.bold18),
         ]));
   }
+}
+
+Color getOpportunityColor(Opportunity opportunity) {
+  return cardColors[opportunity.title.hashCode % cardColors.length];
 }

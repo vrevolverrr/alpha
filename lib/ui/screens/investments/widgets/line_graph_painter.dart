@@ -95,6 +95,7 @@ class LineGraphPainter extends CustomPainter {
     }
   }
 
+  /** 
   void _drawPriceLineShadow(Canvas canvas) {
     final Paint linePaint = Paint()
       ..color = Colors.black
@@ -111,6 +112,7 @@ class LineGraphPainter extends CustomPainter {
       canvas.drawLine(p1, p2, linePaint);
     }
   }
+  */
 
   void _drawXLabels(Canvas canvas, Size size) {
     const style = TextStyle(

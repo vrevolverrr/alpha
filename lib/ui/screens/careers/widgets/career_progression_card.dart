@@ -68,9 +68,9 @@ class CareerProgressionCard extends StatelessWidget {
             ),
             const SizedBox(width: 15.0),
             _GenericTitleValue(
-              "XP Required",
-              job.skillRequirement.toString(),
-              width: 120.0,
+              "Level Required",
+              "Level ${job.levelRequirement}",
+              width: 140.0,
             )
           ],
         )

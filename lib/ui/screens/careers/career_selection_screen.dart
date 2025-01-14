@@ -6,13 +6,13 @@ import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/careers/dialogs/job_success_dialog.dart';
 import 'package:alpha/ui/screens/careers/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/careers/widgets/job_selection_card.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 
-// TODO optimise as stateless widget, move career jobs list to a separate widget
 class JobSelectionScreen extends StatefulWidget {
   const JobSelectionScreen({super.key});
 
@@ -59,9 +59,10 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
     /// This function is called when the user confirms the job selection in the dialog
     careerManager.employ(activePlayer, _selectedJob, gameManager.round);
 
-    AlphaDialogBuilder successDialog = _buildDialogSuccess(context, () {
+    AlphaDialogBuilder successDialog =
+        buildJobSuccessDialog(context, _selectedJob, () {
       context.dismissDialog();
-      context.navigateAndPopTo(const DashboardScreen());
+      context.navigateAndPopTo(DashboardScreen());
     });
 
     context.showDialog(successDialog);
@@ -161,7 +162,7 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
                     ),
                     Expanded(
                       child: SizedBox(
-                        height: 410.0,
+                        height: 440.0,
                         width: double.infinity,
                         child: ListView(
                           clipBehavior: Clip.hardEdge,
@@ -218,34 +219,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           ),
           cancel: DialogButtonData.cancel(context),
           next: DialogButtonData.confirm(onTap: onTapConfirm));
-
-  AlphaDialogBuilder _buildDialogSuccess(
-          BuildContext context, void Function() onTapConfirm) =>
-      AlphaDialogBuilder(
-          title: "Congratulations",
-          child: Column(
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "You're now working as ${singularArticle(_selectedJob.title)}.",
-                  style: TextStyles.bold20,
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              const Text("Your salary per round is"),
-              Text(_selectedJob.salary.prettyCurrency,
-                  style: const TextStyle(
-                      color: Color(0xFF38A83C),
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.w700)),
-              const SizedBox(
-                height: 15.0,
-              ),
-            ],
-          ),
-          next: DialogButtonData(
-              title: "Proceed", width: 380.0, onTap: onTapConfirm));
 
   /// Utility Methods
   static bool _isQualified(Job job) =>

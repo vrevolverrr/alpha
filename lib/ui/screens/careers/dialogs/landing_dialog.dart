@@ -13,6 +13,7 @@ class CareerSelectionLandingDialog extends StatelessWidget {
           Text(
             "Getting a job is the first step to financial independence. "
             "Earn salary every round and save up for other assets and investments. "
+            "Each time you land on this tile, you can choose to progress in your career. "
             "You can change your career afterwards.",
             style: TextStyles.medium22,
             textAlign: TextAlign.center,

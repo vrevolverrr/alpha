@@ -1,9 +1,10 @@
 import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';
 
 class LifeGoalSelector extends StatelessWidget {
-  final PlayerLifeGoal goal;
+  final PlayerGoals goal;
   final bool selected;
 
   const LifeGoalSelector(
@@ -15,9 +16,53 @@ class LifeGoalSelector extends StatelessWidget {
       scale: selected ? 1.08 : 1.0,
       duration: Durations.short3,
       curve: Curves.easeInOut,
-      child: const AlphaContainer(
+      child: AlphaContainer(
         width: 190.0,
         height: 210.0,
+        padding: const EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 95.0,
+                  height: 95.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xfffcf7e8),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0xff000000),
+                          offset: Offset(0, 4),
+                        )
+                      ],
+                      border: Border.all(
+                          color: const Color(0xff383838), width: 2.5)),
+                ),
+                Container(
+                  width: 85.0,
+                  height: 85.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xfffcf7e8),
+                      border: Border.all(
+                          color: const Color(0xff383838), width: 2.5)),
+                ),
+                SizedBox(
+                  width: 95.0,
+                  height: 95.0,
+                  child: Image.asset(goal.image.path),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Text(goal.title, style: TextStyles.bold16),
+            Text(goal.description,
+                textAlign: TextAlign.center,
+                style: TextStyles.medium14.copyWith(height: 1.6)),
+          ],
+        ),
       ),
     );
   }

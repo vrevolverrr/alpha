@@ -1,10 +1,24 @@
 import 'dart:collection';
 
-import 'package:alpha/logic/data/budget.dart';
+import 'package:alpha/logic/common/interfaces.dart';
+import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/services.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
-class BudgetManager {}
+enum Budget {
+  dailyExpenses("Daily Expenses", priority: 5),
+  selfImprovement("Self Improvement", priority: 4),
+  recreational("Recreational", priority: 3),
+  investments("Investment", priority: 2),
+  savings("Savings", priority: 1);
+
+  final String title;
+  final int priority;
+
+  const Budget(this.title, {required this.priority});
+}
 
 class BudgetAllocation extends ChangeNotifier {
   late Map<Budget, int> _budgets;
@@ -39,16 +53,6 @@ class BudgetAllocation extends ChangeNotifier {
 
     final int proportionSum = sum<int>(_budgets.values);
 
-    if (proportionSum == 10) {
-      valid.value = true;
-      return;
-    }
-
-    if (proportionSum < 10) {
-      valid.value = false;
-      return;
-    }
-
     /// Else > 10, decrement the least priority budget by the exceeded amount.
     int excess = proportionSum - 10;
 
@@ -68,5 +72,51 @@ class BudgetAllocation extends ChangeNotifier {
       excess -= this[b] - newBudget as int;
       _budgets[b] = newBudget >= 0 ? newBudget : 0;
     }
+
+    if (proportionSum >= 10 && _budgets[Budget.dailyExpenses]! > 0) {
+      valid.value = true;
+      return;
+    }
+
+    if (proportionSum < 10 || _budgets[Budget.dailyExpenses]! <= 0) {
+      valid.value = false;
+      return;
+    }
+
+    valid.value = false;
+  }
+}
+
+class BudgetManager implements IManager {
+  /// 10% of total budget is equivalent to 100 exp
+  static const kHappinessPerBudget = 2;
+
+  /// 10% of total budget is equivalent to 2 happiness
+  static const kSkillExpPerBudget = 100;
+
+  @override
+  Logger log = Logger("BudgetManager");
+
+  void applyBudget(Player player, BudgetAllocation allocation) {
+    final double totalBudget = accountsManager.getUnbudgetedSavings(player);
+
+    accountsManager.creditToSavings(
+        player, totalBudget * allocation[Budget.savings]! / 10);
+    accountsManager.creditToInvestments(
+        player, totalBudget * allocation[Budget.investments]! / 10);
+
+    /// Credit skill level based on budget allocation
+    final int exp = allocation[Budget.selfImprovement]! * kSkillExpPerBudget;
+    skillManager.addExp(player, exp);
+
+    /// Credit happiness based on budget allocation
+    final int happiness =
+        allocation[Budget.recreational]! * kHappinessPerBudget;
+    statsManager.addHappiness(player, happiness);
+
+    accountsManager.clearUnbudgetedSavings(player);
+
+    log.info(
+        "Budget applied for ${player.name}, skill bonus: $exp, happiness bonus: $happiness");
   }
 }

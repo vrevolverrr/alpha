@@ -53,7 +53,7 @@ class RealEstateListing extends StatelessWidget {
                   _GenericTitleValue(
                       title: "Growth Rate",
                       child: Text(
-                        "${realEstate.growthRate.toString()}%",
+                        "${((realEstate.growthRate - 1.0) * 100).toStringAsFixed(1)}%",
                         style: TextStyles.bold20,
                       )),
                 ],

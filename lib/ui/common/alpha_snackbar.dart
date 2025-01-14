@@ -42,7 +42,7 @@ class _AlphaSnackbarState extends State<AlphaSnackbar>
         builder: (BuildContext context, Widget? child) => Transform.translate(
               offset: Offset(0.0, _snackAnimation.value),
               child: Container(
-                width: 580.0,
+                width: 630.0,
                 height: 60.0,
                 padding: const EdgeInsets.fromLTRB(20.0, .0, 20.0, .0),
                 alignment: Alignment.centerLeft,

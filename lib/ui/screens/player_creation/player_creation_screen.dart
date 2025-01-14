@@ -18,10 +18,10 @@ class PlayerCreationScreen extends StatefulWidget {
 
 class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   String _playerName = "";
-  PlayerColor _selectedColor = PlayerColor.red;
-  PlayerLifeGoal _selectedGoal = PlayerLifeGoal.family;
+  PlayerGoals _selectedGoal = PlayerGoals.family;
 
   late final PlayerAvatarSelectorController _avatarController;
+  PlayerColor _selectedColor = playerManager.getAvailableColors().first;
 
   void _handlePlayerNameEditingComplete(String name) {
     _playerName = name.trim();
@@ -33,7 +33,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
     });
   }
 
-  void _handleGoalSelection(PlayerLifeGoal goal) {
+  void _handleGoalSelection(PlayerGoals goal) {
     setState(() {
       _selectedGoal = goal;
     });
@@ -44,8 +44,8 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
       return;
     }
 
-    playerManager.createPlayer(
-        _playerName, _avatarController.selectedAvatar, _selectedColor);
+    playerManager.createPlayer(_playerName, _avatarController.selectedAvatar,
+        _selectedColor, _selectedGoal);
 
     Navigator.pop(context);
   }
@@ -72,58 +72,76 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                 backgroundColor: _selectedColor.color,
               ),
               const SizedBox(width: 60.0),
-              // ignore: prefer_const_constructors
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                    child: Text(
-                      "Player Name",
-                      style: TextStyles.bold24,
-                    ),
-                  ),
-                  AlphaContainer(
-                      width: 480.0,
-                      padding: const EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 4.0),
-                      child: TextField(
-                        style: TextStyles.medium20,
-                        onChanged: (name) =>
-                            _handlePlayerNameEditingComplete(name),
-                        decoration: const InputDecoration(
-                            hintText: "Enter player name",
-                            hintStyle: TextStyles.medium18,
-                            border: InputBorder.none),
-                      )),
-                  const SizedBox(height: 25.0),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                    child: Text(
-                      "Colour",
-                      style: TextStyles.bold24,
-                    ),
-                  ),
-                  Row(
-                    children: playerManager
-                        .getAvailableColors()
-                        .map((color) => _buildPlayerColorSelector(color))
-                        .toList(),
-                  ),
-                  const SizedBox(height: 20.0),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                    child: Text(
-                      "Life Goal",
-                      style: TextStyles.bold24,
-                    ),
-                  ),
                   SizedBox(
-                    height: 220.0,
-                    child: Row(
-                      children: PlayerLifeGoal.values.map((goal) {
-                        return _buildLifeGoalSelector(goal);
-                      }).toList(),
+                    height: 570.0,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
+                            child: Text(
+                              "Player Name",
+                              style: TextStyles.bold24,
+                            ),
+                          ),
+                          AlphaContainer(
+                              width: 480.0,
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0, top: 4.0),
+                              child: TextField(
+                                style: TextStyles.medium20,
+                                onChanged: (name) =>
+                                    _handlePlayerNameEditingComplete(name),
+                                decoration: const InputDecoration(
+                                    hintText: "Enter player name",
+                                    hintStyle: TextStyles.medium18,
+                                    border: InputBorder.none),
+                              )),
+                          const SizedBox(height: 25.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
+                            child: Text(
+                              "Colour",
+                              style: TextStyles.bold24,
+                            ),
+                          ),
+                          Row(
+                            children: playerManager
+                                .getAvailableColors()
+                                .map(
+                                    (color) => _buildPlayerColorSelector(color))
+                                .toList(),
+                          ),
+                          const SizedBox(height: 20.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
+                            child: Text(
+                              "Starting Career",
+                              style: TextStyles.bold24,
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10.0, bottom: 10.0),
+                            child: Text(
+                              "Life Goal",
+                              style: TextStyles.bold24,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 220.0,
+                            child: Row(
+                              children: PlayerGoals.values.map((goal) {
+                                return _buildLifeGoalSelector(goal);
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 35.0),
@@ -137,7 +155,6 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 20.0),
         ]);
   }
 
@@ -154,7 +171,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
     );
   }
 
-  Widget _buildLifeGoalSelector(PlayerLifeGoal goal) {
+  Widget _buildLifeGoalSelector(PlayerGoals goal) {
     return Padding(
       padding: const EdgeInsets.only(right: 25.0),
       child: GestureDetector(

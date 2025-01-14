@@ -6,12 +6,10 @@ import 'package:alpha/ui/screens/business/business_selection_screen.dart';
 import 'package:alpha/ui/screens/car/car_screen.dart';
 import 'package:alpha/ui/screens/careers/career_screen.dart';
 import 'package:alpha/ui/screens/education/education_selection_screen.dart';
-import 'package:alpha/ui/screens/careers/career_selection_screen.dart';
 import 'package:alpha/ui/screens/opportunity/opportunity_screen.dart';
 import 'package:alpha/ui/screens/personal_life/personal_life_screen.dart';
 import 'package:alpha/ui/screens/real_estate/real_estate_screen.dart';
 import 'package:alpha/ui/screens/select_tile/widget/gametile_card.dart';
-import 'package:alpha/ui/screens/world_event/world_event_selection.dart';
 import 'package:flutter/material.dart';
 
 class TileSelectionScreen extends StatefulWidget {
@@ -49,7 +47,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         nextScreen = const CareerScreen();
         break;
       case 2:
-        nextScreen = const WheelSpinScreen();
+        nextScreen = const SizedBox();
         break;
       case 3:
         nextScreen = const OpportunityScreen();
@@ -58,7 +56,7 @@ class _TileSelectionScreenState extends State<TileSelectionScreen> {
         nextScreen = const BusinessSelectionScren();
         break;
       case 5:
-        nextScreen = const PersonalLifeScreen();
+        nextScreen = PersonalLifeScreen();
         break;
       case 6:
         nextScreen = const RealEstateScreen();

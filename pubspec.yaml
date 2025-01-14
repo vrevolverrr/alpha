@@ -2,7 +2,7 @@ name: alpha
 description: "The companion app for the IIC Cashflow Game"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.0.1+1
+version: 0.0.1+2
 
 environment:
   sdk: ">=3.3.1 <4.0.0"
@@ -22,6 +22,10 @@ dependencies:
   carousel_slider: ^5.0.0
   auto_size_text: ^3.0.0
   equatable: ^2.0.7
+  flip_card: ^0.7.0
+  flutter_animate: ^4.5.2
+  dev: ^1.0.0
+  flutter_launcher_icons: ^0.14.2
 
 dev_dependencies:
   flutter_test:
@@ -35,13 +39,16 @@ flutter:
     - assets/anim/
     - assets/images/
     - assets/images/avatars/
-    - assets/images/logo/
-    - assets/images/dashboard/
     - assets/images/budgeting/
-    - assets/images/career/
-    - assets/images/real_estate/
+    - assets/images/board_tiles/
     - assets/images/car/
+    - assets/images/career/
+    - assets/images/dashboard/
+    - assets/images/logo/
+    - assets/images/opportunity/
     - assets/images/personal_life/
+    - assets/images/real_estate/
+    - assets/images/goals/
 
   fonts:
     - family: PublicSans
@@ -65,28 +72,7 @@ flutter:
         - asset: assets/fonts/MazzardH/MazzardH-Medium.ttf
           weight: 500
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+flutter_launcher_icons:
+  ios: true
+  image_path: "assets/images/icon/icon.png"
+  remove_alpha_ios: true

@@ -1,11 +1,9 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/services.dart';
-import 'package:alpha/styles.dart';
-import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dice_roll/widgets/dice_roll_anim.dart';
-import 'package:alpha/ui/screens/select_tile/select_tile_screen.dart';
+import 'package:alpha/ui/screens/game_tile/game_tile_screen.dart';
 import 'package:flutter/material.dart';
 
 class DiceRollScreen extends StatefulWidget {
@@ -31,47 +29,29 @@ class _DiceRollScreenState extends State<DiceRollScreen>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
   void _diceRollInProgress(BuildContext context) {
     AlphaScaffold.of(context)
         .showSnackbar(message: "✋🏼 The dice is already rolling");
   }
 
   void _handleRollDice(BuildContext context) {
-    int dice = gameManager.rollDice();
-
-    AlphaDialogBuilder dialog = AlphaDialogBuilder(
-        title: "DICE ROLL",
-        next: DialogButtonData(
-            width: 440.0,
-            title: "I have moved my piece",
-            onTap: () {
-              context.dismissDialog();
-              context.navigateAndPopTo(const TileSelectionScreen());
-            }),
-        child: Column(
-          children: <Widget>[
-            const Text(
-              "You rolled a",
-              style: TextStyles.medium22,
-            ),
-            SizedBox(
-                height: 150.0,
-                child: Text(
-                  dice.toString(),
-                  style: const TextStyle(fontSize: 130.0, height: 0.0),
-                ))
-          ],
-        ));
+    gameManager.rollDice();
 
     setState(() {
       _hasRolledDice = true;
       _animController.reset();
       _animController.forward();
 
-      Future.delayed(const Duration(milliseconds: 1500), () {
+      Future.delayed(const Duration(milliseconds: 1800), () {
         if (!mounted) return;
         // ignore: use_build_context_synchronously
-        context.showDialog(dialog);
+        context.navigateTo(GameTileScreen());
       });
     });
   }

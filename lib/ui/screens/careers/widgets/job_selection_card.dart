@@ -4,6 +4,7 @@ import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class JobSelectionCard extends StatelessWidget {
   final Job job;
@@ -27,37 +28,40 @@ class JobSelectionCard extends StatelessWidget {
         duration: const Duration(milliseconds: 120),
         child: Stack(
           children: <Widget>[
-            AlphaAnimatedContainer(
-                duration: const Duration(milliseconds: 120),
-                shadowOffset:
-                    !selected ? const Offset(0.5, 3.0) : const Offset(5.0, 6.0),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: double.infinity,
-                      height: 200.0,
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(15.0),
-                              topRight: Radius.circular(15.0)),
-                          color: !disabled
-                              ? const Color(0xffFEA079)
-                              : const Color(0xffBDBDBD)),
-                    ),
-                    const SizedBox(height: 20.0),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          job.title,
-                          style: TextStyles.bold25,
-                        ),
-                        const SizedBox(height: 6.0),
-                        JobDescriptionTagCollection(
-                            job: job, disabled: disabled)
-                      ],
-                    ),
-                  ],
-                )),
+            Animate(
+              child: AlphaAnimatedContainer(
+                  duration: const Duration(milliseconds: 120),
+                  shadowOffset: !selected
+                      ? const Offset(0.5, 3.0)
+                      : const Offset(5.0, 6.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        width: double.infinity,
+                        height: 200.0,
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15.0),
+                                topRight: Radius.circular(15.0)),
+                            color: !disabled
+                                ? const Color(0xffFEA079)
+                                : const Color(0xffBDBDBD)),
+                      ),
+                      const SizedBox(height: 20.0),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            job.title,
+                            style: TextStyles.bold25,
+                          ),
+                          const SizedBox(height: 10.0),
+                          JobDescriptionTagCollection(
+                              job: job, disabled: disabled)
+                        ],
+                      ),
+                    ],
+                  )),
+            ),
             _JobHeroImage(asset: job.asset, disabled: disabled),
             RenderIfFalse(condition: eligible, child: _IneligibleBanner())
           ],
@@ -129,7 +133,7 @@ class _IneligibleBanner extends StatelessWidget {
           transform: Matrix4.identity()
             ..translate(0.0, -45.0)
             ..scale(1.06, 1.06, 1.0),
-          width: 315.0,
+          width: 330.0,
           height: 45.0,
           padding: const EdgeInsets.only(top: 4.0),
           decoration: BoxDecoration(
@@ -155,6 +159,8 @@ class _JobDescriptionTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 150.0,
+      height: 40.0,
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 3.0),
       decoration: BoxDecoration(
           color: !disabled ? const Color(0xffB5D2AD) : const Color(0xffBDBDBD),
@@ -165,7 +171,7 @@ class _JobDescriptionTag extends StatelessWidget {
           ]),
       child: Text(
         title,
-        style: TextStyles.medium14,
+        style: TextStyles.medium18,
       ),
     );
   }
@@ -188,11 +194,11 @@ class JobDescriptionTagCollection extends StatelessWidget {
         verticalDirection: VerticalDirection.up,
         children: <Widget>[
           _JobDescriptionTag(
-            title: "💵 \$${job.salary.toStringAsFixed(0)}",
+            title: "⭐ Level ${job.levelRequirement}",
             disabled: disabled,
           ),
           _JobDescriptionTag(
-            title: "🕒 ${job.timeConsumed}",
+            title: "💵 \$${job.salary}",
             disabled: disabled,
           ),
         ],

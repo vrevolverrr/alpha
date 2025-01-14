@@ -1,7 +1,10 @@
+import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/stocks.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
+import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
 class Account extends ChangeNotifier {
   /// Interest rate in percent (%)
@@ -33,25 +36,6 @@ class Account extends ChangeNotifier {
   }
 }
 
-class DebtAccount extends Account {
-  DebtAccount({double initial = 0.0}) : super(initial, interest: 0.0);
-
-  @override
-  double get balance => -1 * super.balance;
-
-  void repay(double amount) {
-    if (amount > balance) {
-      amount = balance;
-    }
-
-    deduct(amount);
-  }
-
-  void borrow(double amount) {
-    add(amount);
-  }
-}
-
 class CPFAccount extends Account {
   CPFAccount({double initial = 0.0}) : super(initial, interest: 12.0);
 }
@@ -63,7 +47,6 @@ class SavingsAccount extends Account {
   SavingsAccount({double initial = 0.0}) : super(initial, interest: 2.5);
 
   double get unbudgeted => _unbudgeted;
-  String get sUnbudgeted => _unbudgeted.toStringAsFixed(2);
 
   void addUnbudgeted(double amount) {
     add(amount);
@@ -286,4 +269,148 @@ class ShareOwnership {
     this.units = 0,
     this.buyinPrice = 0.0,
   });
+}
+
+class PlayerAccount extends ChangeNotifier {
+  final SavingsAccount savings = SavingsAccount();
+  final CPFAccount cpf = CPFAccount();
+  final InvestmentAccount investments = InvestmentAccount();
+
+  double get availableBalance => savings.balance + investments.balance;
+
+  double get totalBalance =>
+      savings.balance + cpf.balance + investments.balance;
+
+  PlayerAccount(
+      {double savingsInitial = 0.0,
+      double cpfInitial = 0.0,
+      double investmentsInitial = 0.0}) {
+    savings.add(savingsInitial);
+    cpf.add(cpfInitial);
+    investments.add(investmentsInitial);
+
+    savings.addListener(() => notifyListeners());
+    cpf.addListener(() => notifyListeners());
+    investments.addListener(() => notifyListeners());
+  }
+}
+
+class AccountsManager implements IManager {
+  static const kCPFRate = 0.2;
+
+  @override
+  final Logger log = Logger("AccountManager");
+
+  final Map<Player, PlayerAccount> _playerAccounts = {};
+
+  void initialisePlayerAccounts(List<Player> players) {
+    for (final player in players) {
+      _playerAccounts[player] =
+          PlayerAccount(savingsInitial: 5000, investmentsInitial: 1000);
+    }
+  }
+
+  PlayerAccount getPlayerAccount(Player player) {
+    return _playerAccounts[player]!;
+  }
+
+  InvestmentAccount getInvestmentAccount(Player player) {
+    return getPlayerAccount(player).investments;
+  }
+
+  SavingsAccount getSavingsAccount(Player player) {
+    return getPlayerAccount(player).savings;
+  }
+
+  double getAvailableBalance(Player player) {
+    return getPlayerAccount(player).availableBalance;
+  }
+
+  double getUnbudgetedSavings(Player player) {
+    return getPlayerAccount(player).savings.unbudgeted;
+  }
+
+  void clearUnbudgetedSavings(Player player) {
+    getPlayerAccount(player).savings.clearUnbudgeted();
+  }
+
+  double getTotalBalance(Player player) {
+    return getPlayerAccount(player).totalBalance;
+  }
+
+  void creditInterest() {
+    for (final player in _playerAccounts.keys) {
+      _playerAccounts[player]!.investments.returnOnInterest();
+      _playerAccounts[player]!.cpf.returnOnInterest();
+      _playerAccounts[player]!.savings.returnOnInterest();
+    }
+  }
+
+  void creditToSavings(Player player, double amount) {
+    getPlayerAccount(player).savings.add(amount);
+    log.info("Credited $amount to player ${player.name}'s savings account.");
+  }
+
+  void creditToCPF(Player player, double amount) {
+    getPlayerAccount(player).cpf.add(amount);
+    log.info("Credited $amount to player ${player.name}'s CPF account.");
+  }
+
+  void creditToInvestments(Player player, double amount) {
+    getPlayerAccount(player).investments.add(amount);
+    log.info("Credited $amount to player ${player.name}'s investment account.");
+  }
+
+  void deductFromSavings(Player player, double amount) {
+    PlayerAccount account = getPlayerAccount(player);
+
+    if (account.savings.balance < amount) {
+      log.warning(
+          "Player ${player.name} does not have enough money in their savings account to deduct $amount, ignoring.");
+      return;
+    }
+
+    account.savings.deduct(amount);
+    log.info("Deducted $amount from player ${player.name}'s savings account.");
+  }
+
+  void deductFromInvestments(Player player, double amount) {
+    PlayerAccount account = getPlayerAccount(player);
+
+    if (account.investments.balance < amount) {
+      log.warning(
+          "Player ${player.name} does not have enough money in their investment account to deduct $amount, ignoring.");
+      return;
+    }
+
+    account.investments.deduct(amount);
+    log.info(
+        "Deducted $amount from player ${player.name}'s investment account.");
+  }
+
+  void deductAny(Player player, double amount) {
+    PlayerAccount account = getPlayerAccount(player);
+
+    if (account.savings.balance + account.investments.balance < amount) {
+      log.warning(
+          "Player ${player.name} does not have enough money in their savings and investment account to deduct $amount, ignoring.");
+      return;
+    }
+
+    if (account.savings.balance >= amount) {
+      account.savings.deduct(amount);
+      log.info(
+          "Deducted $amount from player ${player.name}'s savings account.");
+      return;
+    }
+
+    final double deductibleSavings = account.savings.balance;
+    final double deductibleInvestments = amount - deductibleSavings;
+
+    account.savings.deduct(deductibleSavings);
+    account.investments.deduct(deductibleInvestments);
+
+    log.info(
+        "Deducted $deductibleSavings from player ${player.name}'s savings account and $deductibleInvestments from their investment account.");
+  }
 }
