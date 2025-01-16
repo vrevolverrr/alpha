@@ -29,21 +29,18 @@ class BudgetingDialog extends StatelessWidget {
             style: TextStyles.bold24,
           ),
         ),
-        const SizedBox(height: 10.0),
+        const SizedBox(height: 15.0),
         const Text(
-          "You earned a salary from your job! You now need to budget your income.",
+          "Total income earned in the last round",
           textAlign: TextAlign.center,
-          style: TextStyles.medium20,
+          style: TextStyles.medium22,
         ),
-        const SizedBox(height: 10.0),
+        const SizedBox(height: 5.0),
         Text(playerSavings.unbudgeted.prettyCurrency,
             style: const TextStyle(
                 color: Colors.green,
                 fontSize: 50.0,
                 fontWeight: FontWeight.w700)),
-        const SizedBox(
-          height: 15.0,
-        ),
       ],
     );
   }

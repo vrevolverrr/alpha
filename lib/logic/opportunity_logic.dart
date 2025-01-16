@@ -3,6 +3,8 @@ import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/opportunity.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
+import 'package:alpha/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class Opportunity {
@@ -27,16 +29,29 @@ class OpportunityManager implements IManager {
   Logger log = Logger("OpportunityManager");
 
   Opportunity getCurrentOpportunity() {
-    return Opportunities.opportunityList[
-        (gameManager.round + gameManager.turn) %
-            Opportunities.opportunityList.length];
+    String extraSeed = "";
+
+    if (playerManager.players.length > 1) {
+      extraSeed = playerManager
+          .players[(gameManager.turn + 1) % playerManager.players.length].name;
+    }
+
+    final double randomFactor = generateRandomFactor(
+        activePlayer.name + extraSeed, gameManager.round + gameManager.turn);
+
+    final int index =
+        (randomFactor * (Opportunities.opportunityList.length - 1)).round();
+
+    debugPrint("Random factor: $randomFactor, index: $index");
+
+    return Opportunities.opportunityList[index];
   }
 
   void applyOpportunity(Player player) {
     final opportunity = getCurrentOpportunity();
 
     statsManager.addHappiness(player, opportunity.happinessBonus);
-    accountsManager.creditToSavings(player, opportunity.cashBonus);
+    accountsManager.creditToSavingsUnbudgeted(player, opportunity.cashBonus);
     accountsManager.deductFromSavings(
         player,
         ((opportunity.cashPenaltyPercentage / 100) *

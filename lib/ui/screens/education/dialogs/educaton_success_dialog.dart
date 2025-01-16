@@ -30,6 +30,7 @@ class EducationSuccessDialog extends StatelessWidget {
         const SizedBox(height: 5.0),
         Text(
             "Jobs unlocked at this level: ${Job.values.where((j) => j.levelRequirement == skill.level).map((j) => j.title).join(", ")}",
+            textAlign: TextAlign.center,
             style: TextStyles.medium19),
         const SizedBox(height: 15.0),
         ListenableBuilder(

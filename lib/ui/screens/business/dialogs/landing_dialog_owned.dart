@@ -15,7 +15,7 @@ class OwnedBusinessesLandingDialog extends StatelessWidget {
           "Manage your owned businesses here. Check your business valuation, cashflow "
           "and overall performance in the market. You can also sell your "
           "business for a profit based on its current valuation. ",
-          style: TextStyles.medium23,
+          style: TextStyles.medium22,
           textAlign: TextAlign.center,
         )
       ],

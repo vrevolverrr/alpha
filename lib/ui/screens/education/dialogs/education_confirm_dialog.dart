@@ -21,6 +21,25 @@ class EducationConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// If selection is to skip education
+    if (selection.cost == 0) {
+      return const Column(
+        children: <Widget>[
+          Text(
+            "Are you sure you want to skip education?",
+            style: TextStyles.bold28,
+          ),
+          SizedBox(height: 6.0),
+          Text(
+              "You will not receive any XP skill points. However, you will still gain "
+              "XP skill points each round or by  "
+              "investing in yourself by budgeting.",
+              textAlign: TextAlign.center,
+              style: TextStyles.medium22),
+        ],
+      );
+    }
+
     return Column(
       children: <Widget>[
         Text(
@@ -31,11 +50,12 @@ class EducationConfirmDialog extends StatelessWidget {
         RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
+            style: TextStyles.medium22
+                .copyWith(fontFamily: "MazzardH", height: 1.5),
             children: [
               TextSpan(
                 text: "You will receive ",
-                style: TextStyles.medium22
-                    .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                style: TextStyles.medium22.copyWith(color: Colors.black),
               ),
               TextSpan(
                 text: "+${selection.xp} XP",
@@ -45,8 +65,7 @@ class EducationConfirmDialog extends StatelessWidget {
               TextSpan(
                 text:
                     " skill points by pursuing this. The XP gain will take effect immediately.",
-                style: TextStyles.medium22
-                    .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                style: TextStyles.medium22.copyWith(color: Colors.black),
               ),
             ],
           ),

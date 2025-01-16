@@ -5,6 +5,7 @@ import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_risk_label.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_sector_card.dart';
 import 'package:flutter/material.dart';
 
 class StockListing extends StatelessWidget {
@@ -21,7 +22,7 @@ class StockListing extends StatelessWidget {
       duration: Durations.medium1,
       child: AlphaAnimatedContainer(
           width: 340.0,
-          height: 152.0,
+          height: 160.0,
           padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -73,10 +74,10 @@ class StockListing extends StatelessWidget {
                   ))
                 ],
               ),
-              Text(
-                stock.name,
-                style: TextStyles.medium15,
-              ),
+              UnconstrainedBox(
+                  child: Transform.translate(
+                      offset: const Offset(-2.0, 0.0),
+                      child: StockSectorCard(stock.item.sector))),
               const SizedBox(height: 7.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,

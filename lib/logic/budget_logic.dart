@@ -92,7 +92,7 @@ class BudgetManager implements IManager {
   static const kHappinessPerBudget = 2;
 
   /// 10% of total budget is equivalent to 2 happiness
-  static const kSkillExpPerBudget = 100;
+  static const kSkillExpPerBudget = 200;
 
   @override
   Logger log = Logger("BudgetManager");

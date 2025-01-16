@@ -14,11 +14,11 @@ class InvestmentsLandingDialog extends StatelessWidget {
         SizedBox(
           width: 530.0,
           child: Text(
-            "Strategically invest in a diverse range of stocks within various sectors, "
-            "each with its own risk level. Stocks with higher risk can yield "
-            "greater returns, but may result in greater losses. ESG stocks increase "
+            "Strategically invest in a diverse range of stocks from various sectors, "
+            "Stocks with higher risk may yield greater returns, "
+            "but may result in greater losses. Stocks with ESG rating increase "
             "your ESG score, but may have lower returns.",
-            style: TextStyles.medium20,
+            style: TextStyles.medium22,
             textAlign: TextAlign.center,
           ),
         ),

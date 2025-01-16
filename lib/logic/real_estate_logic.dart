@@ -140,7 +140,7 @@ class RealEstateManager implements IManager {
 
     /// Credit the profit to the player's savings
     double profit = propertyValue - remainingMortgage;
-    accountsManager.creditToSavings(player, profit);
+    accountsManager.creditToSavingsUnbudgeted(player, profit);
     log.info(
         "Added profit of $profit to ${player.name} from selling ${realEstate.name}");
 

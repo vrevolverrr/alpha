@@ -57,7 +57,7 @@ class GameTileScreen extends StatelessWidget {
         return const BusinessSelectionScren(
             sector: BusinessSector.pharmaceutical);
       case BoardTile.businessSocialMediaTile:
-        return const BusinessSelectionScren(sector: BusinessSector.influencer);
+        return const BusinessSelectionScren(sector: BusinessSector.socialMedia);
     }
   }
 

@@ -155,7 +155,8 @@ class CarManager implements IManager {
     /// If the car's value is greater than the remaining loan
     /// credit the extra amount to the player's savings
     if (totalValue > remainingLoan) {
-      accountsManager.creditToSavings(player, totalValue - remainingLoan);
+      accountsManager.creditToSavingsUnbudgeted(
+          player, totalValue - remainingLoan);
     }
 
     statsManager.deductHappiness(player, car.happinessBonus);

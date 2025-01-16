@@ -5,7 +5,7 @@ import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/opportunity/dialogs/draw_result_dialog.dart';
-import 'package:alpha/ui/screens/opportunity/dialogs/landing_dialog.dart';
+import 'package:alpha/ui/screens/opportunity/dialogs/opportunity_landing_dialog.dart';
 import 'package:alpha/ui/screens/opportunity/widgets/opportunity_card.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;

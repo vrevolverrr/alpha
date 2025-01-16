@@ -36,9 +36,9 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
 
   /// Widget Builders
   Widget _nextBtnBuilder(BuildContext context, Widget? child) => AlphaButton(
-        width: 200.0,
+        width: 290.0,
         height: 70.0,
-        title: "START",
+        title: "Start Game",
         onTap: _handleStartBtn,
         disabled: playerManager.getPlayerCount() < 1,
         onTapDisabled: () => _handleNotEnoughPlayers(context),
@@ -77,7 +77,7 @@ class _PlayerCreationMenuScreen extends State<PlayerCreationMenuScreen> {
       next: ListenableBuilder(
           listenable: playerManager.playersList, builder: _nextBtnBuilder),
       children: <Widget>[
-        const SizedBox(height: 60.0),
+        const SizedBox(height: 80.0),
         ListenableBuilder(
             listenable: playerManager.playersList,
             builder: (context, child) => CarouselSlider(

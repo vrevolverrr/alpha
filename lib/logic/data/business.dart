@@ -1,70 +1,52 @@
 import 'package:alpha/assets.dart';
+import 'package:flutter/material.dart';
 
 enum BusinessSector {
   foodAndBeverage(
       name: "Food and Beverages",
-      initialMarketRevenue: 40000.0,
-      growthRate: 1.25,
-      timeConsumed: 100,
-      baseOperationalCosts: 10000.0,
+      baseRevenue: 10000.0,
+      sectorColor: Color(0xFFFFC68D),
       asset: AlphaAssets.businessFoodAndBeverages),
 
   eCommerce(
       name: "E-commerce",
-      initialMarketRevenue: 20000.0,
-      growthRate: 1.50,
-      timeConsumed: 100,
-      baseOperationalCosts: 7000.0,
+      baseRevenue: 12000.0,
+      sectorColor: Color(0xFF8BC7FF),
       asset: AlphaAssets.businessEcommerce),
 
   technology(
       name: "Technology",
-      initialMarketRevenue: 30000.0,
-      growthRate: 1.4,
-      timeConsumed: 100,
-      baseOperationalCosts: 13000.0,
+      baseRevenue: 15000.0,
+      sectorColor: Color(0xFFACFFC5),
       asset: AlphaAssets.businessTechnology),
 
   pharmaceutical(
       name: "Pharmaceutical",
-      initialMarketRevenue: 40000.0,
-      growthRate: 1.35,
-      timeConsumed: 100,
-      baseOperationalCosts: 20000.0,
+      baseRevenue: 20000.0,
+      sectorColor: Color(0xFFE3A1FF),
       asset: AlphaAssets.businessPharmaceutical),
 
-  influencer(
-      name: "Influencer",
-      initialMarketRevenue: 1200.0,
-      growthRate: 1.2,
-      timeConsumed: 100,
-      baseOperationalCosts: 1000.0,
+  socialMedia(
+      name: "Social Media",
+      baseRevenue: 7000.0,
+      sectorColor: Color(0xFFFFFEAC),
       asset: AlphaAssets.businessSocialMediaInfluencer),
 
   noBusiness(
-      name: "No Business",
-      initialMarketRevenue: 0,
-      growthRate: 0,
-      baseOperationalCosts: 0,
-      asset: AlphaAssets.businessTechnology,
-      timeConsumed: 0);
+    name: "No Business",
+    baseRevenue: 0.0,
+    sectorColor: Colors.white,
+    asset: AlphaAssets.businessTechnology,
+  );
 
-  const BusinessSector({
-    required this.name,
-    required this.initialMarketRevenue,
-    required this.growthRate,
-    required this.timeConsumed,
-    required this.baseOperationalCosts,
-    required this.asset,
-  });
+  const BusinessSector(
+      {required this.name,
+      required this.asset,
+      required this.sectorColor,
+      required this.baseRevenue});
 
   final String name;
-  final double initialMarketRevenue;
-  final double growthRate;
-  final int timeConsumed;
-  final double baseOperationalCosts;
   final AlphaAssets asset;
-
-  bool greaterThanOrEqualsTo(BusinessSector other) =>
-      initialMarketRevenue >= other.initialMarketRevenue;
+  final Color sectorColor;
+  final double baseRevenue;
 }

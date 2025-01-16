@@ -59,6 +59,7 @@ class PlayerManager implements IManager {
   final Logger log = Logger("PlayerManager");
 
   UnmodifiableListView<Player> getAllPlayers() => playersList.players;
+  List<Player> get players => playersList.players;
 
   int getPlayerCount() => playersList.numPlayers;
 

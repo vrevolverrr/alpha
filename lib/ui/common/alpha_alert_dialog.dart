@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 /// This widget should only be used by [AlphaScaffold] and not be
 /// created anywhere else.
 class AlphaAlertDialog extends StatelessWidget {
+  final ScrollController scollController;
+
   /// The top title of the dialog.
   final String title;
 
@@ -28,6 +30,7 @@ class AlphaAlertDialog extends StatelessWidget {
       {super.key,
       required this.title,
       required this.child,
+      required this.scollController,
       this.next,
       this.cancel,
       this.height,
@@ -64,6 +67,7 @@ class AlphaAlertDialog extends StatelessWidget {
                 title: title,
                 next: next,
                 cancel: cancel,
+                scrollController: scollController,
                 child: child,
               )),
         ),
@@ -108,8 +112,14 @@ class _AlertDialogContents extends StatelessWidget {
   /// The `child` to display below the title.
   final Widget child;
 
+  final ScrollController scrollController;
+
   const _AlertDialogContents(
-      {required this.title, this.next, this.cancel, required this.child});
+      {required this.title,
+      this.next,
+      this.cancel,
+      required this.child,
+      required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -136,14 +146,17 @@ class _AlertDialogContents extends StatelessWidget {
           const SizedBox(height: 15.0),
           Expanded(
               child: AlphaScrollbar(
+                  controller: scrollController,
                   child: SingleChildScrollView(
+                      controller: scrollController,
                       child: ConstrainedBox(
-            constraints:
-                const BoxConstraints(maxWidth: 585.0, minHeight: 195.0),
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Center(child: child)),
-          )))),
+                        constraints: const BoxConstraints(
+                            maxWidth: 585.0, minHeight: 195.0),
+                        child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Center(child: child)),
+                      )))),
           const SizedBox(height: 10.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

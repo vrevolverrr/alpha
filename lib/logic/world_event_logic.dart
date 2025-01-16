@@ -7,42 +7,42 @@ enum WorldEvent {
       title: "Global Health Crisis",
       description:
           "Healthcare systems worldwide are strained, but pharma research accelerates.",
-      multiplier: 0.7,
+      isPositiveEffect: false,
       sectorsAffected: [...BusinessSector.values]),
 
   regulatoryBacklash(
       title: "Drug Pricing Regulation",
       description:
           "New government policies force pharmaceutical companies to slash prices.",
-      multiplier: 0.65,
+      isPositiveEffect: false,
       sectorsAffected: [BusinessSector.pharmaceutical]),
 
   vaccineBreakthrough(
       title: "Medical Breakthrough",
       description:
           "Revolutionary vaccine technology boosts pharmaceutical sector.",
-      multiplier: 1.3,
+      isPositiveEffect: true,
       sectorsAffected: [BusinessSector.pharmaceutical]),
 
   aiBubbleBurst(
       title: "AI Bubble Burst",
       description:
           "The AI hype has crashed, causing tech companies to lose significant value.",
-      multiplier: 0.7,
+      isPositiveEffect: false,
       sectorsAffected: [BusinessSector.technology, BusinessSector.eCommerce]),
 
   aiBubble(
       title: "AI Revolution",
       description:
           "Artificial Intelligence breakthroughs drive massive tech sector growth.",
-      multiplier: 1.2,
+      isPositiveEffect: true,
       sectorsAffected: [BusinessSector.technology, BusinessSector.eCommerce]),
 
   foodDeliveryBoom(
       title: "Delivery Revolution",
       description:
           "Changing consumer habits drive food delivery demand sky-high.",
-      multiplier: 1.3,
+      isPositiveEffect: true,
       sectorsAffected: [
         BusinessSector.foodAndBeverage,
         BusinessSector.eCommerce
@@ -51,33 +51,33 @@ enum WorldEvent {
   restaurantCrisis(
       title: "Dining Downturn",
       description: "Restaurant industry faces unprecedented challenges.",
-      multiplier: 0.6,
+      isPositiveEffect: false,
       sectorsAffected: [BusinessSector.foodAndBeverage]),
 
   influencerScandal(
       title: "Influencer Exodus",
       description: "Major scandal rocks social media platforms and creators.",
-      multiplier: 0.7,
-      sectorsAffected: [BusinessSector.influencer]),
+      isPositiveEffect: false,
+      sectorsAffected: [BusinessSector.socialMedia]),
 
   viralTrend(
       title: "Viral Sensation",
       description:
           "New social media trend creates massive marketing opportunities.",
-      multiplier: 1.4,
-      sectorsAffected: [BusinessSector.influencer, BusinessSector.eCommerce]),
+      isPositiveEffect: true,
+      sectorsAffected: [BusinessSector.socialMedia, BusinessSector.eCommerce]),
 
-  none(title: "", description: "", multiplier: 1.0, sectorsAffected: []);
+  none(title: "", description: "", isPositiveEffect: true, sectorsAffected: []);
 
   final String title;
   final String description;
+  final bool isPositiveEffect;
   final List<BusinessSector> sectorsAffected;
-  final double multiplier;
 
   const WorldEvent(
       {required this.title,
       required this.description,
-      required this.multiplier,
+      required this.isPositiveEffect,
       required this.sectorsAffected});
 }
 
@@ -110,13 +110,5 @@ class WorldEventManager implements IManager {
     _roundsRemaining = kWorldEventDuration;
 
     return _currentEvent;
-  }
-
-  double getSectorMultiplier(BusinessSector sector) {
-    if (_currentEvent.sectorsAffected.contains(sector)) {
-      return _currentEvent.multiplier;
-    }
-
-    return 1.0;
   }
 }

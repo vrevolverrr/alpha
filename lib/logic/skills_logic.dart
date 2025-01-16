@@ -23,6 +23,8 @@ class PlayerSkill extends ChangeNotifier {
 }
 
 class SkillManager implements IManager {
+  static const int kPassiveExpPerRound = 500;
+
   @override
   final Logger log = Logger("SkillManager");
 
@@ -31,6 +33,12 @@ class SkillManager implements IManager {
   void initialisePlayerSkills(List<Player> players) {
     for (Player player in players) {
       _skills[player] = PlayerSkill();
+    }
+  }
+
+  void creditPassiveXPGain() {
+    for (Player player in _skills.keys) {
+      addExp(player, kPassiveExpPerRound);
     }
   }
 

@@ -28,13 +28,12 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
   BusinessVenture venture = businessManager.getBusinessVenture(activePlayer);
   late Business _selectedBusiness = (venture.ownedBusinesses.isNotEmpty)
       ? venture.ownedBusinesses.first
-      : const Business(
+      : Business(
           name: "",
           sector: BusinessSector.eCommerce,
-          marketShare: 0,
           esgRating: 0,
           initialCost: 0,
-          operationalCosts: 0);
+        );
 
   void _handleSellBusiness(BuildContext context) {
     context.showDialog(
@@ -262,18 +261,6 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
                     width: 200.0,
                     title: "ESG Rating",
                     value: _selectedBusiness.esgRating.toString()),
-              ]),
-              Column(children: <Widget>[
-                _GenericTitleValue(
-                    width: 190.0,
-                    title: "Market Share",
-                    value:
-                        "${(businessManager.getMarketShare(_selectedBusiness) * 100).toStringAsFixed(0)}%"),
-                const SizedBox(height: 6.0),
-                _GenericTitleValue(
-                    width: 190.0,
-                    title: "Operation Costs",
-                    value: _selectedBusiness.operationalCosts.prettyCurrency),
               ]),
               Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

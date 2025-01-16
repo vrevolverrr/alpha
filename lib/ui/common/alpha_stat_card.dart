@@ -159,7 +159,7 @@ class PlayerDebtStatCard extends StatelessWidget {
         emoji: "💵",
         title: "Debt",
         color: const Color(0xFFB52F26),
-        value: debt.totalDebt + 10 * 100000,
+        value: debt.totalDebt,
         isCurrency: true,
       ),
     );

@@ -1,18 +1,16 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/business_logic.dart';
+import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:flutter/material.dart';
 
 AlphaDialogBuilder buildConfirmBuyBusinessDialog(
-    BuildContext context,
-    Business business,
-    BusinessSectorState sectorState,
-    void Function() onTapConfirm) {
+    BuildContext context, Business business, void Function() onTapConfirm) {
   return AlphaDialogBuilder(
-    title: "Confirm Start Business",
-    child: ConfirmBuyBusinessDialog(business, sectorState),
+    title: "Confirm Business",
+    child: ConfirmBuyBusinessDialog(business),
     cancel: DialogButtonData.cancel(context),
     next: DialogButtonData.confirm(onTap: onTapConfirm),
   );
@@ -20,9 +18,8 @@ AlphaDialogBuilder buildConfirmBuyBusinessDialog(
 
 class ConfirmBuyBusinessDialog extends StatelessWidget {
   final Business business;
-  final BusinessSectorState sectorState;
 
-  const ConfirmBuyBusinessDialog(this.business, this.sectorState, {super.key});
+  const ConfirmBuyBusinessDialog(this.business, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +45,8 @@ class ConfirmBuyBusinessDialog extends StatelessWidget {
                       .copyWith(fontFamily: "MazzardH", color: Colors.black),
                 ),
                 TextSpan(
-                  text: (sectorState.grossProfit - business.operationalCosts)
+                  text: businessManager
+                      .calculateBusinessEarnings(business)
                       .prettyCurrency,
                   style: TextStyles.medium22.copyWith(
                       color: Colors.green, fontWeight: FontWeight.bold),

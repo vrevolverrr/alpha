@@ -9,11 +9,13 @@ import 'package:alpha/ui/common/alpha_animations.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
-import 'package:alpha/ui/screens/investments/dialogs/landing_dialog.dart';
+import 'package:alpha/ui/screens/investments/dialogs/confirm_buy_stock_dialog.dart';
+import 'package:alpha/ui/screens/investments/dialogs/investments_landing_dialog.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_listing.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_price_change.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_risk_label.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_sector_card.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_unit_controller.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +45,13 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
     final double totalValue = _selectedStock.price * _controller.units;
 
     if (investments.balance < totalValue) {
-      context.showSnackbar(message: "Insufficient funds");
+      context.showSnackbar(
+          message: "Insufficient funds to purchase this share");
       return;
     }
 
-    final AlphaDialogBuilder dialog = _buildConfirmBuyDialog(context, () {
+    final AlphaDialogBuilder dialog = buildConfirmBuyStockDialog(
+        context, _selectedStock, _controller.units, () {
       investments.purchaseShare(_selectedStock, _controller.units);
       context.dismissDialog();
     });
@@ -165,13 +169,20 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
         children: <Widget>[
           Row(
             children: <Widget>[
-              Text(
-                _selectedStock.name,
-                style: TextStyles.bold22,
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 190.0),
+                child: AutoSizeText(
+                  _selectedStock.name,
+                  maxLines: 1,
+                  style: TextStyles.bold22,
+                ),
               ),
               const SizedBox(width: 10.0),
-              StockPriceChangeIndicator(
-                change: _selectedStock.percentPriceChange(),
+              Transform.translate(
+                offset: const Offset(0, -0.2),
+                child: StockPriceChangeIndicator(
+                  change: _selectedStock.percentPriceChange(),
+                ),
               ),
             ],
           ),
@@ -179,21 +190,11 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Transform.translate(
-                offset: const Offset(1.0, 3.5),
-                child: Text(
-                  _selectedStock.code,
-                  style: const TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 15.0),
               StockRiskLabel(risk: _selectedStock.risk),
-              const SizedBox(width: 8.0),
-              _ESGLabel(esgRating: _selectedStock.esgRating),
+              const SizedBox(width: 5.0),
+              if (_selectedStock.esgRating > 0)
+                _ESGLabel(esgRating: _selectedStock.esgRating),
+              StockSectorCard(_selectedStock.item.sector),
             ],
           ),
           const SizedBox(height: 15.0),
@@ -265,30 +266,64 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                     style: TextStyles.bold30,
                     formatCurrency: true,
                   )),
-          Row(
-            children: <Widget>[
-              Transform.translate(
-                offset: const Offset(0.0, -2.5),
-                child: Transform.rotate(
-                  angle: 1.571,
-                  child: const Icon(
-                    Icons.arrow_back_rounded,
-                    color: Color(0xff3AB59E),
-                    size: 24.0,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 2.0),
-              Text(
-                "${investments.getPortfolioProfitChange(startNth: 1).prettyCurrency} "
-                "(${investments.getPortfolioProfitPercentChange(startNth: 1)}%)",
-                style: const TextStyle(
+          Builder(
+            builder: (context) {
+              final double profitChange =
+                  investments.getPortfolioProfitChange(startNth: 1);
+
+              final double profitChangePercent =
+                  investments.getPortfolioProfitPercentChange(startNth: 1);
+
+              Widget icon;
+              Color color;
+
+              if (profitChange > 0) {
+                icon = const Icon(
+                  Icons.arrow_upward_rounded,
                   color: Color(0xff3AB59E),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),
-              ),
-            ],
+                  size: 24.0,
+                );
+
+                color = const Color(0xff3AB59E);
+              } else if (profitChange < 0) {
+                icon = const Icon(
+                  Icons.arrow_downward_rounded,
+                  color: Color(0xffE15353),
+                  size: 24.0,
+                );
+
+                color = const Color(0xffE15353);
+              } else {
+                icon = Container(
+                  width: 8.0,
+                  height: 4.0,
+                  decoration: BoxDecoration(
+                      color: const Color(0xFF626262),
+                      borderRadius: BorderRadius.circular(30.0)),
+                );
+
+                color = const Color(0xFF626262);
+              }
+
+              return Row(
+                children: <Widget>[
+                  Transform.translate(
+                    offset: const Offset(0.0, -2.5),
+                    child: icon,
+                  ),
+                  const SizedBox(width: 2.0),
+                  Text(
+                    "${profitChange.prettyCurrency} "
+                    "($profitChangePercent%)",
+                    style: TextStyle(
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 10.0),
           Expanded(
@@ -375,38 +410,6 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
     );
   }
 
-  AlphaDialogBuilder _buildConfirmBuyDialog(
-      BuildContext context, void Function() onTapConfirm) {
-    return AlphaDialogBuilder(
-      title: "Confirm Purchase",
-      child: Column(
-        children: <Widget>[
-          const Text(
-            "Are you sure you want to buy?",
-            style: TextStyles.bold24,
-          ),
-          const SizedBox(height: 10.0),
-          Text(
-            "${_controller.units.toString()} units of ${_selectedStock.name} stock for",
-            style: TextStyles.bold22,
-          ),
-          const SizedBox(height: 10.0),
-          Text(
-            (_controller.units * _selectedStock.price).prettyCurrency,
-            style: const TextStyle(
-              color: Color(0xFFDF3737),
-              fontSize: 48.0,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 10.0),
-        ],
-      ),
-      cancel: DialogButtonData.cancel(context),
-      next: DialogButtonData.confirm(onTap: onTapConfirm),
-    );
-  }
-
   AlphaDialogBuilder _buildConfirmSellDialog(
       BuildContext context, void Function() onTapConfirm) {
     return AlphaDialogBuilder(
@@ -476,28 +479,26 @@ class _ESGLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (esgRating > 0)
-        ? Container(
-            width: 95.0,
-            height: 30.0,
-            alignment: Alignment.center,
-            transform: Matrix4.translation(Vector3(-3.0, 1.0, 0.0)),
-            decoration: BoxDecoration(
-              color: const Color(0xFF73EB75),
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.black, width: 2.5),
-            ),
-            child: Transform.translate(
-              offset: const Offset(-1.0, 0.5),
-              child: Text("ESG $esgRating",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w700)),
-            ),
-          )
-        : const SizedBox();
+    return Container(
+      width: 95.0,
+      height: 30.0,
+      alignment: Alignment.center,
+      transform: Matrix4.translation(Vector3(-3.0, 1.0, 0.0)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF73EB75),
+        borderRadius: BorderRadius.circular(20.0),
+        border: Border.all(color: Colors.black, width: 2.5),
+      ),
+      child: Transform.translate(
+        offset: const Offset(-1.0, 0.5),
+        child: Text("ESG $esgRating",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w700)),
+      ),
+    );
   }
 }
 

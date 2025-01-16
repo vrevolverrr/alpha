@@ -8,7 +8,7 @@ import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/common/animated_value.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/real_estate/dialogs/confirm_buy_dialog.dart';
+import 'package:alpha/ui/screens/real_estate/dialogs/confirm_buy_realestate_dialog.dart';
 import 'package:alpha/ui/screens/real_estate/dialogs/purchase_success_dialog.dart';
 import 'package:alpha/ui/screens/real_estate/widgets/real_estate_listing.dart';
 import 'package:auto_size_text/auto_size_text.dart';

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
@@ -99,7 +100,7 @@ class PlayerDebt extends ChangeNotifier {
 class LoanManager implements IManager {
   static const kIncomeToDebtPaymentRatio = 0.9;
 
-  static const kBusinessLoanAmount = 30000.0;
+  static const kBusinessLoanAmount = 20000.0;
   static const kBusinessLoanRepaymentPeriod = 8;
 
   @override
@@ -271,7 +272,8 @@ class LoanManager implements IManager {
   void applyBusinessLoan(Player player) {
     _playerDebts[player]!.incurBusinessDebt(kBusinessLoanAmount);
     accountsManager.creditToSavings(player, kBusinessLoanAmount);
-    log.info("Player ${player.name} took out a business loan");
+    log.info(
+        "Player ${player.name} took out a business loan, current business debt: ${_playerDebts[player]!.businessDebt.prettyCurrency}");
   }
 
   LoanRepaymentReceipt repayBusinessDebt(Player player, double amount) {

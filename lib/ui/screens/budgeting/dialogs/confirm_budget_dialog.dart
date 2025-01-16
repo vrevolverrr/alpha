@@ -18,22 +18,20 @@ class ConfirmBudgetDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: <Widget>[
-        Text(
+        const Text(
           "Confirm budget allocation?",
           style: TextStyles.bold28,
         ),
-        SizedBox(height: 6.0),
+        const SizedBox(height: 6.0),
         SizedBox(
           width: 520.0,
           child: Text(
-            "Your budget will be applied immediately and you will receive your budgeted bonuses in this round.",
-            textAlign: TextAlign.center,
-            style: TextStyles.medium22,
-          ),
+              "Your budget will be applied immediately and bonuses will be credited.",
+              textAlign: TextAlign.center,
+              style: TextStyles.medium23.copyWith(height: 1.5)),
         ),
-        SizedBox(height: 60.0),
       ],
     );
   }

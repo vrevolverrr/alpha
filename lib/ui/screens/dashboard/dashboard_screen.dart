@@ -58,7 +58,7 @@ class DashboardScreen extends StatelessWidget {
           ),
         ),
         children: <Widget>[
-          const SizedBox(height: 5.0),
+          const SizedBox(height: 10.0),
           _DashboardPlayerInfo(),
           const SizedBox(height: 20.0),
           _DashboardPlayerStats(

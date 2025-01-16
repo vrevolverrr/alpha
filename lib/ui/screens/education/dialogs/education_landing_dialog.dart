@@ -11,12 +11,13 @@ class EducationLandingDialog extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Education is the key to success in the early game. Pursue a degree or learn an online course to "
-            "improve your skill level and unlock more job opportunities and career progression.",
+            "Education is key in the early game. "
+            "Pursue a degree or learn an online course to improve "
+            "your skill level and unlock career more progression opportunities. "
+            "You will also receive some XP skill points after every round.",
             style: TextStyles.medium22,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 50.0),
         ],
       ),
     );

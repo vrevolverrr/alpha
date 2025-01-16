@@ -136,7 +136,6 @@ class Stock {
   double get percentDrift => item.percentDrift;
   double get percentVolatility => item.percentVolatility;
   int get esgRating => item.esgRating;
-  StockType get type => item.type;
   StockRisk get risk => item.risk;
 
   double priceChange({int lastNth = 20}) {

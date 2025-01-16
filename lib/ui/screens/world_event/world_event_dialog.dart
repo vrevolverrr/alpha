@@ -25,16 +25,16 @@ class WorldEventDialog extends StatelessWidget {
       children: <Widget>[
         Text(
           worldEvent.title,
-          style: TextStyles.bold25,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 6.0),
-        Text(
-          worldEvent.description,
-          style: TextStyles.medium20,
+          style: TextStyles.bold28,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 5.0),
+        Text(
+          worldEvent.description,
+          style: TextStyles.medium23,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 10.0),
         Text(
           "Sectors Affected: ${worldEvent.sectorsAffected.length == BusinessSector.values.length ? "Everyone" : worldEvent.sectorsAffected.map((sector) => sector.name).join(", ")}",
           style: TextStyles.medium18,

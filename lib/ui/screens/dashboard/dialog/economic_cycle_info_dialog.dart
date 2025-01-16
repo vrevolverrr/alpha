@@ -28,9 +28,11 @@ class EconomicCycleInfoDialog extends StatelessWidget {
           style: TextStyles.bold28,
         ),
         const SizedBox(height: 4.0),
-        Text(current.longDescription, style: TextStyles.medium22),
-        const SizedBox(height: 10.0),
-        Text("Next Cycle: ${next.name}", style: TextStyles.bold22),
+        Text(current.longDescription,
+            textAlign: TextAlign.center, style: TextStyles.medium22),
+        const SizedBox(height: 12.0),
+        Text("Next Cycle: ${next.name}",
+            textAlign: TextAlign.center, style: TextStyles.bold22),
       ],
     );
   }

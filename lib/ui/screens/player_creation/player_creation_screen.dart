@@ -30,6 +30,8 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
 
   Job _selectedStartingJob = Job.unemployed;
 
+  final ScrollController _scrollController = ScrollController();
+
   void _handlePlayerNameEditingComplete(String name) {
     _playerName = name.trim();
   }
@@ -114,7 +116,9 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                     child: SizedBox(
                       width: 650.0,
                       child: AlphaScrollbar(
+                        controller: _scrollController,
                         child: SingleChildScrollView(
+                          controller: _scrollController,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

@@ -13,11 +13,11 @@ class BusinessesLandingDialog extends StatelessWidget {
       children: [
         Text(
           "Start your own business to generate revenue.  "
-          "Business earnings are credited after each round, and are influenced by "
-          "the economic cycle, market trends, and number of competitors. "
-          "Businesses with higher ESG rating typically have higher initial costs but "
-          "have lower operational costs, which can lead to higher profits in the long run. ",
-          style: TextStyles.medium23,
+          "Business revenue is influenced by "
+          "the economic cycle, market state, and competition. "
+          "Higher ESG rated businesses typically have higher initial costs but "
+          "have increased revenue potential.",
+          style: TextStyles.medium22,
           textAlign: TextAlign.center,
         )
       ],

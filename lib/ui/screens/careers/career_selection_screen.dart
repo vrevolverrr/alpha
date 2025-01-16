@@ -26,6 +26,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
 
   Job _selectedJob = Job.unemployed;
 
+  final ScrollController _scrollController = ScrollController();
+
   /// Event Handlers
   void _handleOnTapCard(JobSelectionCard card, BuildContext context) {
     // This function is called when a job card is pressed
@@ -108,7 +110,9 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
           // This is the list of job cards of the jobs from career type
           Expanded(
             child: AlphaScrollbar(
+              controller: _scrollController,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 scrollDirection: Axis.vertical,
                 physics: const ClampingScrollPhysics(),
                 child: Column(

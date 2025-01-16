@@ -9,7 +9,7 @@ import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/education/dialogs/education_confirm_dialog.dart';
 import 'package:alpha/ui/screens/education/dialogs/educaton_success_dialog.dart';
-import 'package:alpha/ui/screens/education/dialogs/landing_dialog.dart';
+import 'package:alpha/ui/screens/education/dialogs/education_landing_dialog.dart';
 import 'package:alpha/ui/screens/education/widgets/education_card.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +69,11 @@ class _EducationSelectionScreenState extends State<EducationSelectionScreen> {
   }
 
   void _handleDialogConfirmation(BuildContext context) {
+    if (_selection!.cost == 0.0) {
+      context.navigateAndPopTo(DashboardScreen());
+      return;
+    }
+
     _selection!.action();
 
     Future.delayed(Durations.short2, () {

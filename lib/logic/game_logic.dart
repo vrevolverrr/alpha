@@ -15,7 +15,6 @@ import 'package:alpha/logic/personal_life_logic.dart';
 import 'package:alpha/logic/real_estate_logic.dart';
 import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
-import 'package:alpha/logic/data/quiz.dart';
 import 'package:alpha/logic/economy_logic.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
@@ -25,81 +24,71 @@ import 'package:alpha/logic/world_event_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:logging/logging.dart';
 
-class DiceRollResult {
-  final int roll;
-  final int round;
-  final int turn;
-
-  DiceRollResult(this.roll, this.round, this.turn);
-}
-
-class GameLeaderboard {
-  final Player player;
-  final double points;
-  final double totalAssets;
-  final double totalDebt;
-  final double debtPenalty;
-  final double goalBonus;
-  final PlayerGoals playerGoal;
-  final int cumulativeEsgScore;
-  final int happinessFactor;
-
-  GameLeaderboard(
-    this.player,
-    this.points, {
-    required this.totalAssets,
-    required this.totalDebt,
-    required this.debtPenalty,
-    required this.goalBonus,
-    required this.playerGoal,
-    required this.cumulativeEsgScore,
-    required this.happinessFactor,
-  });
-}
-
 class GameManager implements IManager {
   @override
   final Logger log = Logger("GameManager");
 
-  /// Initial game states
+  /// The current round of the game
   int _round = 0;
-  int _turn = -1;
-
   int get round => _round;
+
+  /// The current turn in the round, indexed at 0
+  /// Each turn corresponds to one player in the game
+  int _turn = -1;
   int get turn => _turn;
 
+  /// The cached result of the last dice roll
+  /// Used to prevent multiple dice rolls in a single turn
   DiceRollResult lastDiceRoll = DiceRollResult(0, 0, -1);
 
   /// Leaderboard for the game, generated when the game ends
   final List<GameLeaderboard> _leaderboard = [];
   List<GameLeaderboard> get leaderboard => UnmodifiableListView(_leaderboard);
 
-  /// Instantiate all managers
-  final playerManager = PlayerManager();
-  final careerManager = CareerManager();
-  final marketManager = FinancialMarketManager();
-  final economyManager = EconomyManager();
-  final businessManager = BusinessManager();
-  final realEstateManager = RealEstateManager();
-  final carManager = CarManager();
-  final hintsManager = HintsManager();
-  final opportunityManager = OpportunityManager();
+  /// Instantiate all game logic controllers
+  /// Game-Level logic controllers
   final boardManager = BoardManager();
+
+  final economyManager = EconomyManager();
+  final marketManager = FinancialMarketManager();
+  final worldEventManager = WorldEventManager();
+
+  final playerManager = PlayerManager();
+  final opportunityManager = OpportunityManager();
+
+  /// Player-Level logic controllers
   final accountsManager = AccountsManager();
-  final loanManager = LoanManager();
+  final budgetManager = BudgetManager();
+
+  final careerManager = CareerManager();
+
   final skillManager = SkillManager();
   final statsManager = StatsManager();
   final educationManager = EducationManager();
-  final budgetManager = BudgetManager();
+
   final personalLifeManager = PersonalLifeManager();
-  final worldEventManager = WorldEventManager();
+
+  final realEstateManager = RealEstateManager();
+  final carManager = CarManager();
+  final businessManager = BusinessManager();
+
+  final loanManager = LoanManager();
+
+  /// Utility-level logic controllers
+  final hintsManager = HintsManager();
 
   void startGame() {
-    final List<Player> players = playerManager.getAllPlayers();
+    final List<Player> players = playerManager.players;
 
+    /// Initialise all player locations to the STARTING tile
     boardManager.initialisePlayerLocations(players);
+
+    /// Initialise all player accounts with initial balances
     accountsManager.initialisePlayerAccounts(players);
+
+    /// Initialise all player XP levels to defaults
     skillManager.initialisePlayerSkills(players);
+
     businessManager.initialisePlayerBusinesses(players);
     educationManager.initialisePlayerEducations(players);
     loanManager.initialisePlayerDebts(players);
@@ -107,19 +96,20 @@ class GameManager implements IManager {
     statsManager.initialisePlayerStats(players);
     careerManager.initialisePlayerCareers(players);
 
+    log.info("All game logic controllers have been initialised");
     log.info("Game has started with ${playerManager.getPlayerCount()} players");
+
+    /// Increment the turn to the first player
     nextTurn();
   }
 
   void endGame() {
-    /// Calculate player points
-    ///
-    int numPlayers = playerManager.getAllPlayers().length;
+    int numPlayers = playerManager.players.length;
 
-    final int cumulativeEsgScore = playerManager.getAllPlayers().fold(
+    final int cumulativeEsgScore = playerManager.players.fold(
         0, (prev, player) => prev + statsManager.getPlayerStats(player).esg);
 
-    for (Player player in playerManager.getAllPlayers()) {
+    for (Player player in playerManager.players) {
       double points = 0.0;
 
       final int happiness = statsManager.getPlayerStats(player).happiness;
@@ -172,26 +162,37 @@ class GameManager implements IManager {
     }
   }
 
+  /// This method is called at the end of each turn.
+  /// It is used to trigger any turn specific events.
   void onNextTurn() {
-    /// Add turn specifc logic here
+    // TODO implement persistence and analytics
   }
 
+  /// This method is called at the end of each round.
+  /// It is used to trigger any round specific events.
   void onNextRound() {
-    /// Add round specific logic here
-    accountsManager.creditInterest();
-    careerManager.creditSalary();
+    /// Increment the economic cycle
     economyManager.updateCycle();
+
+    /// Update the market state ie incrementing stock prices state
     marketManager.updateMarket();
-    businessManager.creditBusinessEarnings();
+
+    /// Credit interest for all player accounts
+    accountsManager.creditInterest();
+
+    /// Credit salary for all employed players
+    careerManager.creditSalary();
+
+    /// Credit passive XP gains for all players
+    skillManager.creditPassiveXPGain();
 
     loanManager.autoRepayLoans();
 
-    businessManager.businessStates.forEach((sector, sectorState) =>
-        sectorState.updateState(economyManager.current));
+    /// Credit business earnings for all player businesses
+    businessManager.creditBusinessEarnings();
 
-    for (Player player in playerManager.getAllPlayers()) {
-      skillManager.addExp(player, 500);
-    }
+    /// Update each businesses current revenue based on the number of competitors
+    businessManager.growBusinesses();
   }
 
   /// This method updates all relavant systems and increments the game turn.
@@ -207,7 +208,6 @@ class GameManager implements IManager {
     }
 
     playerManager.setActivePlayer(_turn);
-    // eventsManager.update();
 
     /// Run all turn triggered events
     onNextTurn();
@@ -234,15 +234,36 @@ class GameManager implements IManager {
   int getLastDiceRoll() {
     return lastDiceRoll.roll;
   }
+}
 
-  Quiz getQuizQuestion() {
-    List<Quiz> questionSet = List<Quiz>.from(Quiz.values);
-    questionSet.shuffle();
-    return questionSet.first;
-  }
+class DiceRollResult {
+  final int roll;
+  final int round;
+  final int turn;
 
-  bool hasWinner() {
-    // perform some check logic on each player
-    return false;
-  }
+  DiceRollResult(this.roll, this.round, this.turn);
+}
+
+class GameLeaderboard {
+  final Player player;
+  final double points;
+  final double totalAssets;
+  final double totalDebt;
+  final double debtPenalty;
+  final double goalBonus;
+  final PlayerGoals playerGoal;
+  final int cumulativeEsgScore;
+  final int happinessFactor;
+
+  GameLeaderboard(
+    this.player,
+    this.points, {
+    required this.totalAssets,
+    required this.totalDebt,
+    required this.debtPenalty,
+    required this.goalBonus,
+    required this.playerGoal,
+    required this.cumulativeEsgScore,
+    required this.happinessFactor,
+  });
 }

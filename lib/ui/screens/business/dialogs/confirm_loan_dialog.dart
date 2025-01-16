@@ -23,7 +23,7 @@ class ConfirmBusinessLoanDialog extends StatelessWidget {
     return Column(
       children: <Widget>[
         const Text(
-          "Are you sure you want to take out a business loan?",
+          "Insufficient funds to start business. Do you want to apply for a loan?",
           style: TextStyles.bold24,
           textAlign: TextAlign.center,
         ),

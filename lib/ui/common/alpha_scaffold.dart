@@ -101,6 +101,7 @@ class AlphaScaffoldState extends State<AlphaScaffold>
 
   /// setState will be called on this flag to expand and close the dialog.
   bool _showAlphaDialog = false;
+  final ScrollController _scrollController = ScrollController();
 
   late final AnimationController _snackbarController;
 
@@ -240,7 +241,9 @@ class AlphaScaffoldState extends State<AlphaScaffold>
               condition: _showAlphaDialog,
               child: Container(color: const Color(0x78565656))),
           _AlphaScaffoldDialog(
-              showAlphaDialog: _showAlphaDialog, dialogBuilder: _dialogBuilder),
+              controller: _scrollController,
+              showAlphaDialog: _showAlphaDialog,
+              dialogBuilder: _dialogBuilder),
         ],
       ),
     );
@@ -372,8 +375,12 @@ class _AlphaScaffoldDialog extends StatelessWidget {
   final AlphaDialogBuilder dialogBuilder;
   final bool showAlphaDialog;
 
+  final ScrollController controller;
+
   const _AlphaScaffoldDialog(
-      {required this.showAlphaDialog, required this.dialogBuilder});
+      {required this.controller,
+      required this.showAlphaDialog,
+      required this.dialogBuilder});
 
   @override
   Widget build(BuildContext context) {
@@ -382,6 +389,7 @@ class _AlphaScaffoldDialog extends StatelessWidget {
       child: Align(
         alignment: Alignment.center,
         child: AlphaAlertDialog(
+          scollController: controller,
           title: dialogBuilder.title,
           show: showAlphaDialog,
           next: dialogBuilder.next,
@@ -404,7 +412,7 @@ class AlphaDialogBuilder {
   static dismissable(
       {required String title,
       required String dismissText,
-      required double width,
+      double width = 350.0,
       required Widget child}) {
     return AlphaDialogBuilder(
         title: title,
