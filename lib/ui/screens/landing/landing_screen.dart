@@ -1,5 +1,6 @@
 import 'package:alpha/assets.dart';
 import 'package:alpha/extensions.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -66,7 +67,7 @@ class LandingScreen extends StatelessWidget {
               child: Padding(
                   padding: EdgeInsets.only(bottom: 20.0),
                   child: Text(
-                    "version 0.2.1 Build 1",
+                    "version $version",
                     style: TextStyles.medium18,
                   )),
             )

@@ -1,4 +1,5 @@
 import 'package:alpha/assets.dart';
+import 'package:alpha/main.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
@@ -27,7 +28,7 @@ class AboutGameDialog extends StatelessWidget {
             height: 90.0,
             child: Image.asset(AlphaAsset.logoIIC.path)),
         const Text(
-          "version 0.2.1 build 1",
+          "version $version",
           style: TextStyles.medium15,
           textAlign: TextAlign.center,
         ),
