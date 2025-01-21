@@ -11,6 +11,8 @@ import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/investments/dialogs/confirm_buy_stock_dialog.dart';
 import 'package:alpha/ui/screens/investments/dialogs/investments_landing_dialog.dart';
+import 'package:alpha/ui/screens/investments/dialogs/stock_units_input_dialog.dart';
+import 'package:alpha/ui/screens/investments/widgets/esg_label.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_listing.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_price_change.dart';
@@ -19,7 +21,6 @@ import 'package:alpha/ui/screens/investments/widgets/stock_sector_card.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_unit_controller.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class InvestmentsScreen extends StatefulWidget {
   const InvestmentsScreen({super.key});
@@ -36,6 +37,14 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
   final InvestmentAccount investments =
       accountsManager.getInvestmentAccount(activePlayer);
 
+  void _handleAdjustUnits(BuildContext context) {
+    debugPrint("hello");
+
+    context.showDialog(buildStockUnitsInputDialog(context, _controller, () {
+      context.dismissDialog();
+    }));
+  }
+
   void _handleBuyShare(BuildContext context) {
     if (_controller.units <= 0) {
       context.showSnackbar(message: "Please select a valid number of units");
@@ -46,17 +55,16 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
     if (investments.balance < totalValue) {
       context.showSnackbar(
-          message: "Insufficient funds to purchase this share");
+          message: "✋🏼 Insufficient funds to purchase this share");
       return;
     }
 
-    final AlphaDialogBuilder dialog = buildConfirmBuyStockDialog(
+    context.showDialog(buildConfirmBuyStockDialog(
         context, _selectedStock, _controller.units, () {
-      investments.purchaseShare(_selectedStock, _controller.units);
+      accountsManager.purchaseShare(
+          activePlayer, _selectedStock, _controller.units);
       context.dismissDialog();
-    });
-
-    context.showDialog(dialog);
+    }));
   }
 
   void _handleSellShare(BuildContext context) {
@@ -73,7 +81,8 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
     }
 
     final AlphaDialogBuilder dialog = _buildConfirmSellDialog(context, () {
-      investments.sellShare(_selectedStock, _controller.units);
+      accountsManager.sellShare(
+          activePlayer, _selectedStock, _controller.units);
       context.dismissDialog();
     });
 
@@ -193,7 +202,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               StockRiskLabel(risk: _selectedStock.risk),
               const SizedBox(width: 5.0),
               if (_selectedStock.esgRating > 0)
-                _ESGLabel(esgRating: _selectedStock.esgRating),
+                ESGLabel(_selectedStock.esgRating),
               StockSectorCard(_selectedStock.item.sector),
             ],
           ),
@@ -271,9 +280,6 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               final double profitChange =
                   investments.getPortfolioProfitChange(startNth: 1);
 
-              final double profitChangePercent =
-                  investments.getPortfolioProfitPercentChange(startNth: 1);
-
               Widget icon;
               Color color;
 
@@ -313,12 +319,11 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                   ),
                   const SizedBox(width: 2.0),
                   Text(
-                    "${profitChange.prettyCurrency} "
-                    "($profitChangePercent%)",
+                    profitChange.prettyCurrency,
                     style: TextStyle(
                       color: color,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
+                      fontSize: 20.0,
                     ),
                   ),
                 ],
@@ -355,7 +360,11 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                 ),
               ),
               const SizedBox(height: 5.0),
-              StockUnitSelector(controller: _controller),
+              Builder(
+                builder: (context) => StockUnitSelector(
+                    controller: _controller,
+                    onTapEdit: () => _handleAdjustUnits(context)),
+              ),
             ],
           ),
           Column(
@@ -472,36 +481,6 @@ class _GenericTitleValue extends StatelessWidget {
   }
 }
 
-class _ESGLabel extends StatelessWidget {
-  final int esgRating;
-
-  const _ESGLabel({required this.esgRating});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 95.0,
-      height: 30.0,
-      alignment: Alignment.center,
-      transform: Matrix4.translation(Vector3(-3.0, 1.0, 0.0)),
-      decoration: BoxDecoration(
-        color: const Color(0xFF73EB75),
-        borderRadius: BorderRadius.circular(20.0),
-        border: Border.all(color: Colors.black, width: 2.5),
-      ),
-      child: Transform.translate(
-        offset: const Offset(-1.0, 0.5),
-        child: Text("ESG $esgRating",
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Colors.black,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w700)),
-      ),
-    );
-  }
-}
-
 // A table that displays the player's portfolio, listing each stock on the market,
 //and the number of shares owned, with the total value.
 class _PortfolioTable extends StatelessWidget {
@@ -516,10 +495,10 @@ class _PortfolioTable extends StatelessWidget {
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         border: TableBorder.all(color: Colors.black, width: 2.0),
         columnWidths: const {
-          0: FixedColumnWidth(53.0),
-          1: FixedColumnWidth(85.0),
+          0: FixedColumnWidth(48.0),
+          1: FixedColumnWidth(81.0),
           2: FixedColumnWidth(48.0),
-          3: FixedColumnWidth(60.0),
+          3: FixedColumnWidth(69.0),
         },
         children: <TableRow>[
           _buildTableHeader(),
@@ -556,7 +535,7 @@ TableRow _buildTableHeader() {
             padding: EdgeInsets.only(top: 3.0, left: 5.0, right: 5.0),
             child: Text(
               "Total Value",
-              style: TextStyles.bold13,
+              style: TextStyles.bold12,
             )),
         Padding(
             padding: EdgeInsets.only(top: 3.0, left: 5.0, right: 5.0),
@@ -599,7 +578,7 @@ TableRow _buildTableRow(
           "$percentChange%",
           style: TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: 15.0,
+              fontSize: 14.0,
               color: percentChange == 0
                   ? const Color(0xFF5B5B5B)
                   : (percentChange < 0

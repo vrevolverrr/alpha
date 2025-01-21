@@ -11,7 +11,6 @@ AlphaDialogBuilder buildPromotionSuccessDialog(
     child: PromotionSuccessDialog(
       newJob: newJob,
     ),
-    cancel: DialogButtonData.cancel(context),
     next: DialogButtonData.confirm(onTap: onTapConfirm),
   );
 }

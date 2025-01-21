@@ -6,7 +6,7 @@ import 'package:alpha/logic/board_logic.dart';
 import 'package:alpha/logic/budget_logic.dart';
 import 'package:alpha/logic/car_logic.dart';
 import 'package:alpha/logic/career_logic.dart';
-import 'package:alpha/logic/data/personal_life.dart';
+import 'package:alpha/logic/data/player.dart';
 import 'package:alpha/logic/education_logic.dart';
 import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/logic/loan_logic.dart';
@@ -106,59 +106,109 @@ class GameManager implements IManager {
   void endGame() {
     int numPlayers = playerManager.players.length;
 
-    final int cumulativeEsgScore = playerManager.players.fold(
-        0, (prev, player) => prev + statsManager.getPlayerStats(player).esg);
-
     for (Player player in playerManager.players) {
       double points = 0.0;
 
       final int happiness = statsManager.getPlayerStats(player).happiness;
 
-      final double totalAssets = accountsManager.getAvailableBalance(player) +
-          accountsManager.getPlayerAccount(player).cpf.balance +
-          businessManager.getTotalBusinessValuation(player) +
-          realEstateManager.getTotalAssetValue(player) +
-          carManager.getTotalAssetValue(player);
+      /// Calculate total cash
+      final double totalCash =
+          accountsManager.getAvailableBalance(player, includeUnbudgeted: true) +
+              accountsManager.getPlayerAccount(player).cpf.balance;
 
+      /// Calculate investment portfolio value
+      final double totalInvestmentValue =
+          accountsManager.getInvestmentAccount(player).getPortfolioValue();
+
+      /// Calculate total business valuation
+      final double totalBusinessValuation =
+          businessManager.getTotalBusinessValuation(player);
+
+      /// Calculate total real estate value and cancel any remaining mortgage
+      double totalRealEstateValue =
+          realEstateManager.getTotalAssetValue(player);
+
+      final double remainingMortgage = loanManager
+          .getRemainingLoanAmount(player, reason: LoanReason.mortgage);
+      loanManager.cancelLoan(player, reason: LoanReason.mortgage);
+      totalRealEstateValue -= remainingMortgage;
+
+      /// Calculate total car value
+      final double totalCarValue = carManager.getTotalAssetValue(player);
+
+      /// Calculate total assets
+      final double totalAssets = totalCash +
+          totalInvestmentValue +
+          totalBusinessValuation +
+          totalRealEstateValue +
+          totalCarValue;
+
+      /// Calculate happiness multiplier
       final int happinessFactor =
-          min(1, happiness - PlayerStats.kBaseHappiness + 1);
+          max(1, happiness - PlayerStats.kBaseHappiness + 1);
+
+      /// Add the assets contribution to the player's points
       points += totalAssets * happinessFactor;
 
+      /// Calculate ESG point bonus (15% bonus if cumulative ESG score > 80 per player)
+      final int cumulativeEsgScore = playerManager.players.fold(
+          0, (prev, player) => prev + statsManager.getPlayerStats(player).esg);
+
       if (cumulativeEsgScore > numPlayers * 80) {
-        points *= 1.2;
+        points *= 1.10;
       }
 
+      /// Check if player achieved life goal, 30% bonus if achieved
+      final PlayerSkill playerSkill = skillManager.getPlayerSkill(player);
+      final PlayerStats playerStats = statsManager.getPlayerStats(player);
+
+      if (player.goal.fulfilledChecker(totalAssets, playerSkill, playerStats)) {
+        points *= 1.20;
+      }
+
+      /// Calculate debt penalty
       final double remainingDebt = loanManager.getTotalDebt(player);
-      final double debtPenalty =
-          (remainingDebt / (totalAssets + remainingDebt + 1)) *
-              remainingDebt *
-              2.0;
+      final debtToAssetRatio = remainingDebt / totalAssets;
 
-      points -= debtPenalty;
+      /// DAR <= 10%: No penalty
+      if (debtToAssetRatio <= 0.10) {
+        points = points;
 
-      double goalBonus = 0.0;
+        /// 11% <= DAR <= 25%: 5% penalty
+      } else if (debtToAssetRatio <= 0.25) {
+        points *= 0.95;
 
-      if (player.goal == PlayerGoals.wealth && totalAssets >= 1000000) {
-        goalBonus += 100.0;
-      } else if (player.goal == PlayerGoals.family &&
-          personalLifeManager.getPersonalLife(player).status ==
-              PersonalLifeStatus.family) {
-        goalBonus += 100.0;
-      } else if (player.goal == PlayerGoals.career &&
-          skillManager.getPlayerSkill(player).level >= 15) {
-        goalBonus += 100.0;
+        /// 26% DAR <= 50%: 15% penalty
+      } else if (debtToAssetRatio <= 0.50) {
+        points *= 0.85;
+
+        /// 51% DAR <= 75%: 25% penalty
+      } else if (debtToAssetRatio <= 0.75) {
+        points *= 0.75;
+
+        /// 76% DAR <= 90%: 50% penalty
+      } else if (debtToAssetRatio <= 0.90) {
+        points *= 0.50;
+
+        /// DAR >= 90%: 80% penalty
+      } else {
+        points *= 0.20;
       }
-
-      points += goalBonus;
 
       _leaderboard.add(GameLeaderboard(player, points,
           totalAssets: totalAssets,
           totalDebt: remainingDebt,
-          debtPenalty: debtPenalty,
-          goalBonus: goalBonus,
           playerGoal: player.goal,
           happinessFactor: happinessFactor,
           cumulativeEsgScore: cumulativeEsgScore));
+
+      /// Sort in descending order of points
+      _leaderboard.sort((a, b) => b.points.compareTo(a.points));
+
+      for (GameLeaderboard entry in _leaderboard) {
+        log.info(
+            "[Leaderboard] Player: ${entry.player.name}, Points: ${entry.points}, Total Assets: ${entry.totalAssets}, Total Debt: ${entry.totalDebt}, Goal: ${entry.playerGoal}, Happiness Factor: ${entry.happinessFactor}, Cumulative ESG Score: ${entry.cumulativeEsgScore}");
+      }
     }
   }
 
@@ -177,6 +227,12 @@ class GameManager implements IManager {
     /// Update the market state ie incrementing stock prices state
     marketManager.updateMarket();
 
+    /// Increment the world event
+    worldEventManager.incrementWorldEvent();
+
+    /// Reset cashflow for all players to track cashflow for new round
+    accountsManager.resetPlayerCashflow();
+
     /// Credit interest for all player accounts
     accountsManager.creditInterest();
 
@@ -186,13 +242,14 @@ class GameManager implements IManager {
     /// Credit passive XP gains for all players
     skillManager.creditPassiveXPGain();
 
-    loanManager.autoRepayLoans();
-
     /// Credit business earnings for all player businesses
     businessManager.creditBusinessEarnings();
 
     /// Update each businesses current revenue based on the number of competitors
     businessManager.growBusinesses();
+
+    /// Auto repay loans for all players after crediting all earnings
+    loanManager.autoRepayLoans();
   }
 
   /// This method updates all relavant systems and increments the game turn.
@@ -249,8 +306,6 @@ class GameLeaderboard {
   final double points;
   final double totalAssets;
   final double totalDebt;
-  final double debtPenalty;
-  final double goalBonus;
   final PlayerGoals playerGoal;
   final int cumulativeEsgScore;
   final int happinessFactor;
@@ -260,8 +315,6 @@ class GameLeaderboard {
     this.points, {
     required this.totalAssets,
     required this.totalDebt,
-    required this.debtPenalty,
-    required this.goalBonus,
     required this.playerGoal,
     required this.cumulativeEsgScore,
     required this.happinessFactor,

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class SelectableAsset extends StatefulWidget {
   final String title;
   final String description;
-  final AlphaAssets image;
+  final AlphaAsset image;
   final Color color;
   final void Function()? onTap;
 

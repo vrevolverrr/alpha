@@ -34,7 +34,7 @@ class BudgetingTile extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 20.0),
+        const SizedBox(height: 5.0),
         AlphaContainer(
           width: 200.0,
           padding: const EdgeInsets.only(bottom: 15.0),
@@ -65,33 +65,33 @@ class BudgetingTile extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                  width: 120.0,
-                  height: 120.0,
+                  width: 110.0,
+                  height: 110.0,
                   child: () {
                     double proportion = this.proportion * 10;
 
                     if (proportion >= 80) {
-                      return Image.asset(AlphaAssets.budgetingJar100.path);
+                      return Image.asset(AlphaAsset.budgetingJar100.path);
                     }
 
                     if (proportion >= 50) {
-                      return Image.asset(AlphaAssets.budgetingJar75.path);
+                      return Image.asset(AlphaAsset.budgetingJar75.path);
                     }
 
                     if (proportion >= 30) {
-                      return Image.asset(AlphaAssets.budgetingJar50.path);
+                      return Image.asset(AlphaAsset.budgetingJar50.path);
                     }
 
                     if (proportion >= 10) {
-                      return Image.asset(AlphaAssets.budgetingJar25.path);
+                      return Image.asset(AlphaAsset.budgetingJar25.path);
                     }
 
-                    return Image.asset(AlphaAssets.budgetingJar0.path);
+                    return Image.asset(AlphaAsset.budgetingJar0.path);
                   }()),
             ],
           ),
         ),
-        const SizedBox(height: 20.0),
+        const SizedBox(height: 10.0),
         GestureDetector(
           onTap: onDecrement,
           child: Transform.rotate(

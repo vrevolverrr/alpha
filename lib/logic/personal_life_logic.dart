@@ -12,6 +12,11 @@ class PersonalLife extends ChangeNotifier {
 
   PersonalLifeStatus get status => _status;
 
+  bool get isSingle => _status == PersonalLifeStatus.single;
+  bool get isDating => _status == PersonalLifeStatus.dating;
+  bool get isMarried => _status == PersonalLifeStatus.marriage;
+  bool get isFamily => _status == PersonalLifeStatus.family;
+
   /// Advance the player's [PersonalLifeStatus] to the next
   void pursue(PersonalLifeStatus next) {
     _status = next;

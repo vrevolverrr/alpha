@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class DashboardActionCard extends StatefulWidget {
   final String title;
   final String description;
-  final AlphaAssets? image;
+  final AlphaAsset? image;
   final void Function()? onTap;
 
   const DashboardActionCard(

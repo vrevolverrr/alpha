@@ -4,7 +4,7 @@ import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/logic/skills_logic.dart';
 import 'package:alpha/logic/stats_logic.dart';
-import 'package:alpha/logic/world_event_logic.dart';
+import 'package:alpha/logic/data/world_event.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
@@ -88,7 +88,7 @@ class _DashboardPlayerInfo extends StatelessWidget {
 
   void _handleShowEconomyInfo(BuildContext context) {
     context.showDialog(buildEconomicCycleInfoDialog(
-        context, economyManager.current, economyManager.next, () {
+        context, economyManager.currentCycle, economyManager.next, () {
       context.dismissDialog();
     }));
   }
@@ -121,7 +121,7 @@ class _DashboardPlayerInfo extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Round ${gameManager.round}: ${economyManager.current.description}",
+                        "Round ${gameManager.round}: ${economyManager.currentCycle.description}",
                         style: TextStyles.bold18,
                       ),
                       const SizedBox(width: 10.0),
@@ -215,7 +215,7 @@ class _DashboardWorldEvent extends StatelessWidget {
               SizedBox(
                 width: 100.0,
                 height: 100.0,
-                child: Image.asset(AlphaAssets.dashboardWorldEvent.path),
+                child: Image.asset(AlphaAsset.dashboardWorldEvent.path),
               )
             ],
           ),
@@ -279,7 +279,7 @@ class _DashboardActions extends StatelessWidget {
         DashboardActionCard(
           title: "Assets",
           description: "Manage your assets and liabilities.",
-          image: AlphaAssets.dashboardAssets,
+          image: AlphaAsset.dashboardAssets,
           onTap: () => context.navigateTo(const AssetsScreen()),
         ).animate().scale(
             curve: Curves.elasticOut,
@@ -290,7 +290,7 @@ class _DashboardActions extends StatelessWidget {
         DashboardActionCard(
           title: "Investments",
           description: "Invest in various assets to earn money.",
-          image: AlphaAssets.dashboardInvestment,
+          image: AlphaAsset.dashboardInvestment,
           onTap: () => context.navigateTo(const InvestmentsScreen()),
         ).animate().scale(
             curve: Curves.elasticOut,
@@ -301,7 +301,7 @@ class _DashboardActions extends StatelessWidget {
         DashboardActionCard(
           title: "Businesses",
           description: "Manage your business operations.",
-          image: AlphaAssets.dashboardBusiness,
+          image: AlphaAsset.dashboardBusiness,
           onTap: () => context.navigateTo(const BusinessOwnedScreen()),
         ).animate().scale(
             curve: Curves.elasticOut,

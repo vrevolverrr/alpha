@@ -1,4 +1,4 @@
-import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/logic/data/player.dart';
 import 'package:flutter/material.dart';
 
 class PlayerAvatarSelectorController extends ChangeNotifier {

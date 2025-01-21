@@ -56,6 +56,22 @@ class OpportunityDrawResultDialog extends StatelessWidget {
                     text:
                         "${opportunity.cashBonus != 0 ? " in cash" : " of your savings"}.",
                     style: TextStyles.medium22),
+                if (opportunity.happinessBonus != 0)
+                  TextSpan(
+                      text:
+                          " You will ${opportunity.happinessBonus > 0 ? "gain" : "lose"} ",
+                      style: TextStyles.medium22),
+                if (opportunity.happinessBonus != 0)
+                  TextSpan(
+                      text:
+                          "${opportunity.happinessBonus > 0 ? "+" : ""}${opportunity.happinessBonus}",
+                      style: TextStyles.bold22.copyWith(
+                          color: opportunity.happinessBonus > 0
+                              ? Colors.green
+                              : Colors.red)),
+                if (opportunity.happinessBonus != 0)
+                  const TextSpan(
+                      text: " Happiness ❤️.", style: TextStyles.medium22),
               ],
             ),
           ),

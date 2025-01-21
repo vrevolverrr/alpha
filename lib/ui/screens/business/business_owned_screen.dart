@@ -10,9 +10,12 @@ import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/common/animated_value.dart';
+import 'package:alpha/ui/screens/business/dialogs/rnd_dialogs.dart';
 import 'package:alpha/ui/screens/business/dialogs/confirm_sell_business.dialog.dart';
 import 'package:alpha/ui/screens/business/dialogs/landing_dialog_owned.dart';
 import 'package:alpha/ui/screens/business/widgets/owned_business_listing.dart';
+import 'package:alpha/ui/screens/investments/widgets/esg_label.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_sector_card.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -35,6 +38,26 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
           initialCost: 0,
         );
 
+  bool _canPerformRnd() {
+    if (_selectedBusiness.lastRndRound == gameManager.round) {
+      return false;
+    }
+
+    return accountsManager.getAvailableBalance(activePlayer) >=
+        businessManager.getRndCost(_selectedBusiness);
+  }
+
+  void _handleRndDisabled(BuildContext context) {
+    if (_selectedBusiness.lastRndRound == gameManager.round) {
+      context.showSnackbar(
+          message: "✋🏼 Already attempted R&D this round for this business.");
+      return;
+    }
+
+    context.showSnackbar(
+        message: "✋🏼 Insufficient funds to perform R&D for this business.");
+  }
+
   void _handleSellBusiness(BuildContext context) {
     context.showDialog(
         buildConfirmSellBusinessDialog(context, _selectedBusiness, () {
@@ -48,6 +71,33 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
 
       context.dismissDialog();
       context.showSnackbar(message: "🎉 Successfully sold business.");
+    }));
+  }
+
+  void _handleRndBusiness(BuildContext context) {
+    context.showDialog(
+        buildConfirmRndBusinessDialog(context, _selectedBusiness, () {
+      /// To rebuild R&D button once attempted
+      setState(() {});
+
+      final bool isSuccessful =
+          businessManager.attemptRnD(activePlayer, _selectedBusiness);
+
+      context.dismissDialog();
+
+      Future.delayed(Durations.medium1, () {
+        if (isSuccessful) {
+          context.showDialog(
+              buildSuccessRndBusinessDialog(context, _selectedBusiness, () {
+            context.dismissDialog();
+          }));
+        } else {
+          context.showDialog(
+              buildFailureRndBusinessDialog(context, _selectedBusiness, () {
+            context.dismissDialog();
+          }));
+        }
+      });
     }));
   }
 
@@ -74,7 +124,7 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     _buildOwnedBusinessesColumn(),
-                    _buildCarDetailsColumn(context),
+                    _buildBusinessDetailsColumn(context),
                   ],
                 ),
               ]
@@ -159,7 +209,7 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
     );
   }
 
-  Widget _buildCarDetailsColumn(BuildContext context) {
+  Widget _buildBusinessDetailsColumn(BuildContext context) {
     return Column(
       children: <Widget>[
         Row(
@@ -167,34 +217,33 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
             PlayerAccountBalanceStatCard(
                 accountsManager.getPlayerAccount(activePlayer)),
             const SizedBox(width: 10.0),
-            PlayerHappinessStatCard(statsManager.getPlayerStats(activePlayer))
+            PlayerDebtStatCard(loanManager.getPlayerDebt(activePlayer),
+                businessDebtOnly: true),
           ],
         ),
         const SizedBox(height: 20.0),
         _buildBusinessDetails(),
         const SizedBox(height: 20.0),
-        _buildPurchaseControls(context),
+        _buildActionControls(context),
       ],
     );
   }
 
   Widget _buildBusinessDetails() {
-    final double cashflow =
-        businessManager.calculateBusinessEarnings(_selectedBusiness);
-
     return AlphaContainer(
-      width: 650.0,
-      height: 325.0,
-      padding: const EdgeInsets.all(25.0),
+      width: 600.0,
+      height: 310.0,
+      padding: const EdgeInsets.only(left: 30.0, top: 20.0, bottom: 20.0),
       child: Row(
         children: [
           SizedBox(
-              width: 280.0,
+              width: 200.0,
               height: double.infinity,
               child: Image.asset(_selectedBusiness.sector.asset.path,
                   fit: BoxFit.cover)),
-          const SizedBox(width: 25.0),
+          const SizedBox(width: 30.0),
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Column(
@@ -205,33 +254,47 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
                     style: TextStyles.bold18.copyWith(color: Colors.black87),
                   ),
                   SizedBox(
-                    width: 260.0,
-                    child: SizedBox(
-                      width: 260.0,
-                      height: 30.0,
-                      child: AutoSizeText(_selectedBusiness.name,
-                          maxLines: 1, style: TextStyles.bold22),
-                    ),
+                    width: 310.0,
+                    height: 40.0,
+                    child: AutoSizeText(_selectedBusiness.name,
+                        maxLines: 1, style: TextStyles.bold25),
                   )
                 ],
               ),
-              const SizedBox(height: 8.0),
+              Row(
+                children: [
+                  StockSectorCard(_selectedBusiness.sector),
+                  const SizedBox(width: 10.0),
+                  if (_selectedBusiness.esgRating > 0)
+                    ESGLabel(_selectedBusiness.esgRating),
+                ],
+              ),
+              const SizedBox(height: 15.0),
               _GenericTitleValue(
                   title: "Busines Valuation",
                   value: businessManager
                       .calculateBusinessValuation(_selectedBusiness)
                       .prettyCurrency),
               const SizedBox(height: 8.0),
-              _GenericTitleValue(
-                  title: "Business Cashflow",
-                  color: cashflow > 0 ? const Color(0xFF45A148) : Colors.red,
-                  value:
-                      "${cashflow > 0 ? "+" : ""}${cashflow.prettyCurrency}"),
-              const SizedBox(height: 8.0),
-              _GenericTitleValue(
-                width: 280.0,
-                title: "Businss Sector",
-                value: _selectedBusiness.sector.name,
+              Builder(
+                builder: (context) {
+                  final double cashflow = _selectedBusiness.lastRevenue;
+
+                  Color color;
+                  if (cashflow > 0) {
+                    color = const Color(0xFF45A148);
+                  } else if (cashflow == 0.0) {
+                    color = Colors.black;
+                  } else {
+                    color = Colors.red;
+                  }
+
+                  return _GenericTitleValue(
+                      title: "Business Cashflow",
+                      color: color,
+                      value:
+                          "${cashflow > 0 ? "+" : ""}${cashflow.prettyCurrency}");
+                },
               ),
             ],
           )
@@ -240,55 +303,73 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
     );
   }
 
-  Widget _buildPurchaseControls(BuildContext context) {
+  Widget _buildActionControls(BuildContext context) {
     return AlphaContainer(
-      width: 650.0,
-      height: 185.0,
+      width: 600.0,
+      height: 200.0,
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
       child: Column(
         children: <Widget>[
-          Row(
-            children: [
-              Column(children: <Widget>[
-                _GenericTitleValue(
-                    width: 200.0,
-                    title: "Business Debt",
-                    value: loanManager
-                        .getBusinessDebt(activePlayer)
-                        .prettyCurrency),
-                const SizedBox(height: 6.0),
-                _GenericTitleValue(
-                    width: 200.0,
-                    title: "ESG Rating",
-                    value: _selectedBusiness.esgRating.toString()),
-              ]),
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const Text("Sell Price", style: TextStyles.bold16),
-                    AnimatedValue(
-                      businessManager
-                          .calculateBusinessValuation(_selectedBusiness),
-                      currency: true,
-                      style: TextStyles.bold30,
-                    ),
-                    const SizedBox(height: 6.0),
-                    Builder(
-                      builder: (context) => AlphaButton(
-                        width: 205.0,
-                        height: 60.0,
-                        disabled: false,
-                        onTapDisabled: () => context.showSnackbar(
-                            message:
-                                "✋🏼 Insufficient funds for downpayment or ineligible for loan."),
-                        title: "Sell",
-                        icon: Icons.shopping_cart_outlined,
-                        color: AlphaColors.red,
-                        onTap: () => _handleSellBusiness(context),
-                      ),
-                    ),
-                  ]),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(left: 10 - .0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 275.0,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Text("R&D Price", style: TextStyles.bold19),
+                        AnimatedValue(
+                          businessManager.getRndCost(_selectedBusiness),
+                          currency: true,
+                          style: TextStyles.bold33,
+                        ),
+                        const SizedBox(height: 6.0),
+                      ]),
+                ),
+                SizedBox(
+                  width: 265.0,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const Text("Sell Price", style: TextStyles.bold19),
+                        AnimatedValue(
+                          businessManager
+                              .calculateBusinessValuation(_selectedBusiness),
+                          currency: true,
+                          style: TextStyles.bold33,
+                        ),
+                        const SizedBox(height: 6.0),
+                      ]),
+                ),
+              ],
+            ),
+          ),
+          Builder(
+            builder: (context) => Row(
+              children: [
+                AlphaButton(
+                  width: 265.0,
+                  height: 60.0,
+                  disabled: !_canPerformRnd(),
+                  onTapDisabled: () => _handleRndDisabled(context),
+                  title: "R&D",
+                  icon: Icons.science_outlined,
+                  color: const Color(0xFF8CB6FD),
+                  onTap: () => _handleRndBusiness(context),
+                ),
+                const SizedBox(width: 15.0),
+                AlphaButton(
+                  width: 260.0,
+                  height: 60.0,
+                  title: "Sell",
+                  icon: Icons.shopping_cart_outlined,
+                  color: AlphaColors.red,
+                  onTap: () => _handleSellBusiness(context),
+                )
+              ],
+            ),
           ),
           // AlphaButton(title: "Purchase", width: 260.0, onTap: () {}),
         ],
@@ -300,14 +381,13 @@ class _BusinessOwnedScreenState extends State<BusinessOwnedScreen> {
 class _GenericTitleValue extends StatelessWidget {
   final String title;
   final String value;
-  final double width;
   final Color? color;
 
-  const _GenericTitleValue(
-      {required this.title,
-      required this.value,
-      this.color,
-      this.width = 260.0});
+  const _GenericTitleValue({
+    required this.title,
+    required this.value,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -316,14 +396,14 @@ class _GenericTitleValue extends StatelessWidget {
       children: <Widget>[
         Text(
           title,
-          style: TextStyles.bold16.copyWith(color: Colors.black87),
+          style: TextStyles.bold17.copyWith(color: Colors.black87),
         ),
         const SizedBox(height: 2.0),
         SizedBox(
-          width: width,
+          width: 260.0,
           child: Text(
             value,
-            style: TextStyles.bold25.copyWith(color: color ?? Colors.black),
+            style: TextStyles.bold27.copyWith(color: color ?? Colors.black),
           ),
         )
       ],

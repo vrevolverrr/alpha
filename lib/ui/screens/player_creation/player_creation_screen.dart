@@ -1,7 +1,7 @@
 import 'package:alpha/assets.dart';
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/careers.dart';
-import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/logic/data/player.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
@@ -23,7 +23,7 @@ class PlayerCreationScreen extends StatefulWidget {
 
 class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   String _playerName = "";
-  PlayerGoals _selectedGoal = PlayerGoals.family;
+  PlayerGoals _selectedGoal = PlayerGoals.marriage;
 
   late final PlayerAvatarSelectorController _avatarController;
   PlayerColor _selectedColor = playerManager.getAvailableColors().first;
@@ -65,6 +65,12 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
   void _handleAddPlayer(BuildContext context) {
     if (_playerName.trim().isEmpty) {
       context.showSnackbar(message: "✋🏼 Please enter a valid player name.");
+      return;
+    }
+
+    if (_playerName.trim().length > 15) {
+      context.showSnackbar(
+          message: "✋🏼 Please keep your name under 15 characters.");
       return;
     }
 
@@ -187,7 +193,7 @@ class _PlayerCreationScreenState extends State<PlayerCreationScreen> {
                                         width: 40.0,
                                         height: 40.0,
                                         child: Image.asset(
-                                          AlphaAssets.goalCareer.path,
+                                          AlphaAsset.goalCareer.path,
                                         ),
                                       ),
                                       const SizedBox(width: 10.0),

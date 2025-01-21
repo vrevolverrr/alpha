@@ -45,6 +45,7 @@ class EducationConfirmDialog extends StatelessWidget {
         Text(
           "Are you sure you want to ${selection.title.toLowerCase()}?",
           style: TextStyles.bold28,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: 6.0),
         RichText(

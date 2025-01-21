@@ -30,7 +30,7 @@ class OwnedRealEstateListing extends StatelessWidget {
                 width: 100.0,
                 height: double.infinity,
                 child: Image.asset(
-                  realEstate.type.image.path,
+                  realEstate.image.path,
                   fit: BoxFit.contain,
                 ),
               ),

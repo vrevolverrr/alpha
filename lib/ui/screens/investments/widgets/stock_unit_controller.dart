@@ -51,12 +51,19 @@ class StockUnitController extends ChangeNotifier {
     _timer?.cancel();
     super.dispose();
   }
+
+  void setUnits(int units) {
+    _units = units.clamp(0, maxUnits);
+    notifyListeners();
+  }
 }
 
 class StockUnitSelector extends StatelessWidget {
   final StockUnitController controller;
+  final void Function() onTapEdit;
 
-  const StockUnitSelector({super.key, required this.controller});
+  const StockUnitSelector(
+      {super.key, required this.controller, required this.onTapEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +77,7 @@ class StockUnitSelector extends StatelessWidget {
         children: <Widget>[
           GestureDetector(
             behavior: HitTestBehavior.opaque,
+            onTap: () => controller.setUnits(controller.units - 1),
             onTapDown: (_) =>
                 controller.start(StockUnitChangeDirection.decrease),
             onTapUp: (_) => controller.stop(StockUnitChangeDirection.decrease),
@@ -78,20 +86,25 @@ class StockUnitSelector extends StatelessWidget {
             child: const SizedBox(
                 width: 40.0, height: 40.0, child: Icon(Icons.remove)),
           ),
-          ListenableBuilder(
-            listenable: controller,
-            builder: (context, _) => Text(
-              controller.units.toString(),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 38.0,
-                height: 1.80,
+          GestureDetector(
+            onTap: onTapEdit,
+            behavior: HitTestBehavior.opaque,
+            child: ListenableBuilder(
+              listenable: controller,
+              builder: (context, _) => Text(
+                controller.units.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 38.0,
+                  height: 1.80,
+                ),
               ),
             ),
           ),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
+            onTap: () => controller.setUnits(controller.units + 1),
             onTapDown: (_) =>
                 controller.start(StockUnitChangeDirection.increase),
             onTapUp: (_) => controller.stop(StockUnitChangeDirection.increase),

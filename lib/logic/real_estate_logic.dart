@@ -11,19 +11,12 @@ import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:logging/logging.dart';
 
-enum RealEstateType {
-  hdb(image: AlphaAssets.realEstateHdb),
-  condo(image: AlphaAssets.realEstateCondo),
-  landed(image: AlphaAssets.realEstateBungalow);
-
-  const RealEstateType({required this.image});
-
-  final AlphaAssets image;
-}
+enum RealEstateType { hdb, condo, landed }
 
 class RealEstate {
   final String name;
   final RealEstateType type;
+  final AlphaAsset image;
   final double propertyValue;
   final int repaymentPeriod;
   final double growthRate;
@@ -37,6 +30,7 @@ class RealEstate {
   RealEstate(
       {required this.name,
       required this.type,
+      required this.image,
       required this.propertyValue,
       this.repaymentPeriod = 16,
       this.growthRate = 1.5,
@@ -63,7 +57,7 @@ class RealEstateOwnership {
 }
 
 class RealEstateManager implements IManager {
-  static const kPurchaseRealEstateHappinessBonus = 10;
+  static const kPurchaseRealEstateHappinessBonus = 5;
 
   @override
   Logger log = Logger("RealEstateManager");

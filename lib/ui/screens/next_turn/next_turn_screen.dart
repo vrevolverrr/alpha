@@ -103,7 +103,7 @@ class PlayersMenuScreen extends StatelessWidget {
                       height: 50.0,
                       child: Center(
                           child: Text(
-                        "📊 ${economyManager.current.description}",
+                        "📊 ${economyManager.currentCycle.description}",
                         style: TextStyles.bold16,
                       )),
                     ),

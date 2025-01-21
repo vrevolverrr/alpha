@@ -4,13 +4,12 @@ import 'package:alpha/logic/data/opportunity.dart';
 import 'package:alpha/logic/players_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/utils.dart';
-import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class Opportunity {
   final String title;
   final String description;
-  final AlphaAssets image;
+  final AlphaAsset image;
   final int happinessBonus;
   final double cashBonus;
   final double cashPenaltyPercentage;
@@ -42,8 +41,6 @@ class OpportunityManager implements IManager {
     final int index =
         (randomFactor * (Opportunities.opportunityList.length - 1)).round();
 
-    debugPrint("Random factor: $randomFactor, index: $index");
-
     return Opportunities.opportunityList[index];
   }
 
@@ -52,6 +49,7 @@ class OpportunityManager implements IManager {
 
     statsManager.addHappiness(player, opportunity.happinessBonus);
     accountsManager.creditToSavingsUnbudgeted(player, opportunity.cashBonus);
+
     accountsManager.deductFromSavings(
         player,
         ((opportunity.cashPenaltyPercentage / 100) *

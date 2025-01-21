@@ -1,5 +1,5 @@
 import 'package:alpha/logic/data/business.dart';
-import 'package:alpha/logic/world_event_logic.dart';
+import 'package:alpha/logic/data/world_event.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';

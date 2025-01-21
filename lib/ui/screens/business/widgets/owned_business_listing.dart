@@ -3,6 +3,7 @@ import 'package:alpha/logic/business_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
+import 'package:alpha/ui/screens/investments/widgets/stock_sector_card.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
@@ -20,9 +21,9 @@ class OwnedBusinessListing extends StatelessWidget {
       curve: Curves.decelerate,
       duration: Durations.medium1,
       child: AlphaAnimatedContainer(
-          width: 360.0,
-          height: 160.0,
-          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+          width: 380.0,
+          height: 165.0,
+          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0, left: 18.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -39,13 +40,14 @@ class OwnedBusinessListing extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 190.0,
-                    height: 50.0,
+                    width: 215.0,
+                    height: 28.0,
                     child: AutoSizeText(business.name,
-                        style: TextStyles.bold19.copyWith(height: 1.4),
-                        maxLines: 2),
+                        style: TextStyles.bold19, maxLines: 1),
                   ),
                   const SizedBox(height: 5.0),
+                  StockSectorCard(business.sector),
+                  const SizedBox(height: 10.0),
                   _GenericTitleValue(
                       title: "Valuation",
                       child: Text(
@@ -77,7 +79,6 @@ class _GenericTitleValue extends StatelessWidget {
           title,
           style: TextStyles.bold16,
         ),
-        const SizedBox(height: 3.0),
         child,
       ],
     );

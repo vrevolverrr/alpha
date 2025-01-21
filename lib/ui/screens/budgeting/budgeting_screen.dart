@@ -1,16 +1,22 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/accounts_logic.dart';
 import 'package:alpha/logic/budget_logic.dart';
+import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_animations.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/screens/budgeting/dialogs/confirm_budget_dialog.dart';
 import 'package:alpha/ui/screens/budgeting/widgets/budgeting_tile.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 class BudgetingScreen extends StatelessWidget {
+  final PlayerAccount accounts = accountsManager.getPlayerAccount(activePlayer);
+  final PlayerDebt debt = loanManager.getPlayerDebt(activePlayer);
+
   final tempBudget = BudgetAllocation(budgets: activePlayer.budgets.value);
 
   BudgetingScreen({super.key});
@@ -90,17 +96,26 @@ class BudgetingScreen extends StatelessWidget {
           builder: _buildConfirmBtn,
         ),
         children: <Widget>[
+          const SizedBox(height: 20.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PlayerSavingsStatCard(accounts),
+              const SizedBox(width: 10.0),
+              PlayerInvestmentsStatCard(accounts),
+            ],
+          ),
           const SizedBox(height: 25.0),
           const Text("Total unallocated budget", style: TextStyles.bold24),
           AnimatedNumber<double>(
             accountsManager.getUnbudgetedSavings(activePlayer),
             style: const TextStyle(
-                fontSize: 48.0,
+                fontSize: 40.0,
                 color: Colors.black,
                 fontWeight: FontWeight.w700),
             formatCurrency: true,
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(

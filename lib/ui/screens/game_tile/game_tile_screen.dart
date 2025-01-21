@@ -32,6 +32,8 @@ class GameTileScreen extends StatelessWidget {
 
   Widget _getNextScreen(BuildContext context) {
     switch (activeTile) {
+      case BoardTile.startTile:
+        return DashboardScreen();
       case BoardTile.careerTile:
         return const CareerScreen();
       case BoardTile.educationTile:
@@ -91,7 +93,10 @@ class GameTileScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10.0),
-          SizedBox(width: 300.0, child: Image.asset(activeTile.image.path))
+          SizedBox(
+                  width: 300.0,
+                  height: 360.0,
+                  child: Image.asset(activeTile.image.path))
               .animate()
               .scale(
                   curve: Curves.elasticOut,

@@ -55,16 +55,23 @@ class CareerManager implements IManager {
         orElse: () => Job.unemployed);
   }
 
+  bool hasNextTierJob(Player player) {
+    final Job job = getPlayerJob(player);
+    return getNextTierJob(job) != Job.unemployed;
+  }
+
   bool canPromote(Player player) {
     Job nextJob = getNextTierJob(getPlayerJob(player));
-    return nextJob != Job.unemployed;
+
+    return skillManager.getPlayerSkill(player).level >=
+        nextJob.levelRequirement;
   }
 
   void employ(Player player, Job job, int round) {
     if (isEmployed(player)) {
-      log.warning(
-          "Called employ on Player ${player.name} who is already employed, call resign first");
-      return;
+      log.info(
+          "Resigning ${player.name} from current job before employing as ${job.name}");
+      resign(player);
     }
 
     if (!isQualified(player, job)) {
@@ -131,16 +138,18 @@ class CareerManager implements IManager {
         continue;
       }
 
-      final salary = employment.job.salary;
-      final cpf = salary * kCPFContributionRate;
+      final double salary = employment.job.salary;
+      final double cpf = salary * kCPFContributionRate;
+
+      final double netSalary = salary - cpf;
 
       final PlayerAccount account = accountsManager.getPlayerAccount(player);
 
-      account.savings.addUnbudgeted(salary);
+      accountsManager.creditToSavingsUnbudgeted(player, netSalary);
       account.cpf.add(cpf);
 
       log.info(
-          "Credited salary of $salary to ${player.name}, current Savings: ${account.savings.balance}, current CPF: ${account.cpf.balance}");
+          "Credited salary of $netSalary to ${player.name} after CPF, current Savings: ${account.savings.balance}, current CPF: ${account.cpf.balance}");
     }
   }
 }

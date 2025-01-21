@@ -50,7 +50,7 @@ class ConfirmBuyRealEstateDialog extends StatelessWidget {
                       .copyWith(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
-                  text: "from buying this property. You will have to pay ",
+                  text: " from buying this property. You will have to pay ",
                   style: TextStyles.medium22
                       .copyWith(fontFamily: "MazzardH", color: Colors.black),
                 ),

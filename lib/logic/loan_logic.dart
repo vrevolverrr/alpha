@@ -98,7 +98,7 @@ class PlayerDebt extends ChangeNotifier {
 }
 
 class LoanManager implements IManager {
-  static const kIncomeToDebtPaymentRatio = 0.9;
+  static const kIncomeToDebtPaymentRatio = 0.80;
 
   static const kBusinessLoanAmount = 20000.0;
   static const kBusinessLoanRepaymentPeriod = 8;
@@ -173,7 +173,7 @@ class LoanManager implements IManager {
     double totalRepaymentPerRound = getRepaymentPerRound(player);
 
     bool canAfford =
-        kIncomeToDebtPaymentRatio * careerManager.getPlayerJob(player).salary >=
+        kIncomeToDebtPaymentRatio * accountsManager.getPlayerCashflow(player) >=
             totalRepaymentPerRound + newLoanRepaymentPerRound;
 
     if (!canAfford) {
@@ -213,6 +213,7 @@ class LoanManager implements IManager {
 
   void autoRepayLoans() {
     for (Player player in _playerDebts.keys) {
+      log.info("Auto-repaying loans for ${player.name}");
       for (LoanContract contract in _playerDebts[player]!.loans) {
         repayLoan(player, reason: contract.reason);
       }
@@ -240,10 +241,12 @@ class LoanManager implements IManager {
       log.warning(
           "Amount $amount exceeds remaining loan amount ${contract.amountRemaining}, repaying remaining amount");
 
+      /// Cap the amount to the remaining amount
       amount = contract.amountRemaining;
     }
 
-    final double availableBalance = accountsManager.getAvailableBalance(player);
+    final double availableBalance =
+        accountsManager.getAvailableBalance(player, includeUnbudgeted: true);
 
     if (availableBalance < amount) {
       log.warning(
@@ -252,7 +255,7 @@ class LoanManager implements IManager {
     }
 
     contract.repay(amount);
-    accountsManager.deductAny(player, amount);
+    accountsManager.deductAny(player, amount, includeUnbudgeted: true);
 
     LoanRepaymentReceipt receipt = LoanRepaymentReceipt(
         amountRemaining: contract.amountRemaining, amountPaid: amount);

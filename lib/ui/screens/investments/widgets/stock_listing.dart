@@ -39,6 +39,7 @@ class StockListing extends StatelessWidget {
                   Text(
                     "${stock.percentPriceChange()}%",
                     style: TextStyle(
+                        height: 1.5,
                         fontWeight: FontWeight.w700,
                         fontSize: 22.0,
                         color: stock.percentPriceChange() == 0

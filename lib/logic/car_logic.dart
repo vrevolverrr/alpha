@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:alpha/assets.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/cars.dart';
@@ -7,14 +9,14 @@ import 'package:alpha/services.dart';
 import 'package:logging/logging.dart';
 
 enum CarType {
-  petrol(name: "Petrol", image: AlphaAssets.carPetrol),
-  hybrid(name: "Hybrid", image: AlphaAssets.carHybrid),
-  electric(name: "Electric", image: AlphaAssets.carElectric);
+  petrol(name: "Petrol", image: AlphaAsset.carPetrol),
+  hybrid(name: "Hybrid", image: AlphaAsset.carHybrid),
+  electric(name: "Electric", image: AlphaAsset.carElectric);
 
   const CarType({required this.name, required this.image});
 
   final String name;
-  final AlphaAssets image;
+  final AlphaAsset image;
 }
 
 class Car {
@@ -36,7 +38,7 @@ class Car {
   Car({
     required this.name,
     required this.price,
-    this.depreciationRate = 8.5,
+    this.depreciationRate = 0.065,
     this.repaymentPeriod = 8,
     required this.type,
     required this.happinessBonus,
@@ -94,10 +96,18 @@ class CarManager implements IManager {
     return coePrice;
   }
 
+  double getCarPriceWithCOE(Car car) {
+    return car.price + calculateCOEPrice();
+  }
+
+  double getUpfrontPaymentWithCOE(Car car) {
+    return car.upfrontPayment + calculateCOEPrice();
+  }
+
   void buyCar(Player player, Car car, {bool takeLoan = true}) {
     final double availableBalance = accountsManager.getAvailableBalance(player);
     if (!takeLoan) {
-      final totalPriceWithoutLoan = car.price + calculateCOEPrice();
+      final totalPriceWithoutLoan = getCarPriceWithCOE(car);
 
       if (availableBalance < totalPriceWithoutLoan) {
         log.warning(
@@ -114,7 +124,7 @@ class CarManager implements IManager {
     }
 
     /// Calculate the total price of the car including COE
-    final double totalPrice = car.price + calculateCOEPrice();
+    final double totalPrice = getUpfrontPaymentWithCOE(car);
 
     if (availableBalance < totalPrice) {
       log.warning(
@@ -187,9 +197,10 @@ class CarManager implements IManager {
     }
 
     final int roundsOwned = gameManager.round - ownership.ownedRound;
+    double value = car.price * pow(1 - car.depreciationRate, roundsOwned);
 
-    double value = car.price * (1 - (car.depreciationRate * roundsOwned));
-    return value;
+    /// Car value can depreciate to a minimum of 10% of its original value
+    return max(value, car.price * 0.1);
   }
 
   double getCarSalePrice(Player player, Car car) {

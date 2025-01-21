@@ -1,3 +1,4 @@
+import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -6,18 +7,17 @@ class BusinessesLandingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
         Text(
-          "Start your own business to generate revenue.  "
-          "Business revenue is influenced by "
-          "the economic cycle, market state, and competition. "
-          "Higher ESG rated businesses typically have higher initial costs but "
-          "have increased revenue potential.",
-          style: TextStyles.medium22,
+          "Start your own business to generate revenue "
+          "and is affected by the economic cycle, market state, and market competition. "
+          "A business loan of \$${LoanManager.kBusinessLoanAmount.toInt()} can be taken if "
+          "you cannot afford to start a business.",
+          style: TextStyles.medium22.copyWith(height: 1.5),
           textAlign: TextAlign.center,
         )
       ],

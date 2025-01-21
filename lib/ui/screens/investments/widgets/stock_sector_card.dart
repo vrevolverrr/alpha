@@ -12,7 +12,7 @@ class StockSectorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 30.0,
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       decoration: BoxDecoration(
           color: sector.sectorColor,
           borderRadius: const BorderRadius.all(Radius.circular(15.0)),
@@ -22,14 +22,14 @@ class StockSectorCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Transform.translate(
-            offset: const Offset(0, -1.0),
+            offset: const Offset(-1.5, -1.0),
             child: Text(
               getSectorEmoji(sector),
               style: TextStyles.bold13,
             ),
           ),
           Text(
-            sector.name,
+            sector.shortName,
             style: TextStyles.bold14.copyWith(height: 1.9),
           )
         ],

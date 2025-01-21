@@ -69,8 +69,12 @@ class SavingsAccount extends Account {
   double get unbudgeted => _unbudgeted;
 
   void addUnbudgeted(double amount) {
-    add(amount);
     _unbudgeted += amount;
+    notifyListeners();
+  }
+
+  void deductUnbudgeted(double amount) {
+    _unbudgeted -= amount;
     notifyListeners();
   }
 
@@ -88,33 +92,22 @@ class InvestmentAccount extends Account {
   UnmodifiableListView<ShareOwnership> get shareOwnership =>
       UnmodifiableListView(_shareOwnership);
 
-  /// Get the number of shares of a stock owned by the player.
+  /// Get the number of shares of a [StockItem] owned by the player.
   int getStockUnits(StockItem stockItem) {
-    int count = 0;
-
-    for (ShareOwnership share in shareOwnership) {
-      if (share.item == stockItem) {
-        count += share.units;
-      }
-    }
-
-    return count;
+    return shareOwnership
+        .where((share) => share.item == stockItem)
+        .fold(0, (prev, share) => prev + share.units);
   }
 
-  /// Get the profit of a specific stock owned by the player.
+  /// Get the total profit across all owned [Stock] of a [StockItem] owned by the [Player].
   double getStockProfit(StockItem stockItem) {
-    double profit = 0;
+    final double marketPrice = marketManager.getStockPrice(stockItem);
 
-    for (ShareOwnership share in shareOwnership) {
-      if (share.item == stockItem) {
-        profit += marketManager.getStockPrice(stockItem) - share.buyinPrice;
-      }
-    }
-
-    return profit;
+    return shareOwnership.where((stock) => stock.item == stockItem).fold(0.0,
+        (prev, stock) => prev + (marketPrice - stock.buyinPrice) * stock.units);
   }
 
-  /// Get the profit percentage of a stock owned by the player.
+  /// Get the total percentage profit of a [Stock] of a [StockItem] owned by the [Player].
   double getStockProfitPercent(StockItem stockItem) {
     /// Total Buy In = Sum of (Buy In Price * Units)
     final double totalBuyIn = _shareOwnership
@@ -193,14 +186,14 @@ class InvestmentAccount extends Account {
       remainingUnits -= unitsToSell;
 
       if (share.units == 0) {
-        shareOwnership.remove(share);
+        _shareOwnership.remove(share);
       }
 
       totalProfit += salePrice;
     }
 
     /// Credit the player with the total profit from the sale
-    acos(totalProfit);
+    add(totalProfit);
 
     notifyListeners();
     return true;
@@ -317,6 +310,10 @@ class PlayerAccount extends ChangeNotifier {
   final CPFAccount cpf = CPFAccount();
   final InvestmentAccount investments = InvestmentAccount();
 
+  /// The positive cashflow of the player last round
+  double _positiveCashFlow = 0.0;
+  double get positiveCashFlow => _positiveCashFlow;
+
   double get availableBalance => savings.balance + investments.balance;
 
   double get totalBalance =>
@@ -334,6 +331,21 @@ class PlayerAccount extends ChangeNotifier {
     cpf.addListener(() => notifyListeners());
     investments.addListener(() => notifyListeners());
   }
+
+  void addToCashflow(double amount) {
+    _positiveCashFlow += amount;
+    notifyListeners();
+  }
+
+  void deductFromCashflow(double amount) {
+    _positiveCashFlow -= amount;
+    notifyListeners();
+  }
+
+  void resetCashflow() {
+    _positiveCashFlow = 0.0;
+    notifyListeners();
+  }
 }
 
 class AccountsManager implements IManager {
@@ -347,8 +359,12 @@ class AccountsManager implements IManager {
   void initialisePlayerAccounts(List<Player> players) {
     for (final player in players) {
       _playerAccounts[player] =
-          PlayerAccount(savingsInitial: 4000, investmentsInitial: 1000);
+          PlayerAccount(savingsInitial: 4000.0, investmentsInitial: 1000.0);
     }
+  }
+
+  double getPlayerCashflow(Player player) {
+    return _playerAccounts[player]!.positiveCashFlow;
   }
 
   PlayerAccount getPlayerAccount(Player player) {
@@ -363,8 +379,14 @@ class AccountsManager implements IManager {
     return getPlayerAccount(player).savings;
   }
 
-  double getAvailableBalance(Player player) {
-    return getPlayerAccount(player).availableBalance;
+  double getAvailableBalance(Player player, {bool includeUnbudgeted = false}) {
+    final PlayerAccount account = getPlayerAccount(player);
+
+    if (includeUnbudgeted) {
+      return account.availableBalance + account.savings.unbudgeted;
+    }
+
+    return account.availableBalance;
   }
 
   double getUnbudgetedSavings(Player player) {
@@ -377,6 +399,14 @@ class AccountsManager implements IManager {
 
   double getTotalBalance(Player player) {
     return getPlayerAccount(player).totalBalance;
+  }
+
+  void resetPlayerCashflow() {
+    for (final player in _playerAccounts.keys) {
+      log.info(
+          "Resetting cashflow for player ${player.name}, initial cashflow: ${_playerAccounts[player]!.positiveCashFlow}");
+      _playerAccounts[player]!.resetCashflow();
+    }
   }
 
   void creditInterest() {
@@ -393,7 +423,11 @@ class AccountsManager implements IManager {
   }
 
   void creditToSavingsUnbudgeted(Player player, double amount) {
-    getPlayerAccount(player).savings.addUnbudgeted(amount);
+    final PlayerAccount account = getPlayerAccount(player);
+
+    account.savings.addUnbudgeted(amount);
+    account.addToCashflow(amount);
+
     log.info(
         "Credited unbudgeted $amount to player ${player.name}'s savings account.");
   }
@@ -435,29 +469,89 @@ class AccountsManager implements IManager {
         "Deducted $amount from player ${player.name}'s investment account.");
   }
 
-  void deductAny(Player player, double amount) {
+  void deductAny(Player player, double amount,
+      {bool includeUnbudgeted = false}) {
     PlayerAccount account = getPlayerAccount(player);
 
-    if (account.savings.balance + account.investments.balance < amount) {
+    final double availableBalance =
+        getAvailableBalance(player, includeUnbudgeted: includeUnbudgeted);
+
+    if (availableBalance < amount) {
       log.warning(
           "Player ${player.name} does not have enough money in their savings and investment account to deduct $amount, ignoring.");
       return;
     }
 
-    if (account.savings.balance >= amount) {
-      account.savings.deduct(amount);
-      log.info(
-          "Deducted $amount from player ${player.name}'s savings account.");
+    final double deductibleSavings = min(account.savings.balance, amount);
+    final double amountAfterSavings = amount - deductibleSavings;
+
+    account.savings.deduct(deductibleSavings);
+
+    final double deductibleInvestments =
+        min(account.investments.balance, amountAfterSavings);
+    final double amountAfterInvestments =
+        amountAfterSavings - deductibleInvestments;
+
+    account.investments.deduct(deductibleInvestments);
+
+    double deductibleUnbudgeted = 0.0;
+    if (includeUnbudgeted && amountAfterInvestments > 0) {
+      deductibleUnbudgeted =
+          min(account.savings.unbudgeted, amountAfterInvestments);
+
+      account.deductFromCashflow(deductibleUnbudgeted);
+      account.savings.deductUnbudgeted(deductibleUnbudgeted);
+    }
+
+    log.info(
+        "Deducted $deductibleSavings from player ${player.name}'s savings account"
+        "${(deductibleInvestments > 0) ? " and $deductibleInvestments from their investment account " : ""}"
+        "${(deductibleUnbudgeted > 0) ? "and $deductibleUnbudgeted from their unbudgeted savings" : ""}.");
+  }
+
+  void purchaseShare(Player player, Stock stock, int units) {
+    final InvestmentAccount investments = getInvestmentAccount(player);
+
+    final bool status = investments.purchaseShare(stock, units);
+
+    if (!status) {
+      log.warning(
+          "Player ${player.name} does not have enough money in their investment account to purchase $units units of ${stock.item.name} at ${stock.price} each, ignoring.");
+
       return;
     }
 
-    final double deductibleSavings = account.savings.balance;
-    final double deductibleInvestments = amount - deductibleSavings;
-
-    account.savings.deduct(deductibleSavings);
-    account.investments.deduct(deductibleInvestments);
+    /// Credit ESG points to the player, if the stock is an ESG stock
+    /// and it is the first time purchasing this stock
+    if (stock.item.esgRating > 0 &&
+        investments.getStockUnits(stock.item) == units) {
+      statsManager.addESG(player, stock.item.esgRating);
+    }
 
     log.info(
-        "Deducted $deductibleSavings from player ${player.name}'s savings account and $deductibleInvestments from their investment account.");
+        "Player ${player.name} purchased $units units of ${stock.item.name} at ${stock.price} each.");
+  }
+
+  void sellShare(Player player, Stock stock, int units) {
+    final InvestmentAccount investments = getInvestmentAccount(player);
+
+    final bool status = investments.sellShare(stock, units);
+
+    if (!status) {
+      log.warning(
+          "Player ${player.name} does not have enough units of ${stock.item.name} to sell $units units, ignoring.");
+
+      return;
+    }
+
+    /// Deduct ESG points from the player, if the stock is an ESG stock
+    /// and the player has no more units of this stock
+    if (stock.item.esgRating > 0 &&
+        investments.getStockUnits(stock.item) == 0) {
+      statsManager.deductESG(player, stock.item.esgRating);
+    }
+
+    log.info(
+        "Player ${player.name} sold $units units of ${stock.item.name} at ${stock.price} each.");
   }
 }

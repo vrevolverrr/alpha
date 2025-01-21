@@ -2,14 +2,13 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
-import 'package:alpha/ui/common/alpha_alert_dialog.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/common/alpha_scrollbar.dart';
+import 'package:alpha/ui/screens/careers/dialogs/confirm_job_dialog.dart';
 import 'package:alpha/ui/screens/careers/dialogs/job_success_dialog.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/careers/widgets/job_selection_card.dart';
-import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
 
 class JobSelectionScreen extends StatefulWidget {
@@ -58,8 +57,8 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
       return;
     }
 
-    final AlphaDialogBuilder dialog = _buildDialogJobConfirmation(
-        context, () => _handleDialogConfirmation(context));
+    final AlphaDialogBuilder dialog = buildJobConfirmDialog(
+        context, _selectedJob, () => _handleDialogConfirmation(context));
     context.showDialog(dialog);
   }
 
@@ -199,30 +198,6 @@ class _JobSelectionScreenState extends State<JobSelectionScreen> {
             ))
         .toList();
   }
-
-  /// Dialog Builders
-  AlphaDialogBuilder _buildDialogJobConfirmation(
-          BuildContext context, void Function() onTapConfirm) =>
-      AlphaDialogBuilder(
-          title: "Confirm Job",
-          child: Column(
-            children: <Widget>[
-              Text(
-                "You have chosen to work as ${singularArticle(_selectedJob.title)}.",
-                style: TextStyles.bold24,
-              ),
-              const SizedBox(height: 2.0),
-              const Text("Are you sure?", style: TextStyles.medium22),
-              const SizedBox(height: 20.0),
-              Transform.scale(
-                  scale: 1.2,
-                  child: JobDescriptionTagCollection(
-                      job: _selectedJob, disabled: false)),
-              const SizedBox(height: 50.0),
-            ],
-          ),
-          cancel: DialogButtonData.cancel(context),
-          next: DialogButtonData.confirm(onTap: onTapConfirm));
 
   /// Utility Methods
   bool _isQualified(Job job) {

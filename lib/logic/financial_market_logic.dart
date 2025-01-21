@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/stocks.dart';
+import 'package:alpha/logic/economy_logic.dart';
+import 'package:alpha/logic/data/world_event.dart';
 import 'package:alpha/services.dart';
 import 'package:logging/logging.dart';
 
@@ -10,14 +12,14 @@ import 'package:logging/logging.dart';
 ///  manages the stocks and their prices
 class FinancialMarketManager implements IManager {
   @override
-  Logger log = Logger('Financial Market Manager');
+  Logger log = Logger('FinancialMarketManager');
 
-  /// The list of [Stock]s with simulated prices, created for parameters
-  /// provided by [StockItem].
+  /// The list of [Stock] with simulated prices, based on parameters
+  /// of the [StockItem].
   final List<Stock> _stocks =
       StockItem.values.map((StockItem item) => Stock(item)).toList();
 
-  /// Gets the list of [Stock]s managed.
+  /// Gets the list of [Stock] being managed.
   UnmodifiableListView<Stock> get stocks => UnmodifiableListView(_stocks);
 
   void updateMarket() {
@@ -26,8 +28,33 @@ class FinancialMarketManager implements IManager {
   }
 
   void updateStockPrice(Stock stock) {
+    final EconomicCycle cycle = economyManager.currentCycle;
+    final WorldEvent event = worldEventManager.currentEvent;
+
+    double marketSentiment = 0.0;
+    double sectorTrend = 0.0;
+
+    if (event.sectorsAffected.contains(stock.item.sector)) {
+      sectorTrend = event.isPositiveEffect ? 1.0 : -1.0;
+    }
+
+    switch (cycle) {
+      case EconomicCycle.recession:
+        marketSentiment = 0.0;
+        break;
+      case EconomicCycle.depression:
+        marketSentiment = -1.0;
+        break;
+      case EconomicCycle.recovery:
+        marketSentiment = 0.5;
+        return;
+      case EconomicCycle.boom:
+        marketSentiment = 1.0;
+    }
+
     double lastPrice = stock.price;
-    stock.updatePrice();
+    stock.updatePrice(
+        marketSentiment: marketSentiment, sectorTrend: sectorTrend);
 
     log.info(
         "Stock price updated for ${stock.name} :  $lastPrice -> ${stock.price} (${stock.percentPriceChange(lastNth: 1)}%)");
@@ -47,6 +74,9 @@ class FinancialMarketManager implements IManager {
 
 /// This class simulates stock prices using Geometric Brownian Motion (GBM).
 class StockMarket {
+  static const double kSectorTrendDrift = 0.2;
+  static const double kMarketSentimentDrift = 0.1;
+
   /// initial stock price
   final double s0;
 
@@ -56,7 +86,6 @@ class StockMarket {
   /// percent volatility
   final double sigma;
 
-  /// default parameters
   /// total time period
   final double T;
 
@@ -66,11 +95,8 @@ class StockMarket {
   // delta time per step
   final double dt;
 
-  // uniform distribution function
-  late final Random rand;
-
-  // current step
-  int i = 0;
+  // The uniform distribution function to use.
+  final Random rand = Random();
 
   // current stock price
   double S;
@@ -78,8 +104,7 @@ class StockMarket {
   // historical prices
   late List<double> historicPrices = [];
 
-  /// This function generates a normally distributed (gaussian) random number
-  /// using the Box-Muller transform.
+  /// This function generates a N(0, 1) random number using the Box-Muller transform.
   double _nextGaussion() {
     // Generate two independent samples from the uniform distribution
     double u1 = rand.nextDouble();
@@ -94,17 +119,33 @@ class StockMarket {
       required this.mu,
       required this.sigma,
       this.T = 10.0,
-      this.N = 400})
+      this.N = 160})
       : dt = T / N,
-        S = s0 {
-    rand = Random();
-  }
+        S = s0;
 
-  /// Calculate the s_t+1 stock price and return s_t price
-  double getNextPrice() {
-    historicPrices.add(double.parse(S.toStringAsFixed(2)));
+  /// Caluclate the next stock price using the Geometric Brownian Motion (GBM) model.
+  /// The analytic solution to the GBM is: S_t = S_0 * exp((mu - 0.5 * sigma^2) * t + sigma * W_t)
+  /// where W_t is a Wiener process, implemented using the Gaussian Random Walk.
+  double getNextPrice(
+      {double marketSentiment = 0.0, double sectorTrend = 0.0}) {
+    /// Random Walk, W_t scaled by the square root of the time step
+    /// Var(dW) = dt * Var(W) = dt
     final double dW = sqrt(dt) * _nextGaussion();
-    S *= exp((mu - 0.5 * sigma * sigma) * dt + sigma * dW);
+
+    /// Base price movement
+    final double baseMovement = (mu - 0.5 * pow(sigma, 2)) * dt + (sigma * dW);
+
+    /// Market influences
+    final double sectorTendEffect = sectorTrend * kSectorTrendDrift * dt;
+    final double marketSentimentEffect =
+        marketSentiment * kMarketSentimentDrift * dt;
+
+    /// Total movement
+    final double totalMovement =
+        baseMovement + sectorTendEffect + marketSentimentEffect;
+
+    S *= exp(totalMovement);
+    historicPrices.add(double.parse(S.toStringAsFixed(2)));
 
     return historicPrices.last;
   }
@@ -144,14 +185,14 @@ class Stock {
     return market.historicPrices[n - 1] - market.historicPrices[n - lastNth];
   }
 
-  /// Calculate the percent change in stock price over the last Nth rounds
-  double percentPriceChange({int lastNth = 20}) {
+  /// Calculate the percent change in stock price over the [lastNth] rounds
+  double percentPriceChange({int lastNth = 10}) {
     final int n = market.historicPrices.length;
 
-    final double percentChange =
-        (market.historicPrices[n - 1] / market.historicPrices[n - lastNth] -
-                1.0) *
-            100;
+    final double latestPrice = market.historicPrices[n - 1];
+    final double lastNthPrice = market.historicPrices[n - lastNth];
+
+    final double percentChange = (latestPrice / lastNthPrice - 1.0) * 100;
 
     return double.parse(percentChange.toStringAsFixed(2));
   }
@@ -166,8 +207,9 @@ class Stock {
     market.generatePrices(N: 20);
   }
 
-  void updatePrice() {
+  void updatePrice({double marketSentiment = 0.0, double sectorTrend = 0.0}) {
     /// This function should be called after every turn/round to update the stock price
-    market.getNextPrice();
+    market.getNextPrice(
+        marketSentiment: marketSentiment, sectorTrend: sectorTrend);
   }
 }

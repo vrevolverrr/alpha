@@ -27,6 +27,25 @@ class CarScreen extends StatefulWidget {
 class _CarScreenState extends State<CarScreen> {
   Car _selectedCar = carManager.getAvailableCars(activePlayer).first;
 
+  bool _canAffordCar(BuildContext context) {
+    final double availableBalance =
+        accountsManager.getAvailableBalance(activePlayer);
+
+    if (availableBalance >= carManager.getCarPriceWithCOE(_selectedCar)) {
+      return true;
+    }
+
+    if (availableBalance < carManager.getUpfrontPaymentWithCOE(_selectedCar)) {
+      return false;
+    }
+
+    return loanManager
+        .canPlayerTakeLoan(activePlayer,
+            newLoanRepaymentPerRound: _selectedCar.repaymentPerRound,
+            reason: LoanReason.car)
+        .isApproved;
+  }
+
   void _handleBuyCar(BuildContext context, Car car) {
     if (accountsManager.getAvailableBalance(activePlayer) >= car.price) {
       context
@@ -205,7 +224,7 @@ class _CarScreenState extends State<CarScreen> {
                   _GenericTitleValue(
                       width: 170.0,
                       title: "Depreciation Rate",
-                      value: "${_selectedCar.depreciationRate}% 🔻"),
+                      value: "${_selectedCar.depreciationRate * 100}% 🔻"),
                   _GenericTitleValue(
                       width: 100.0,
                       title: "ESG Bonus",
@@ -255,8 +274,7 @@ class _CarScreenState extends State<CarScreen> {
                   children: <Widget>[
                     const Text("Upfront Payment", style: TextStyles.bold16),
                     AnimatedValue(
-                      _selectedCar.upfrontPayment +
-                          carManager.calculateCOEPrice(),
+                      carManager.getUpfrontPaymentWithCOE(_selectedCar),
                       currency: true,
                       style: TextStyles.bold30,
                     ),
@@ -265,12 +283,7 @@ class _CarScreenState extends State<CarScreen> {
                       builder: (context) => AlphaButton(
                         width: 205.0,
                         height: 60.0,
-                        disabled: !loanManager
-                            .canPlayerTakeLoan(activePlayer,
-                                newLoanRepaymentPerRound:
-                                    _selectedCar.repaymentPerRound,
-                                reason: LoanReason.car)
-                            .isApproved,
+                        disabled: !_canAffordCar(context),
                         onTapDisabled: () => context.showSnackbar(
                             message:
                                 "✋🏼 Insufficient funds for downpayment or ineligible for loan."),

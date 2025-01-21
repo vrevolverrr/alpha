@@ -70,6 +70,12 @@ class PersonalLifeScreen extends StatelessWidget {
                     width: 280.0,
                     title: personalLife.status.action,
                     color: const Color(0xFF71C5F6),
+                    disabled:
+                        !personalLifeManager.canAffordNextStage(activePlayer),
+                    onTapDisabled: () => context.showSnackbar(
+                      message:
+                          "✋🏼 You cannot afford to progress to the next stage.",
+                    ),
                     onTap: () => _handleProgressPersonalLife(context),
                   )
                 : const SizedBox.shrink(),

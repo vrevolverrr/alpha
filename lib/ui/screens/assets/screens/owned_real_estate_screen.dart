@@ -1,3 +1,4 @@
+import 'package:alpha/assets.dart';
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/data/board_tiles.dart';
 import 'package:alpha/logic/loan_logic.dart';
@@ -28,7 +29,11 @@ class _OwnedRealEstateScreenState extends State<OwnedRealEstateScreen> {
 
   late RealEstate _selectedRealEstate = _ownedRealEstates.isNotEmpty
       ? _ownedRealEstates.first
-      : RealEstate(name: "", type: RealEstateType.condo, propertyValue: 0);
+      : RealEstate(
+          name: "",
+          type: RealEstateType.condo,
+          image: AlphaAsset.realEstateBungalow,
+          propertyValue: 0);
 
   void _handleSellRealEstate(BuildContext context) {
     context.showDialog(
@@ -164,8 +169,8 @@ class _OwnedRealEstateScreenState extends State<OwnedRealEstateScreen> {
             width: 280.0,
             height: double.infinity,
             child: Image.asset(
-              _selectedRealEstate.type.image.path,
-              fit: BoxFit.cover,
+              _selectedRealEstate.image.path,
+              fit: BoxFit.contain,
             ),
           ),
           const SizedBox(width: 25.0),

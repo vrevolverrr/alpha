@@ -202,7 +202,7 @@ class _OwnedCarsScreenState extends State<OwnedCarsScreen> {
               const SizedBox(height: 6.0),
               _GenericTitleValue(
                   title: "Depreciation Rate (per round)",
-                  value: "${_selectedCar.depreciationRate}%"),
+                  value: "${(_selectedCar.depreciationRate * 100)}%"),
             ],
           )
         ],

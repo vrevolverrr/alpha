@@ -108,7 +108,7 @@ class OpportunityCardFront extends StatelessWidget {
 
 class _QuestionMarkIcon extends StatelessWidget {
   // Widget for the question mark icon on each card
-  final AlphaAssets asset;
+  final AlphaAsset asset;
 
   const _QuestionMarkIcon({required this.asset});
 
@@ -146,7 +146,7 @@ class CardBack extends StatelessWidget {
                   topRight: Radius.circular(15.0)),
             ),
           ),
-          const _QuestionMarkIcon(asset: AlphaAssets.opportunityQuestionMark),
+          const _QuestionMarkIcon(asset: AlphaAsset.opportunityQuestionMark),
         ]));
   }
 }

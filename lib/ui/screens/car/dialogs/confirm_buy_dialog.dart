@@ -40,8 +40,7 @@ class ConfirmBuyCarDialog extends StatelessWidget {
               children: [
                 TextSpan(
                   text: "You will receive ",
-                  style: TextStyles.medium22
-                      .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                  style: TextStyles.medium22.copyWith(color: Colors.black),
                 ),
                 TextSpan(
                   text: "+${car.happinessBonus} Happiness ❤️",
@@ -49,9 +48,8 @@ class ConfirmBuyCarDialog extends StatelessWidget {
                       .copyWith(color: Colors.red, fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
-                  text: "from buying this car. You will have to pay ",
-                  style: TextStyles.medium22
-                      .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                  text: " from buying this car. You will have to pay ",
+                  style: TextStyles.medium22.copyWith(color: Colors.black),
                 ),
                 TextSpan(
                   text: car.repaymentPerRound.prettyCurrency,
@@ -60,8 +58,7 @@ class ConfirmBuyCarDialog extends StatelessWidget {
                 ),
                 TextSpan(
                   text: " each round for ${car.repaymentPeriod} rounds.",
-                  style: TextStyles.medium22
-                      .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                  style: TextStyles.medium22.copyWith(color: Colors.black),
                 ),
               ],
             ),

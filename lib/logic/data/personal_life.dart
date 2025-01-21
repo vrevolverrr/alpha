@@ -8,7 +8,7 @@ enum PersonalLifeStatus {
     description:
         "You’re independent and enjoying life solo. Enjoy the freedom!",
     action: "Start Dating",
-    image: AlphaAssets.personalLifeSingle,
+    image: AlphaAsset.personalLifeSingle,
   ),
 
   dating(
@@ -18,25 +18,25 @@ enum PersonalLifeStatus {
       cost: 1000.0,
       description:
           "Take things slow, learn about each other, and see if this bond could grow.",
-      image: AlphaAssets.personalLifeDating),
+      image: AlphaAsset.personalLifeDating),
 
   marriage(
       title: "Marriage",
       action: "Start Family",
-      happinessBonus: 20,
+      happinessBonus: 15,
       cost: 8000.0,
       description:
           "You've tied the knot! With love and commitment, you’re building a life together. You can now purchase a HDB.",
-      image: AlphaAssets.personalLifeMarried),
+      image: AlphaAsset.personalLifeMarried),
 
   family(
       title: "Family",
       action: "",
       description:
           "Your family has grown! With new responsibilities and joys, navigate the challenges of family life.",
-      happinessBonus: 35,
+      happinessBonus: 30,
       cost: 15000.0,
-      image: AlphaAssets.personalLifeFamily);
+      image: AlphaAsset.personalLifeFamily);
 
   const PersonalLifeStatus({
     required this.title,
@@ -52,5 +52,5 @@ enum PersonalLifeStatus {
   final String description;
   final double cost;
   final int happinessBonus;
-  final AlphaAssets image;
+  final AlphaAsset image;
 }

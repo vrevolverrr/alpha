@@ -29,12 +29,12 @@ class CareerPromotionDialog extends StatelessWidget {
         RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: TextStyles.medium22.copyWith(fontFamily: "MazzardH"),
+            style: TextStyles.medium22
+                .copyWith(fontFamily: "MazzardH", height: 1.5),
             children: [
               TextSpan(
                 text: "You will receive ",
-                style: TextStyles.medium22
-                    .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                style: TextStyles.medium22.copyWith(color: Colors.black),
               ),
               TextSpan(
                 text:
@@ -45,8 +45,7 @@ class CareerPromotionDialog extends StatelessWidget {
               TextSpan(
                 text:
                     ". You will still receive your promoted salary in the next round.",
-                style: TextStyles.medium22
-                    .copyWith(fontFamily: "MazzardH", color: Colors.black),
+                style: TextStyles.medium22.copyWith(color: Colors.black),
               ),
             ],
           ),

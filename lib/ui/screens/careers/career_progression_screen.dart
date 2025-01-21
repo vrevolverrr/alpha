@@ -3,9 +3,9 @@ import 'package:alpha/logic/data/careers.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/common/alpha_skill_bar.dart';
 import 'package:alpha/ui/screens/careers/career_selection_screen.dart';
 import 'package:alpha/ui/screens/careers/dialogs/confirm_promote_dialog.dart';
-import 'package:alpha/ui/screens/careers/dialogs/confirm_resign_dialog.dart';
 import 'package:alpha/ui/screens/careers/dialogs/promotion_success_dialog.dart';
 import 'package:alpha/ui/screens/careers/widgets/career_progression_card.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
@@ -21,6 +21,10 @@ class CareerProgressionScreen extends StatefulWidget {
 }
 
 class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
+  bool _canPromote(BuildContext context) {
+    return careerManager.canPromote(activePlayer);
+  }
+
   void _handlePromote(BuildContext context) {
     context.showDialog(buildConfirmPromoteDialog(context, () {
       careerManager.promote(activePlayer);
@@ -42,9 +46,7 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
   }
 
   void _handleResign(BuildContext context) {
-    context.showDialog(buildConfirmResignDialog(context, () {
-      context.navigateTo(const JobSelectionScreen());
-    }));
+    context.navigateTo(const JobSelectionScreen());
   }
 
   @override
@@ -58,7 +60,9 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
           ),
         ),
         children: <Widget>[
-          const SizedBox(height: 45.0),
+          const SizedBox(height: 20.0),
+          AlphaSkillBar(skillManager.getPlayerSkill(activePlayer)),
+          const SizedBox(height: 20.0),
           CarouselSlider(
               options: CarouselOptions(
                   initialPage: careerManager.getPlayerJob(activePlayer).tier,
@@ -69,11 +73,12 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
                   enlargeFactor: 0.2,
                   enableInfiniteScroll: false),
               items: _buildCareerProgressionCards()),
-          const SizedBox(height: 30.0),
+          const SizedBox(height: 15.0),
           Builder(
             builder: (context) => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(width: 10.0),
                 AlphaButton(
                   width: 240.0,
                   title: "Resign",
@@ -82,12 +87,16 @@ class _CareerProgressionScreenState extends State<CareerProgressionScreen> {
                   onTap: () => _handleResign(context),
                 ),
                 const SizedBox(width: 20.0),
-                (careerManager.canPromote(activePlayer))
+                (careerManager.hasNextTierJob(activePlayer))
                     ? AlphaButton(
                         width: 240.0,
                         title: "Promote",
                         color: const Color(0xFF77D1EA),
                         icon: Icons.arrow_upward_rounded,
+                        onTapDisabled: () => context.showSnackbar(
+                            message:
+                                "✋🏼 You are not qualified for a promotion yet"),
+                        disabled: !_canPromote(context),
                         onTap: () => _handlePromote(context),
                       )
                     : const SizedBox()

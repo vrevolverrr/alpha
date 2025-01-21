@@ -4,7 +4,7 @@ import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:alpha/ui/screens/opportunity/dialogs/draw_result_dialog.dart';
+import 'package:alpha/ui/screens/opportunity/dialogs/draw_result_dialogs.dart';
 import 'package:alpha/ui/screens/opportunity/dialogs/opportunity_landing_dialog.dart';
 import 'package:alpha/ui/screens/opportunity/widgets/opportunity_card.dart';
 import 'package:flutter/material.dart';

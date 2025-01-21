@@ -73,7 +73,7 @@ class JobSelectionCard extends StatelessWidget {
 
 class _JobHeroImage extends StatelessWidget {
   /// Widget for the hero image on each job card
-  final AlphaAssets asset;
+  final AlphaAsset asset;
   final bool disabled;
 
   const _JobHeroImage({required this.asset, this.disabled = false});

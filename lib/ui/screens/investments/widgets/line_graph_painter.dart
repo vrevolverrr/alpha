@@ -31,7 +31,7 @@ class LineGraphPainter extends CustomPainter {
 
   void _drawGrid(Canvas canvas, Size size) {
     final Paint gridPaint = Paint()
-      ..color = const Color(0xFFA9A9A9).withOpacity(0.3)
+      ..color = const Color(0xFFA9A9A9).withValues(alpha: 0.3)
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 2.0;
 
@@ -53,8 +53,8 @@ class LineGraphPainter extends CustomPainter {
     final Paint fillPaint = Paint()
       // ..color = const Color(0xffDF4141).withOpacity(0.2)
       ..shader = LinearGradient(colors: [
-        color.withOpacity(0.5),
-        color.withOpacity(0.01),
+        color.withValues(alpha: 0.5),
+        color.withValues(alpha: 0.01),
       ], transform: const GradientRotation(1.571))
           .createShader(Rect.fromPoints(Offset(points.first.x, points.first.y),
               Offset(points.last.x, points.last.y)))
@@ -95,45 +95,12 @@ class LineGraphPainter extends CustomPainter {
     }
   }
 
-  /** 
-  void _drawPriceLineShadow(Canvas canvas) {
-    final Paint linePaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    const Offset shadowOffset = Offset(0.0, 20.0);
-
-    for (int i = 0; i < points.length - 1; i++) {
-      final p1 =
-          Offset(points[i].x + shadowOffset.dx, points[i].y + shadowOffset.dy);
-      final p2 = Offset(
-          points[i + 1].x + shadowOffset.dx, points[i + 1].y + shadowOffset.dy);
-      canvas.drawLine(p1, p2, linePaint);
-    }
-  }
-  */
-
   void _drawXLabels(Canvas canvas, Size size) {
     const style = TextStyle(
         color: Color.fromARGB(255, 156, 156, 156),
         fontSize: 12.0,
         fontFamily: "MazzardH",
         fontWeight: FontWeight.w700);
-
-    /*
-    final TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
-
-    for (int i = 0; i < points.length; i++) {
-      painter.text = TextSpan(text: xLabel![i].toString(), style: style);
-      painter.layout();
-
-      final Offset offset = Offset(
-          (i / 2) * size.width / (points.length / 2.05) + translateX,
-          size.height + 10.0);
-      painter.paint(canvas, offset);
-    }
-    */
 
     final TextPainter labelPainter = TextPainter(
         text: const TextSpan(text: "Historical Prices", style: style),
@@ -175,7 +142,6 @@ class LineGraphPainter extends CustomPainter {
       _drawYLabels(canvas, size);
     }
     _drawLineFill(canvas, size);
-
     _drawPriceLine(canvas);
   }
 

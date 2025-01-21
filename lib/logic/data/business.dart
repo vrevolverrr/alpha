@@ -4,49 +4,57 @@ import 'package:flutter/material.dart';
 enum BusinessSector {
   foodAndBeverage(
       name: "Food and Beverages",
+      shortName: "F&B",
       baseRevenue: 10000.0,
       sectorColor: Color(0xFFFFC68D),
-      asset: AlphaAssets.businessFoodAndBeverages),
+      asset: AlphaAsset.businessFoodAndBeverages),
 
   eCommerce(
       name: "E-commerce",
+      shortName: "E-commerce",
       baseRevenue: 12000.0,
       sectorColor: Color(0xFF8BC7FF),
-      asset: AlphaAssets.businessEcommerce),
+      asset: AlphaAsset.businessEcommerce),
 
   technology(
       name: "Technology",
+      shortName: "Technology",
       baseRevenue: 15000.0,
       sectorColor: Color(0xFFACFFC5),
-      asset: AlphaAssets.businessTechnology),
+      asset: AlphaAsset.businessTechnology),
 
   pharmaceutical(
       name: "Pharmaceutical",
+      shortName: "Pharma",
       baseRevenue: 20000.0,
       sectorColor: Color(0xFFE3A1FF),
-      asset: AlphaAssets.businessPharmaceutical),
+      asset: AlphaAsset.businessPharmaceutical),
 
   socialMedia(
       name: "Social Media",
+      shortName: "Social Media",
       baseRevenue: 7000.0,
-      sectorColor: Color(0xFFFFFEAC),
-      asset: AlphaAssets.businessSocialMediaInfluencer),
+      sectorColor: Color(0xFFFAD370),
+      asset: AlphaAsset.businessSocialMediaInfluencer),
 
   noBusiness(
     name: "No Business",
+    shortName: "No Business",
     baseRevenue: 0.0,
     sectorColor: Colors.white,
-    asset: AlphaAssets.businessTechnology,
+    asset: AlphaAsset.businessTechnology,
   );
 
   const BusinessSector(
       {required this.name,
       required this.asset,
+      required this.shortName,
       required this.sectorColor,
       required this.baseRevenue});
 
   final String name;
-  final AlphaAssets asset;
+  final AlphaAsset asset;
+  final String shortName;
   final Color sectorColor;
   final double baseRevenue;
 }

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/players_logic.dart';
@@ -91,8 +92,7 @@ class BudgetManager implements IManager {
   /// 10% of total budget is equivalent to 100 exp
   static const kHappinessPerBudget = 2;
 
-  /// 10% of total budget is equivalent to 2 happiness
-  static const kSkillExpPerBudget = 200;
+  static const kSkillExpPer1kBudget = 300;
 
   @override
   Logger log = Logger("BudgetManager");
@@ -106,7 +106,8 @@ class BudgetManager implements IManager {
         player, totalBudget * allocation[Budget.investments]! / 10);
 
     /// Credit skill level based on budget allocation
-    final int exp = allocation[Budget.selfImprovement]! * kSkillExpPerBudget;
+    final int exp =
+        budgetToExp(totalBudget * allocation[Budget.selfImprovement]! / 10);
     skillManager.addExp(player, exp);
 
     /// Credit happiness based on budget allocation
@@ -118,5 +119,10 @@ class BudgetManager implements IManager {
 
     log.info(
         "Budget applied for ${player.name}, skill bonus: $exp, happiness bonus: $happiness");
+  }
+
+  int budgetToExp(double amount) {
+    final int amountInt = (amount / 1000).floor();
+    return max(amountInt * kSkillExpPer1kBudget, kSkillExpPer1kBudget);
   }
 }

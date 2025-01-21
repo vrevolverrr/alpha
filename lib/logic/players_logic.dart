@@ -1,52 +1,13 @@
 import 'dart:collection';
 
-import 'package:alpha/assets.dart';
 import 'package:alpha/logic/budget_logic.dart';
 import 'package:alpha/logic/common/interfaces.dart';
 import 'package:alpha/logic/data/careers.dart';
+import 'package:alpha/logic/data/player.dart';
 import 'package:alpha/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-
-enum PlayerGoals {
-  family("Family", "Reach Family in personal life", AlphaAssets.goalFamily),
-  career("Career", "Reach Level 15 in skill level", AlphaAssets.goalCareer),
-  wealth("Wealth", "Have \$500k in total assets", AlphaAssets.goalWealth),
-  ;
-
-  final String title;
-  final String description;
-  final AlphaAssets image;
-  const PlayerGoals(this.title, this.description, this.image);
-}
-
-enum PlayerAvatar {
-  avatar1(AlphaAssets.avatarGreenBuns),
-  avatar2(AlphaAssets.avatarOrangePonytail),
-  avatar3(AlphaAssets.avatarBrownHair),
-  avatar4(AlphaAssets.avatarBlackGuy),
-  avatar5(AlphaAssets.avatarBlueTShirt),
-  avatar6(AlphaAssets.avatarOrangeHoodie),
-  avatar7(AlphaAssets.avatarBlueEarphones),
-  avatar8(AlphaAssets.avatarBlueHairWhiteBlouse);
-
-  const PlayerAvatar(this.image);
-
-  final AlphaAssets image;
-}
-
-enum PlayerColor {
-  red(Color(0xFFF75C5C)),
-  green(Color(0xFF7FC36A)),
-  blue(Color(0xFF6DBDFA)),
-  yellow(Color(0xFFF7F091)),
-  pink(Color(0xFFF78DCE));
-
-  const PlayerColor(this.color);
-
-  final Color color;
-}
 
 /// The managing class for all [Player] related functionality.
 class PlayerManager implements IManager {

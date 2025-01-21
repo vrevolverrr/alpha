@@ -1,12 +1,20 @@
 import 'package:alpha/assets.dart';
+import 'package:alpha/extensions.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_button.dart';
 import 'package:alpha/ui/common/alpha_scaffold.dart';
+import 'package:alpha/ui/screens/landing/dialog/about_dialog.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreen extends StatelessWidget {
   final void Function()? onTapNext;
   const LandingScreen({super.key, this.onTapNext});
+
+  void _handleShowAboutDialog(BuildContext context) {
+    context.showDialog(buildAboutGameDialog(context, () {
+      context.dismissDialog();
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class LandingScreen extends StatelessWidget {
                 SizedBox(
                     width: 800.0,
                     height: 450.0,
-                    child: Image.asset(AlphaAssets.logoCashflow.path)),
+                    child: Image.asset(AlphaAsset.logoCashflow.path)),
                 const SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -33,7 +41,12 @@ class LandingScreen extends StatelessWidget {
                       onTap: onTapNext,
                     ),
                     const SizedBox(width: 20.0),
-                    const AlphaButton(width: 240.0, title: "About")
+                    Builder(
+                        builder: (context) => AlphaButton(
+                              width: 240.0,
+                              title: "About",
+                              onTap: () => _handleShowAboutDialog(context),
+                            ))
                   ],
                 ),
               ],
@@ -45,7 +58,7 @@ class LandingScreen extends StatelessWidget {
                   height: 140.0,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 15.0, bottom: 15.0),
-                    child: Image.asset(AlphaAssets.logoNcf.path),
+                    child: Image.asset(AlphaAsset.logoNcf.path),
                   )),
             ),
             const Align(
@@ -53,7 +66,7 @@ class LandingScreen extends StatelessWidget {
               child: Padding(
                   padding: EdgeInsets.only(bottom: 20.0),
                   child: Text(
-                    "version 0.1.1 Build 4 (Alpha)",
+                    "version 0.2.1 Build 1",
                     style: TextStyles.medium18,
                   )),
             )

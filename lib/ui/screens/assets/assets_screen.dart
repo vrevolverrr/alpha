@@ -31,7 +31,7 @@ class AssetsScreen extends StatelessWidget {
                 title: "Manage Owned Cars",
                 description:
                     "Manage and sell the cars you own. Check the car's value, happiness bonus and more.",
-                image: AlphaAssets.car,
+                image: AlphaAsset.car,
                 color: const Color(0xFFEBFFE4),
                 onTap: () => context.navigateTo(const OwnedCarsScreen()),
               ),
@@ -40,7 +40,7 @@ class AssetsScreen extends StatelessWidget {
                 title: "Manage Owned Real Estate",
                 description:
                     "Manage and sell the real estate you own. Check the property's value, mortgage and more.",
-                image: AlphaAssets.realEstateBungalow,
+                image: AlphaAsset.realEstateBungalow,
                 color: const Color(0xFFE4F1FF),
                 onTap: () => context.navigateTo(const OwnedRealEstateScreen()),
               )

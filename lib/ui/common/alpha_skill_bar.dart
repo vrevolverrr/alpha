@@ -105,7 +105,7 @@ class AlphaSkillBar extends StatelessWidget {
             ),
             Transform.translate(
               offset: const Offset(-0.5, 2.0),
-              child: Text("3",
+              child: Text(skill.level.toString(),
                   style: TextStyles.bold21.copyWith(
                     color: Colors.black87,
                   )),

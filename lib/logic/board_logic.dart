@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 
 class PlayerLocation {
   final Player player;
-  int _location = -1;
+  int _location = 0;
 
   int get location => _location;
 
@@ -18,21 +18,23 @@ class PlayerLocation {
 }
 
 class BoardManager implements IManager {
+  @override
   final Logger log = Logger("BoardManager");
 
   final Map<BoardTile, List<int>> _boardTiles = {
-    BoardTile.careerTile: [0, 8, 12, 19],
-    BoardTile.educationTile: [1, 7, 13],
-    BoardTile.opportunityTile: [3, 15],
+    BoardTile.startTile: [0],
+    BoardTile.careerTile: [9, 13, 16, 20],
+    BoardTile.educationTile: [3, 8, 14],
+    BoardTile.opportunityTile: [1, 12],
     BoardTile.personalLifeTile: [5, 17],
-    BoardTile.worldEventTile: [4, 16],
-    BoardTile.realEstatesTile: [11, 20],
-    BoardTile.carTile: [10, 21],
-    BoardTile.businessEcommerceTile: [2],
-    BoardTile.businessTechnologyTile: [9],
-    BoardTile.businessFnBTile: [6],
-    BoardTile.businessPharmaTile: [14],
-    BoardTile.businessSocialMediaTile: [18],
+    BoardTile.worldEventTile: [6, 18],
+    BoardTile.realEstatesTile: [11, 22],
+    BoardTile.carTile: [7, 19],
+    BoardTile.businessEcommerceTile: [4],
+    BoardTile.businessTechnologyTile: [15],
+    BoardTile.businessFnBTile: [10],
+    BoardTile.businessPharmaTile: [21],
+    BoardTile.businessSocialMediaTile: [2],
   };
 
   final List<PlayerLocation> _playerLocations = [];
@@ -48,8 +50,8 @@ class BoardManager implements IManager {
       (playerLocation) => playerLocation.player == player,
     );
 
-    final currentLocation = playerLocation.location;
-    final newLocation = (currentLocation + steps) % 22;
+    final int currentLocation = playerLocation.location;
+    final int newLocation = (currentLocation + steps) % 23;
 
     playerLocation.updateLocation(newLocation);
 
@@ -73,6 +75,12 @@ class BoardManager implements IManager {
   }
 
   BoardTile getActivePlayerTile() {
-    return getTile(playerManager.getActivePlayer());
+    BoardTile activeTile = getTile(activePlayer);
+
+    if (activeTile == BoardTile.startTile) {
+      accountsManager.creditToSavingsUnbudgeted(activePlayer, 2000.0);
+    }
+
+    return activeTile;
   }
 }

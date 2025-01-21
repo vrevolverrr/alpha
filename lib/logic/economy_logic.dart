@@ -6,25 +6,25 @@ enum EconomicCycle {
     name: "Recession",
     description: "Economy is in recession",
     longDescription:
-        "Economic downturn causing businesses to struggle, asset prices are slighly reduced.",
+        "Economic downturn causing businesses to struggle, stock and asset prices are slighly reduced.",
   ),
   depression(
     name: "Depression",
     description: "Economy is in depression",
     longDescription:
-        "The economy is experiencing widespread business failure and falling stock prices, asset prices are heavily reduced.",
+        "The economy is experiencing widespread business failure and falling stock prices, stock and asset prices are heavily reduced.",
   ),
   recovery(
     name: "Recovery",
     description: "Economy is recovering",
     longDescription:
-        "The economy is starting to recover, businesses are starting to grow, asset prices are slightly increased.",
+        "The economy is starting to recover from the downturn, businesses are starting to grow, stock and asset prices are slightly increased.",
   ),
   boom(
     name: "Booming",
     description: "Economy is booming",
     longDescription:
-        "Economic prosperity is driving great returns on businesses and the stock market, asset prices are sky high.",
+        "Economic prosperity is driving great returns on businesses and the stock market, stock and asset prices are sky high.",
   );
 
   final String name;
@@ -50,7 +50,7 @@ class EconomyManager implements IManager {
 
   /// The current [EconomicCycle], which also acts as a multiplier for prices
   EconomicCycle _current = EconomicCycle.recovery;
-  EconomicCycle get current => _current;
+  EconomicCycle get currentCycle => _current;
   EconomicCycle get next =>
       EconomicCycle.values[(_current.index + 1) % EconomicCycle.values.length];
 
@@ -65,6 +65,6 @@ class EconomyManager implements IManager {
     /// 2. Increases the inflation by the [inflationRate]
     _inflation = _inflation * (1 + (inflationRate / 100));
     log.info(
-        "Incremented economic cycle, current cycle: ${current.name}, inflation multiplier: $inflation");
+        "Incremented economic cycle, current cycle: ${currentCycle.name}, inflation multiplier: $inflation");
   }
 }

@@ -2,13 +2,14 @@ class ImagePaths {
   static const String root = "assets/images";
 }
 
-enum AlphaAssets {
+enum AlphaAsset {
   // Logos
   logoCashflow(path: "${ImagePaths.root}/logo/cashflow.png"),
   logoNcf(path: "${ImagePaths.root}/logo/ncf.png"),
+  logoIIC(path: "${ImagePaths.root}/logo/iic.jpg"),
 
   // Goals
-  goalFamily(path: "${ImagePaths.root}/goals/family.png"),
+  goalHappiness(path: "${ImagePaths.root}/goals/happiness.png"),
   goalCareer(path: "${ImagePaths.root}/goals/career.png"),
   goalWealth(path: "${ImagePaths.root}/goals/wealth.png"),
 
@@ -23,6 +24,7 @@ enum AlphaAssets {
   avatarBlueHairWhiteBlouse(path: "${ImagePaths.root}/avatars/avatar9.png"),
 
   // Board Tiles
+  startTile(path: "${ImagePaths.root}/board_tiles/start.png"),
   careerTile(path: "${ImagePaths.root}/board_tiles/career.png"),
   educationTile(path: "${ImagePaths.root}/board_tiles/education.png"),
   opportunityTile(path: "${ImagePaths.root}/board_tiles/opportunity.png"),
@@ -106,12 +108,14 @@ enum AlphaAssets {
   opportunityLottery(path: "${ImagePaths.root}/opportunity/lottery.png"),
   opportunityLawsuit(path: "${ImagePaths.root}/opportunity/lawsuit.png"),
   opportunityCharity(path: "${ImagePaths.root}/opportunity/charity.png"),
-  opportunityAngelInvestor(path: "${ImagePaths.root}/opportunity/lawsuit.png"),
+  opportunityAngelInvestor(path: "${ImagePaths.root}/opportunity/angel.png"),
 
   // Real Estate
   realEstateHdb(path: "${ImagePaths.root}/real_estate/hdb.png"),
+  realEstateHdb2(path: "${ImagePaths.root}/real_estate/hdb2.png"),
   realEstateCondo(path: "${ImagePaths.root}/real_estate/condo.png"),
   realEstateBungalow(path: "${ImagePaths.root}/real_estate/bungalow.png"),
+  realEstateBungalow2(path: "${ImagePaths.root}/real_estate/bungalow2.png"),
 
   // Car
   car(path: "${ImagePaths.root}/car/car.png"),
@@ -123,10 +127,10 @@ enum AlphaAssets {
   personalLifeSingle(path: "${ImagePaths.root}/personal_life/single.png"),
   personalLifeDating(path: "${ImagePaths.root}/personal_life/dating.png"),
   personalLifeMarried(path: "${ImagePaths.root}/personal_life/married.png"),
-  personalLifeFamily(path: "${ImagePaths.root}/personal_life/married.png"),
+  personalLifeFamily(path: "${ImagePaths.root}/personal_life/family.png"),
   ;
 
-  const AlphaAssets({required this.path});
+  const AlphaAsset({required this.path});
 
   final String path;
 }

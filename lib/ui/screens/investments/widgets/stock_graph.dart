@@ -12,10 +12,10 @@ class StockGraph extends StatelessWidget {
   late final double yMax;
   late final double yMin;
 
-  static const _priceHistoryDuration = 20;
+  static const kPriceHistoryDuration = 10;
 
   final List<Point<double>> points =
-      List.filled(StockGraph._priceHistoryDuration, const Point(0.0, 0.0));
+      List.filled(StockGraph.kPriceHistoryDuration, const Point(0.0, 0.0));
 
   StockGraph(
       {super.key,
@@ -23,10 +23,10 @@ class StockGraph extends StatelessWidget {
       required this.height,
       required this.stock}) {
     final List<double> prices = stock.market.historicPrices.sublist(
-        stock.market.historicPrices.length - StockGraph._priceHistoryDuration);
+        stock.market.historicPrices.length - StockGraph.kPriceHistoryDuration);
 
     /// Calculate scale
-    final double dx = width / StockGraph._priceHistoryDuration;
+    final double dx = width / StockGraph.kPriceHistoryDuration;
     yMax = prices.reduce(max);
     yMin = prices.reduce(min);
     final double dy = height / (yMax - yMin);
@@ -48,9 +48,9 @@ class StockGraph extends StatelessWidget {
     return CustomPaint(
       size: Size(width, height),
       painter: LineGraphPainter(points,
-          color: stock.percentPriceChange() == 0
+          color: stock.percentPriceChange(lastNth: kPriceHistoryDuration) == 0
               ? const Color(0xFF5B5B5B)
-              : (stock.percentPriceChange() < 0
+              : (stock.percentPriceChange(lastNth: kPriceHistoryDuration) < 0
                   ? const Color(0xffE15353)
                   : const Color(0xff3AB59E))),
     );

@@ -6,7 +6,7 @@ import 'package:alpha/logic/data/business.dart';
 import 'package:alpha/logic/economy_logic.dart';
 import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/logic/players_logic.dart';
-import 'package:alpha/logic/world_event_logic.dart';
+import 'package:alpha/logic/data/world_event.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/utils.dart';
 import 'package:flutter/material.dart';
@@ -40,14 +40,34 @@ class Business {
   double _currentRevenue;
   double get currentRevenue => _currentRevenue;
 
+  double _lastRevenue = 0.0;
+  double get lastRevenue => _lastRevenue;
+
+  double _lastValuation = 0.0;
+  double get lastValuation => _lastValuation;
+
+  int _lastRndRound = -1;
+  int get lastRndRound => _lastRndRound;
+
+  int _growthOpportunities;
+  int get growthOpportunities => _growthOpportunities;
+
   Business({
     required this.name,
     required this.sector,
     required this.esgRating,
     required this.initialCost,
-  }) : _currentRevenue = sector.baseRevenue;
+    int growthOpportunities = 4,
+  })  : _currentRevenue = sector.baseRevenue,
+        _growthOpportunities = growthOpportunities;
 
   void updateRevenue(int numCompetitors) {
+    /// Cap business growth
+    if (_growthOpportunities <= 0) {
+      _currentRevenue *= 1.02;
+      return;
+    }
+
     double growthRate;
 
     if (numCompetitors <= 1) {
@@ -61,7 +81,24 @@ class Business {
       growthRate = 1.0;
     }
 
-    _currentRevenue = _currentRevenue * growthRate;
+    _growthOpportunities--;
+    _currentRevenue *= growthRate;
+  }
+
+  void completeRnD() {
+    _currentRevenue *= (1 + BusinessManager.kRndGrowthFactor);
+  }
+
+  void updateRndRound(int round) {
+    _lastRndRound = round;
+  }
+
+  void updateValuation(double value) {
+    _lastValuation = value;
+  }
+
+  void updateLastRevenue(double value) {
+    _lastRevenue = value;
   }
 }
 
@@ -75,6 +112,15 @@ class BusinessManager implements IManager {
   static const double kESGBonusValuation = 0.3;
   static const double kCompetitorPenaltyValuation = -0.05;
   static const double kRevenueToValuationAdjustment = 1.25;
+
+  /// RnD has a 60% chance of growing the business
+  static const double kRndSuccessRate = 0.6;
+
+  /// RnD success grows the business by 30%
+  static const double kRndGrowthFactor = 0.3;
+
+  /// RnD costs 65% of the current revenue
+  static const double kRndCostFactor = 0.55;
 
   /// The maximum number of businesses there can be in a sector
   static const int kMaxBusinesses = 10;
@@ -157,6 +203,55 @@ class BusinessManager implements IManager {
     }
   }
 
+  /// Gets the cost of Research and Development for a [Business].
+  /// Default is 40% of the current revenue.
+  double getRndCost(Business business) {
+    return business.currentRevenue * kRndCostFactor;
+  }
+
+  double getRndSuccessRate(Business business) {
+    return kRndSuccessRate;
+  }
+
+  bool attemptRnD(Player player, Business business) {
+    BusinessVenture venture = _businessVentures[player]!;
+
+    if (!venture.ownedBusinesses.contains(business)) {
+      log.warning(
+          "Player ${player.name} does not own business ${business.name}");
+      return false;
+    }
+
+    final double rndCost = getRndCost(business);
+
+    if (accountsManager.getAvailableBalance(player) < rndCost) {
+      log.warning(
+          "Player ${player.name} does not have enough money to complete R&D for business ${business.name}");
+      return false;
+    }
+
+    /// Update the round the business attempted R&D to prevent multiple
+    /// attempts in the same round
+    business.updateRndRound(gameManager.round);
+
+    final double roll = _random.nextDouble();
+    final double risk = getRndSuccessRate(business);
+
+    if (roll > risk) {
+      log.warning(
+          "Player ${player.name} failed R&D for business ${business.name}, roll: $roll, risk: $risk");
+      return false;
+    }
+
+    accountsManager.deductAny(player, rndCost);
+    business.completeRnD();
+
+    log.info(
+        "Player ${player.name} successfully completed R&D for business ${business.name}");
+
+    return true;
+  }
+
   /// Gets the sector state multiplier for a given [BusinessSector].
   /// The multiplier is used to adjust the earnings of businesses in the sector,
   /// and is affected by the current [WorldEvent].
@@ -178,7 +273,7 @@ class BusinessManager implements IManager {
   }
 
   double getEconomicCycleMultiplier() {
-    switch (economyManager.current) {
+    switch (economyManager.currentCycle) {
       case EconomicCycle.recession:
         return -0.1;
       case EconomicCycle.depression:
@@ -233,7 +328,7 @@ class BusinessManager implements IManager {
         : (getBusinessCount(sector) >= 3 ? kSaturationDiscount : 0.0);
 
     final double depressionDiscount =
-        economyManager.current == EconomicCycle.depression
+        economyManager.currentCycle == EconomicCycle.depression
             ? kDepressionDiscount
             : 0.0;
 
@@ -395,7 +490,11 @@ class BusinessManager implements IManager {
       double totalEarnings = 0.0;
 
       for (Business business in venture.ownedBusinesses) {
-        totalEarnings += calculateBusinessEarnings(business);
+        final double earnings = calculateBusinessEarnings(business);
+
+        business.updateLastRevenue(earnings);
+        business.updateValuation(calculateBusinessValuation(business));
+        totalEarnings += earnings;
       }
 
       log.info(

@@ -1,4 +1,4 @@
-import 'package:alpha/logic/players_logic.dart';
+import 'package:alpha/logic/data/player.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
 import 'package:flutter/material.dart';

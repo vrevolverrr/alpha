@@ -145,21 +145,63 @@ class PlayerAccountBalanceStatCard extends StatelessWidget {
   }
 }
 
+class PlayerSavingsStatCard extends StatelessWidget {
+  final PlayerAccount accounts;
+
+  const PlayerSavingsStatCard(this.accounts, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: accounts,
+      builder: (context, _) => AlphaStatCard(
+        width: 270.0,
+        emoji: "💵",
+        title: "Savings",
+        value: accounts.savings.balance,
+        isCurrency: true,
+      ),
+    );
+  }
+}
+
+class PlayerInvestmentsStatCard extends StatelessWidget {
+  final PlayerAccount accounts;
+
+  const PlayerInvestmentsStatCard(this.accounts, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: accounts,
+      builder: (context, _) => AlphaStatCard(
+        width: 290.0,
+        emoji: "💰",
+        title: "Investments",
+        value: accounts.investments.balance,
+        isCurrency: true,
+      ),
+    );
+  }
+}
+
 class PlayerDebtStatCard extends StatelessWidget {
   final PlayerDebt debt;
+  final bool businessDebtOnly;
 
-  const PlayerDebtStatCard(this.debt, {super.key});
+  const PlayerDebtStatCard(this.debt,
+      {super.key, this.businessDebtOnly = false});
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: debt,
       builder: (context, _) => AlphaStatCard(
-        width: 240.0,
+        width: businessDebtOnly ? 310.0 : 240.0,
         emoji: "💵",
-        title: "Debt",
+        title: businessDebtOnly ? "Business Debt" : "Debt",
         color: const Color(0xFFB52F26),
-        value: debt.totalDebt,
+        value: businessDebtOnly ? debt.businessDebt : debt.totalDebt,
         isCurrency: true,
       ),
     );
@@ -214,7 +256,7 @@ class PlayerCareerStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 390.0,
+      width: 440.0,
       padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
       decoration: BoxDecoration(
           color: Colors.white,

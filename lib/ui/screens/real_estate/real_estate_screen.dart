@@ -1,4 +1,5 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/logic/real_estate_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
@@ -39,6 +40,37 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
             () => context.navigateAndPopTo(DashboardScreen())));
       });
     }));
+  }
+
+  void _handleBuyDisabled(BuildContext context) {
+    if (accountsManager.getAvailableBalance(activePlayer) <
+        _selectedRealEstate.downPayment) {
+      context.showSnackbar(
+          message: "✋🏼 Insufficient balance to afford the downpayment.");
+      return;
+    }
+
+    final LoanApplicationOutcome outcome = loanManager.canPlayerTakeLoan(
+        activePlayer,
+        newLoanRepaymentPerRound: _selectedRealEstate.repaymentPerRound,
+        reason: LoanReason.mortgage);
+
+    if (outcome.isApproved) {
+      return;
+    }
+
+    if (outcome.rejectReason == LoanRejectReason.insufficientIncome) {
+      context.showSnackbar(
+          message: "✋🏼 Insufficient income to take a loan for this property.");
+      return;
+    }
+
+    if (outcome.rejectReason == LoanRejectReason.existingLoan) {
+      context.showSnackbar(
+          message:
+              "✋🏼 You already have an existing mortgage loan. Repay it first.");
+      return;
+    }
   }
 
   @override
@@ -135,8 +167,8 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
             width: 280.0,
             height: double.infinity,
             child: Image.asset(
-              _selectedRealEstate.type.image.path,
-              fit: BoxFit.cover,
+              _selectedRealEstate.image.path,
+              fit: BoxFit.contain,
             ),
           ),
           const SizedBox(width: 25.0),
@@ -237,9 +269,7 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
                         height: 60.0,
                         disabled: !realEstateManager.canPlayerBuyRealEstate(
                             activePlayer, _selectedRealEstate),
-                        onTapDisabled: () => context.showSnackbar(
-                            message:
-                                "✋🏼 Insufficient funds for downpayment or ineligible for loan."),
+                        onTapDisabled: () => _handleBuyDisabled(context),
                         title: "Buy",
                         icon: Icons.shopping_cart_outlined,
                         color: const Color(0xff96DE9D),
@@ -249,7 +279,6 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
                   ]),
             ],
           ),
-          // AlphaButton(title: "Purchase", width: 260.0, onTap: () {}),
         ],
       ),
     );

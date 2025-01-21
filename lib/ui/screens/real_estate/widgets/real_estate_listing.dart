@@ -29,11 +29,11 @@ class RealEstateListing extends StatelessWidget {
                 width: 100.0,
                 height: double.infinity,
                 child: Image.asset(
-                  realEstate.type.image.path,
+                  realEstate.image.path,
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(width: 10.0),
+              const SizedBox(width: 12.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
