@@ -18,7 +18,6 @@ class CareerSelectionLandingDialog extends StatelessWidget {
             style: TextStyles.medium22,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 50.0),
         ],
       ),
     );

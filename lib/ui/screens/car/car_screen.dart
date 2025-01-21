@@ -1,5 +1,6 @@
 import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/car_logic.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/services.dart';
 import 'package:alpha/styles.dart';
@@ -10,6 +11,7 @@ import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/common/animated_value.dart';
 import 'package:alpha/ui/screens/car/dialogs/confirm_buy_dialog.dart';
 import 'package:alpha/ui/screens/car/dialogs/confirm_buy_no_debt_dialog.dart';
+import 'package:alpha/ui/screens/car/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/car/dialogs/purchase_success_dialog.dart';
 import 'package:alpha/ui/screens/car/widgets/car_listing.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
@@ -94,6 +96,12 @@ class _CarScreenState extends State<CarScreen> {
     return AlphaScaffold(
       title: "Purchase Car",
       onTapBack: () => Navigator.of(context).pop(),
+      landingDialog: hintsManager.shouldShowHint(activePlayer, Hint.buyCar)
+          ? AlphaDialogBuilder.dismissable(
+              title: "Welcome",
+              dismissText: "Confirm",
+              child: const CarSelectionLandingdialog())
+          : null,
       next: AlphaButton.next(
           onTap: () => context.navigateAndPopTo(DashboardScreen())),
       children: <Widget>[

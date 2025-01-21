@@ -1,4 +1,5 @@
 import 'package:alpha/extensions.dart';
+import 'package:alpha/logic/hints_logic.dart';
 import 'package:alpha/logic/loan_logic.dart';
 import 'package:alpha/logic/real_estate_logic.dart';
 import 'package:alpha/services.dart';
@@ -10,6 +11,7 @@ import 'package:alpha/ui/common/alpha_stat_card.dart';
 import 'package:alpha/ui/common/animated_value.dart';
 import 'package:alpha/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:alpha/ui/screens/real_estate/dialogs/confirm_buy_realestate_dialog.dart';
+import 'package:alpha/ui/screens/real_estate/dialogs/landing_dialog.dart';
 import 'package:alpha/ui/screens/real_estate/dialogs/purchase_success_dialog.dart';
 import 'package:alpha/ui/screens/real_estate/widgets/real_estate_listing.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -78,6 +80,13 @@ class _RealEstateScreenState extends State<RealEstateScreen> {
     return AlphaScaffold(
       title: "Real Estate",
       onTapBack: () => Navigator.of(context).pop(),
+      landingDialog:
+          hintsManager.shouldShowHint(activePlayer, Hint.buyRealEstate)
+              ? AlphaDialogBuilder.dismissable(
+                  title: "Welcome",
+                  dismissText: "Confirm",
+                  child: const RealEstateSelectionLandingdialog())
+              : null,
       next: AlphaButton.next(
           onTap: () => context.navigateAndPopTo(DashboardScreen())),
       children: <Widget>[

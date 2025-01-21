@@ -9,6 +9,8 @@ enum Hint {
   careerSelection,
   manageBusiness,
   buyBusiness,
+  buyCar,
+  buyRealEstate,
 }
 
 class HintStorage {

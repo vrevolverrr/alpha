@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 
-const String version = "0.3.1 Build 1";
+const String version = "0.3.1 Build 3";
 
 void main() {
   GetIt.instance.registerSingleton<GameManager>(GameManager());

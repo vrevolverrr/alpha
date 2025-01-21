@@ -26,7 +26,11 @@ class GameEndScreen extends StatelessWidget {
         const SizedBox(height: 10.0),
         Text("Rounds Played: ${gameManager.round}", style: TextStyles.bold22),
         const SizedBox(height: 5.0),
-        const Text("Leaderbaord", style: TextStyles.bold32),
+        Text(
+            "Total Points: ${gameManager.leaderboard.fold(0.0, (value, ld) => value + ld.points)}",
+            style: TextStyles.bold24),
+        const SizedBox(height: 5.0),
+        const Text("Leaderboard", style: TextStyles.bold32),
         const SizedBox(height: 5.0),
         Padding(
           padding: const EdgeInsets.only(left: 20.0),
@@ -38,28 +42,15 @@ class GameEndScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 controller: _controller,
                 scrollDirection: Axis.vertical,
-                child: Wrap(direction: Axis.vertical, spacing: 5.0, children: [
-                  Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child:
-                          GameEndPlayerTile(1, gameManager.leaderboard.first)),
-                  Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child:
-                          GameEndPlayerTile(2, gameManager.leaderboard.first)),
-                  Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child:
-                          GameEndPlayerTile(2, gameManager.leaderboard.first)),
-                  Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child:
-                          GameEndPlayerTile(2, gameManager.leaderboard.first)),
-                  Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child:
-                          GameEndPlayerTile(2, gameManager.leaderboard.first)),
-                ]),
+                child: Wrap(
+                    direction: Axis.vertical,
+                    spacing: 5.0,
+                    children: gameManager.leaderboard
+                        .map((ld) => Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: GameEndPlayerTile(
+                                1, gameManager.leaderboard.first)))
+                        .toList()),
               ),
             ),
           ),
