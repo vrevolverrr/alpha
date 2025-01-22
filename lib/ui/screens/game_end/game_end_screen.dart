@@ -27,7 +27,7 @@ class GameEndScreen extends StatelessWidget {
         Text("Rounds Played: ${gameManager.round}", style: TextStyles.bold22),
         const SizedBox(height: 5.0),
         Text(
-            "Total Points: ${gameManager.leaderboard.fold(0.0, (value, ld) => value + ld.points).toInt()}",
+            "Total Points: ${gameManager.leaderboard.fold(0.0, (value, ld) => value + ld.points).round()}",
             style: TextStyles.bold28),
         const SizedBox(height: 5.0),
         const Text("Leaderboard", style: TextStyles.bold32),
