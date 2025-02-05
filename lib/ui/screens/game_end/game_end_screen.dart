@@ -48,8 +48,7 @@ class GameEndScreen extends StatelessWidget {
                     children: gameManager.leaderboard
                         .map((ld) => Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: GameEndPlayerTile(
-                                1, gameManager.leaderboard.first)))
+                            child: GameEndPlayerTile(1, ld)))
                         .toList()),
               ),
             ),

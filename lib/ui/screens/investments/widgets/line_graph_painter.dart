@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+/// WARNING! I had no idea what this class is doing. I just yolod until the view looked correct.
 class LineGraphPainter extends CustomPainter {
   final bool hasGrid;
   final double strokeWidth;
@@ -36,16 +37,8 @@ class LineGraphPainter extends CustomPainter {
       ..strokeWidth = 2.0;
 
     for (int i = 0; i < kGridNumLines; i++) {
-      final dy = i * (size.height / (kGridNumLines - 1));
+      final dy = i * (size.height / (kGridNumLines - 1)) - 20.0;
       canvas.drawLine(Offset(20.0, dy), Offset(size.width, dy), gridPaint);
-
-      // double x = 0.0;
-      /*
-      while (x < size.width) {
-        canvas.drawLine(Offset(x, dy), Offset(x + kDashLength, dy), gridPaint);
-        x += kDashLength + kDashSpacing;
-      }
-      */
     }
   }
 
@@ -127,7 +120,7 @@ class LineGraphPainter extends CustomPainter {
       painter.layout();
 
       final Offset offset =
-          Offset(-12.0, i * (size.height / (kGridNumLines - 1)) - 30.0);
+          Offset(-12.0, i * (size.height / (kGridNumLines - 1)) - 26.0);
       painter.paint(canvas, offset);
     }
   }

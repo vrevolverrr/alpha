@@ -38,8 +38,6 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
       accountsManager.getInvestmentAccount(activePlayer);
 
   void _handleAdjustUnits(BuildContext context) {
-    debugPrint("hello");
-
     context.showDialog(buildStockUnitsInputDialog(context, _controller, () {
       context.dismissDialog();
     }));
@@ -47,7 +45,8 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
   void _handleBuyShare(BuildContext context) {
     if (_controller.units <= 0) {
-      context.showSnackbar(message: "Please select a valid number of units");
+      context.showSnackbar(
+          message: "✋🏼 Please select a valid number of units");
       return;
     }
 
@@ -69,14 +68,15 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
 
   void _handleSellShare(BuildContext context) {
     if (_controller.units <= 0) {
-      context.showSnackbar(message: "Please select a valid number of units");
+      context.showSnackbar(
+          message: "✋🏼 Please select a valid number of units");
       return;
     }
 
     final int units = investments.getStockUnits(_selectedStock.item);
 
     if (units < _controller.units) {
-      context.showSnackbar(message: "Insufficient shares to sell");
+      context.showSnackbar(message: "✋🏼 Insufficient shares to sell");
       return;
     }
 
@@ -277,8 +277,9 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                   )),
           Builder(
             builder: (context) {
-              final double profitChange =
-                  investments.getPortfolioProfitChange(startNth: 1);
+              final double profitChange = investments.getPortfolioValueChange();
+              final double percentChange =
+                  investments.getPortfolioValueChangePercent();
 
               Widget icon;
               Color color;
@@ -324,6 +325,18 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                       color: color,
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
+                    ),
+                  ),
+                  const SizedBox(width: 6.0),
+                  Transform.translate(
+                    offset: const Offset(0.0, -1.6),
+                    child: Text(
+                      "($percentChange%)",
+                      style: TextStyle(
+                        color: color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17.0,
+                      ),
                     ),
                   ),
                 ],
@@ -511,7 +524,8 @@ class _PortfolioTable extends StatelessWidget {
                 stock.code,
                 totalValue.prettyCurrency,
                 units.toString(),
-                investments.getStockProfitPercent(stock.item));
+                investments.getStockProfitPercent(stock.item,
+                    endNth: gameManager.round - 1));
           })
         ],
       ),

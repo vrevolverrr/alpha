@@ -50,7 +50,6 @@ class CareerPromotionDialog extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 60.0),
       ],
     );
   }

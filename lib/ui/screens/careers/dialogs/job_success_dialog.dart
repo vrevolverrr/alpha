@@ -37,7 +37,6 @@ class JobSuccessDialog extends StatelessWidget {
                 color: Color(0xFF38A83C),
                 fontSize: 38.0,
                 fontWeight: FontWeight.w700)),
-        const SizedBox(height: 15.0),
       ],
     );
   }

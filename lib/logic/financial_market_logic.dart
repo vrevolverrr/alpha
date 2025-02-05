@@ -11,25 +11,33 @@ import 'package:logging/logging.dart';
 /// A controller for the financial market systems in the game. Currently
 ///  manages the stocks and their prices
 class FinancialMarketManager implements IManager {
+  final int? seed;
+
   @override
   Logger log = Logger('FinancialMarketManager');
 
   /// The list of [Stock] with simulated prices, based on parameters
   /// of the [StockItem].
-  final List<Stock> _stocks =
-      StockItem.values.map((StockItem item) => Stock(item)).toList();
+  late final List<Stock> _stocks;
 
   /// Gets the list of [Stock] being managed.
   UnmodifiableListView<Stock> get stocks => UnmodifiableListView(_stocks);
+
+  FinancialMarketManager({this.seed}) {
+    _stocks = StockItem.values
+        .map((StockItem item) => Stock(item, seed: seed))
+        .toList();
+  }
 
   void updateMarket() {
     _stocks.forEach(updateStockPrice);
     log.info("All stock prices updated for ${_stocks.length} stocks");
   }
 
-  void updateStockPrice(Stock stock) {
-    final EconomicCycle cycle = economyManager.currentCycle;
-    final WorldEvent event = worldEventManager.currentEvent;
+  void updateStockPrice(Stock stock,
+      {EconomicCycle? mockCycle, WorldEvent? mockEvent}) {
+    final EconomicCycle cycle = mockCycle ?? economyManager.currentCycle;
+    final WorldEvent event = mockEvent ?? worldEventManager.currentEvent;
 
     double marketSentiment = 0.0;
     double sectorTrend = 0.0;
@@ -43,11 +51,11 @@ class FinancialMarketManager implements IManager {
         marketSentiment = 0.0;
         break;
       case EconomicCycle.depression:
-        marketSentiment = -1.0;
+        marketSentiment = -0.5;
         break;
       case EconomicCycle.recovery:
         marketSentiment = 0.5;
-        return;
+        break;
       case EconomicCycle.boom:
         marketSentiment = 1.0;
     }
@@ -74,8 +82,8 @@ class FinancialMarketManager implements IManager {
 
 /// This class simulates stock prices using Geometric Brownian Motion (GBM).
 class StockMarket {
-  static const double kSectorTrendDrift = 0.2;
-  static const double kMarketSentimentDrift = 0.1;
+  static const double kSectorTrendDrift = 0.8;
+  static const double kMarketSentimentDrift = 0.6;
 
   /// initial stock price
   final double s0;
@@ -95,8 +103,11 @@ class StockMarket {
   // delta time per step
   final double dt;
 
+  // seed for random number generator
+  final int? seed;
+
   // The uniform distribution function to use.
-  final Random rand = Random();
+  late final Random _rand;
 
   // current stock price
   double S;
@@ -107,8 +118,8 @@ class StockMarket {
   /// This function generates a N(0, 1) random number using the Box-Muller transform.
   double _nextGaussion() {
     // Generate two independent samples from the uniform distribution
-    double u1 = rand.nextDouble();
-    double u2 = rand.nextDouble();
+    double u1 = _rand.nextDouble();
+    double u2 = _rand.nextDouble();
 
     // Transform U1 and U2 to random distributed Z0
     return sqrt(-2 * log(u1)) * cos(2 * pi * u2);
@@ -118,10 +129,13 @@ class StockMarket {
       {required this.s0,
       required this.mu,
       required this.sigma,
-      this.T = 10.0,
-      this.N = 160})
+      this.seed,
+      this.T = 15.0,
+      this.N = 140})
       : dt = T / N,
-        S = s0;
+        S = s0 {
+    _rand = Random(seed);
+  }
 
   /// Caluclate the next stock price using the Geometric Brownian Motion (GBM) model.
   /// The analytic solution to the GBM is: S_t = S_0 * exp((mu - 0.5 * sigma^2) * t + sigma * W_t)
@@ -166,6 +180,8 @@ class Stock {
   final StockItem item;
   final StockMarket market;
 
+  final int? seed;
+
   UnmodifiableListView<double> get history =>
       UnmodifiableListView(market.historicPrices);
 
@@ -179,7 +195,7 @@ class Stock {
   int get esgRating => item.esgRating;
   StockRisk get risk => item.risk;
 
-  double priceChange({int lastNth = 20}) {
+  double priceChange({int lastNth = 10}) {
     final int n = market.historicPrices.length;
 
     return market.historicPrices[n - 1] - market.historicPrices[n - lastNth];
@@ -190,21 +206,22 @@ class Stock {
     final int n = market.historicPrices.length;
 
     final double latestPrice = market.historicPrices[n - 1];
-    final double lastNthPrice = market.historicPrices[n - lastNth];
+    final double lastNthPrice = market.historicPrices[max(n - 1 - lastNth, 0)];
 
     final double percentChange = (latestPrice / lastNthPrice - 1.0) * 100;
 
     return double.parse(percentChange.toStringAsFixed(2));
   }
 
-  Stock(this.item)
+  Stock(this.item, {this.seed})
       : market = StockMarket(
+            seed: seed,
             s0: item.initialPrice,
             mu: item.percentDrift,
             sigma: item.percentVolatility) {
     /// Generate 10 prices to plot the price graph, essentially the game starts
-    /// with the stock market at t = 20 rounds
-    market.generatePrices(N: 20);
+    /// with the stock market at t = 10 rounds
+    market.generatePrices(N: 10);
   }
 
   void updatePrice({double marketSentiment = 0.0, double sectorTrend = 0.0}) {

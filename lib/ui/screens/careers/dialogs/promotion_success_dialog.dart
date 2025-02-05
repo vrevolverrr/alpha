@@ -37,7 +37,6 @@ class PromotionSuccessDialog extends StatelessWidget {
             style: TextStyles.medium22,
           ),
         ),
-        const SizedBox(height: 60.0),
       ],
     );
   }

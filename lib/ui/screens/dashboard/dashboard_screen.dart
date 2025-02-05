@@ -27,6 +27,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class DashboardScreen extends StatelessWidget {
+  final GlobalKey scaffoldKey = GlobalKey();
+
   final PlayerAccount accounts = accountsManager.getPlayerAccount(activePlayer);
   final PlayerDebt debt = loanManager.getPlayerDebt(activePlayer);
   final PlayerSkill skill = skillManager.getPlayerSkill(activePlayer);
@@ -43,13 +45,8 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlphaScaffold(
         title: "Dashboard",
+        key: scaffoldKey,
         useDefaultPadding: true,
-        landingDialog: (accounts.savings.unbudgeted > 0.0)
-            ? buildBudgetingDialog(context, accounts.savings, () {
-                // context.dismissDialog();
-                context.navigateTo(BudgetingScreen());
-              })
-            : null,
         next: Builder(
           builder: (context) => AlphaButton(
             width: 235.0,
@@ -61,11 +58,29 @@ class DashboardScreen extends StatelessWidget {
           const SizedBox(height: 10.0),
           _DashboardPlayerInfo(),
           const SizedBox(height: 20.0),
-          _DashboardPlayerStats(
-            accounts,
-            debt,
-            skill,
-            stats,
+          ListenableBuilder(
+            /// Additionally listen to unbudgeted changes in [SavingsAccount]
+            listenable: accounts.savings,
+            builder: (context, child) {
+              /// Check if the player has any savings that are not budgeted
+              /// The reason the dialog is always checked after build
+              /// is because the player may have did actions in their turn that
+              /// added unbudgeted savings to their account
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (accounts.savings.unbudgeted > 0.0) {
+                  Future.delayed(Durations.short4, () {
+                    (scaffoldKey.currentState! as AlphaScaffoldState)
+                        .showDialog(
+                            buildBudgetingDialog(context, accounts.savings, () {
+                      context.navigateTo(BudgetingScreen());
+                    }));
+                  });
+                }
+              });
+
+              return child!;
+            },
+            child: _DashboardPlayerStats(accounts, debt, skill, stats),
           ),
           const SizedBox(height: 30.0),
           const _DashboardActions(),

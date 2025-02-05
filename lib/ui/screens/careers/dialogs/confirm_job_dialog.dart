@@ -32,7 +32,6 @@ class JobConfirmDialog extends StatelessWidget {
             "Are you sure? You will receive your new salary the next round.",
             textAlign: TextAlign.center,
             style: TextStyles.medium22),
-        const SizedBox(height: 10.0),
       ],
     );
   }

@@ -2,7 +2,6 @@ import 'package:alpha/extensions.dart';
 import 'package:alpha/logic/financial_market_logic.dart';
 import 'package:alpha/styles.dart';
 import 'package:alpha/ui/common/alpha_container.dart';
-import 'package:alpha/ui/common/should_render_widget.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_graph.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_risk_label.dart';
 import 'package:alpha/ui/screens/investments/widgets/stock_sector_card.dart';
@@ -36,35 +35,49 @@ class StockListing extends StatelessWidget {
                     style: TextStyles.bold22,
                   ),
                   const SizedBox(width: 10.0),
-                  Text(
-                    "${stock.percentPriceChange()}%",
-                    style: TextStyle(
-                        height: 1.5,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 22.0,
-                        color: stock.percentPriceChange() == 0
-                            ? const Color(0xFF5B5B5B)
-                            : (stock.percentPriceChange() < 0
-                                ? const Color(0xffE15353)
-                                : const Color(0xff3AB59E))),
+                  Builder(
+                    builder: (context) {
+                      final double percentPriceChange =
+                          stock.percentPriceChange(
+                              lastNth: StockGraph.kPriceHistoryDuration);
+
+                      return Text(
+                        "$percentPriceChange%",
+                        style: TextStyle(
+                            height: 1.5,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 22.0,
+                            color: percentPriceChange == 0
+                                ? const Color(0xFF5B5B5B)
+                                : (percentPriceChange < 0
+                                    ? const Color(0xffE15353)
+                                    : const Color(0xff3AB59E))),
+                      );
+                    },
                   ),
                   const SizedBox(width: 5.0),
-                  RenderIfTrue(
-                      condition: stock.percentPriceChange() != 0,
-                      child: Transform.translate(
-                        offset: const Offset(0, -3.5),
-                        child: Transform.rotate(
-                          angle:
-                              stock.percentPriceChange() <= 0 ? -1.571 : 1.571,
-                          child: Icon(
-                            Icons.arrow_back_rounded,
-                            color: stock.percentPriceChange() < 0
-                                ? const Color(0xffE15353)
-                                : const Color(0xff3AB59E),
-                            size: 24.0,
-                          ),
+                  Builder(builder: (context) {
+                    final double percentPriceChange = stock.percentPriceChange(
+                        lastNth: StockGraph.kPriceHistoryDuration);
+
+                    if (percentPriceChange == 0) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Transform.translate(
+                      offset: const Offset(0, -3.5),
+                      child: Transform.rotate(
+                        angle: percentPriceChange <= 0 ? -1.571 : 1.571,
+                        child: Icon(
+                          Icons.arrow_back_rounded,
+                          color: percentPriceChange < 0
+                              ? const Color(0xffE15353)
+                              : const Color(0xff3AB59E),
+                          size: 24.0,
                         ),
-                      )),
+                      ),
+                    );
+                  }),
                   Expanded(
                       child: Align(
                     alignment: Alignment.centerRight,

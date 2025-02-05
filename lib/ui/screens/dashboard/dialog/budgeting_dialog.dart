@@ -31,7 +31,7 @@ class BudgetingDialog extends StatelessWidget {
         ),
         const SizedBox(height: 15.0),
         const Text(
-          "Total income earned in the last round",
+          "Total current unbudgeted income",
           textAlign: TextAlign.center,
           style: TextStyles.medium22,
         ),

@@ -231,13 +231,14 @@ class _BusinessSelectionScrenState extends State<BusinessSelectionScren> {
                             }
 
                             return Wrap(
+                              spacing: 10.0,
                               children: competitors
                                   .map((Player competitor) => Tooltip(
                                         triggerMode: TooltipTriggerMode.tap,
-                                        message: activePlayer.name,
+                                        message: competitor.name,
                                         verticalOffset: 20.0,
                                         child: PlayerAvatarWidget(
-                                          player: activePlayer,
+                                          player: competitor,
                                           radius: 18.0,
                                         ),
                                       ))
