@@ -49,7 +49,8 @@ class EconomyManager implements IManager {
   double _inflation = 1 + (inflationRate / 100);
 
   /// The current [EconomicCycle], which also acts as a multiplier for prices
-  EconomicCycle _current = EconomicCycle.recovery;
+  /// Starts at [EconomicCycle.recession]
+  EconomicCycle _current = EconomicCycle.recession;
   EconomicCycle get currentCycle => _current;
   EconomicCycle get next =>
       EconomicCycle.values[(_current.index + 1) % EconomicCycle.values.length];
@@ -59,8 +60,8 @@ class EconomyManager implements IManager {
   /// Updates the economic cycle, which does two things:
   void updateCycle() {
     /// 1. Increments the economic cycle
-    _current = EconomicCycle.values[
-        (EconomicCycle.recovery.index + 1) % EconomicCycle.values.length];
+    _current = EconomicCycle
+        .values[(currentCycle.index + 1) % EconomicCycle.values.length];
 
     /// 2. Increases the inflation by the [inflationRate]
     _inflation = _inflation * (1 + (inflationRate / 100));

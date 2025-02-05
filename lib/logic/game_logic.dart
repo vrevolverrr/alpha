@@ -28,6 +28,8 @@ class GameManager implements IManager {
   @override
   final Logger log = Logger("GameManager");
 
+  final Random _random = Random.secure();
+
   /// The current round of the game
   int _round = 0;
   int get round => _round;
@@ -47,35 +49,35 @@ class GameManager implements IManager {
 
   /// Instantiate all game logic controllers
   /// Game-Level logic controllers
-  final boardManager = BoardManager();
+  BoardManager boardManager = BoardManager();
 
-  final economyManager = EconomyManager();
-  final marketManager = FinancialMarketManager();
-  final worldEventManager = WorldEventManager();
+  EconomyManager economyManager = EconomyManager();
+  FinancialMarketManager marketManager = FinancialMarketManager();
+  WorldEventManager worldEventManager = WorldEventManager();
 
-  final playerManager = PlayerManager();
-  final opportunityManager = OpportunityManager();
+  PlayerManager playerManager = PlayerManager();
+  OpportunityManager opportunityManager = OpportunityManager();
 
   /// Player-Level logic controllers
-  final accountsManager = AccountsManager();
-  final budgetManager = BudgetManager();
+  AccountsManager accountsManager = AccountsManager();
+  BudgetManager budgetManager = BudgetManager();
 
-  final careerManager = CareerManager();
+  CareerManager careerManager = CareerManager();
 
-  final skillManager = SkillManager();
-  final statsManager = StatsManager();
-  final educationManager = EducationManager();
+  SkillManager skillManager = SkillManager();
+  StatsManager statsManager = StatsManager();
+  EducationManager educationManager = EducationManager();
 
-  final personalLifeManager = PersonalLifeManager();
+  PersonalLifeManager personalLifeManager = PersonalLifeManager();
 
-  final realEstateManager = RealEstateManager();
-  final carManager = CarManager();
-  final businessManager = BusinessManager();
+  RealEstateManager realEstateManager = RealEstateManager();
+  CarManager carManager = CarManager();
+  BusinessManager businessManager = BusinessManager();
 
-  final loanManager = LoanManager();
+  LoanManager loanManager = LoanManager();
 
   /// Utility-level logic controllers
-  final hintsManager = HintsManager();
+  HintsManager hintsManager = HintsManager();
 
   void startGame() {
     final List<Player> players = playerManager.players;
@@ -112,9 +114,8 @@ class GameManager implements IManager {
       final int happiness = statsManager.getPlayerStats(player).happiness;
 
       /// Calculate total cash
-      final double totalCash =
-          accountsManager.getAvailableBalance(player, includeUnbudgeted: true) +
-              accountsManager.getPlayerAccount(player).cpf.balance;
+      final double totalCash = accountsManager.getAvailableBalance(player) +
+          accountsManager.getPlayerAccount(player).cpf.balance;
 
       /// Calculate investment portfolio value
       final double totalInvestmentValue =
@@ -224,11 +225,11 @@ class GameManager implements IManager {
     /// Increment the economic cycle
     economyManager.updateCycle();
 
-    /// Update the market state ie incrementing stock prices state
-    marketManager.updateMarket();
-
     /// Increment the world event
     worldEventManager.incrementWorldEvent();
+
+    /// Update the market state ie incrementing stock prices state
+    marketManager.updateMarket();
 
     /// Reset cashflow for all players to track cashflow for new round
     accountsManager.resetPlayerCashflow();
@@ -254,6 +255,8 @@ class GameManager implements IManager {
 
   /// This method updates all relavant systems and increments the game turn.
   void nextTurn() {
+    log.info(
+        "------------------------------- Next Turn -------------------------------");
     _turn = (_turn + 1) % playerManager.getPlayerCount();
 
     if (_turn == 0) {
@@ -279,7 +282,7 @@ class GameManager implements IManager {
       return lastDiceRoll.roll;
     }
 
-    int roll = Random().nextInt(6) + 1;
+    int roll = _random.nextInt(6) + 1;
     lastDiceRoll = DiceRollResult(roll, round, turn);
 
     log.info("Dice rolled with result: $roll");

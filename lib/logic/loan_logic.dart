@@ -245,8 +245,7 @@ class LoanManager implements IManager {
       amount = contract.amountRemaining;
     }
 
-    final double availableBalance =
-        accountsManager.getAvailableBalance(player, includeUnbudgeted: true);
+    final double availableBalance = accountsManager.getAvailableBalance(player);
 
     if (availableBalance < amount) {
       log.warning(
@@ -255,7 +254,7 @@ class LoanManager implements IManager {
     }
 
     contract.repay(amount);
-    accountsManager.deductAny(player, amount, includeUnbudgeted: true);
+    accountsManager.deductAny(player, amount);
 
     LoanRepaymentReceipt receipt = LoanRepaymentReceipt(
         amountRemaining: contract.amountRemaining, amountPaid: amount);
