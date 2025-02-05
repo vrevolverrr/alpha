@@ -108,19 +108,21 @@ class InvestmentAccount extends Account {
   }
 
   /// Get the total percentage profit of a [Stock] of a [StockItem] owned by the [Player].
-  double getStockProfitPercent(StockItem stockItem) {
+  double getStockProfitPercent(StockItem stockItem, {int? endNth}) {
+    endNth = endNth ?? gameManager.round;
+
+    final Iterable<ShareOwnership> shares = _shareOwnership
+        .where((share) => share.item == stockItem && share.round <= endNth!);
+
     /// Total Buy In = Sum of (Buy In Price * Units)
-    final double totalBuyIn = _shareOwnership
-        .where((share) => share.item == stockItem)
-        .fold(0, (prev, share) => prev + share.buyinPrice * share.units);
+    final double totalBuyIn =
+        shares.fold(0, (prev, share) => prev + share.buyinPrice * share.units);
 
     /// Total Value Now = Sum of (Current Price * Units)
-    final double totalValueNow = _shareOwnership
-        .where((share) => share.item == stockItem)
-        .fold(
-            0,
-            (prev, share) =>
-                prev + share.units * marketManager.getStockPrice(share.item));
+    final double totalValueNow = shares.fold(
+        0,
+        (prev, share) =>
+            prev + share.units * marketManager.getStockPrice(share.item));
 
     /// Handle zero base value case
     if (totalBuyIn == 0) {
@@ -206,13 +208,14 @@ class InvestmentAccount extends Account {
     return shareOwnership.where((share) => share.round <= nth!).fold(
         0,
         (prev, share) =>
-            prev + share.units * marketManager.getStockPrice(share.item));
+            prev +
+            share.units * marketManager.getStockPrice(share.item, nth: nth));
   }
 
   /// Gets the change in portfolio value from the [startNth] round to the [endNth] round.
   /// If no [startNth] is provided, the change from the last round is calculated.
   double getPortfolioValueChange({int? startNth, int? endNth}) {
-    startNth = (startNth ?? 1).clamp(1, gameManager.round);
+    startNth = (startNth ?? gameManager.round - 1).clamp(1, gameManager.round);
     endNth = (endNth ?? gameManager.round).clamp(1, gameManager.round);
 
     final double startValue = getPortfolioValue(nth: startNth);
@@ -223,7 +226,10 @@ class InvestmentAccount extends Account {
 
   /// Gets the percentage change in portfolio value from the [startNth] round to the [endNth] round.
   /// If no startNth is provided, the change from the last round is calculated.
-  double getPortfolioPercentChange({int? startNth, int? endNth}) {
+  double getPortfolioValueChangePercent({int? startNth, int? endNth}) {
+    startNth = (startNth ?? gameManager.round - 1).clamp(1, gameManager.round);
+    endNth = (endNth ?? gameManager.round).clamp(1, gameManager.round);
+
     final double startValue = getPortfolioValue(nth: startNth);
     final double endValue = getPortfolioValue(nth: endNth);
 
@@ -243,28 +249,17 @@ class InvestmentAccount extends Account {
   double getPortfolioProfit({int? nth}) {
     nth = nth ?? gameManager.round;
 
-    double profit = 0.0;
+    final List<ShareOwnership> shares =
+        _shareOwnership.where((share) => share.round <= nth!).toList();
 
-    for (ShareOwnership share in shareOwnership) {
-      if (share.round > nth) continue;
-
-      profit += (marketManager.getStockPrice(share.item, nth: nth) -
-              share.buyinPrice) *
-          share.units;
-    }
+    final double profit = shares.fold(
+        0.0,
+        (value, share) =>
+            value +
+            (marketManager.getStockPrice(share.item) - share.buyinPrice) *
+                share.units);
 
     return profit;
-  }
-
-  /// Gets the total profit of the player's portfolio from [startNth] to [endNth] round.
-  double getPortfolioProfitChange({int? startNth, int? endNth}) {
-    startNth = startNth ?? gameManager.round - 1;
-    endNth = endNth ?? gameManager.round;
-
-    final double startProfit = getPortfolioProfit(nth: startNth);
-    final double endProfit = getPortfolioProfit(nth: endNth);
-
-    return endProfit - startProfit;
   }
 
   double getPortfolioProfitPercentChange({int? startNth, int? endNth}) {
@@ -314,7 +309,8 @@ class PlayerAccount extends ChangeNotifier {
   double _positiveCashFlow = 0.0;
   double get positiveCashFlow => _positiveCashFlow;
 
-  double get availableBalance => savings.balance + investments.balance;
+  double get availableBalance =>
+      savings.balance + savings.unbudgeted + investments.balance;
 
   double get totalBalance =>
       savings.balance + cpf.balance + investments.balance;
@@ -379,12 +375,8 @@ class AccountsManager implements IManager {
     return getPlayerAccount(player).savings;
   }
 
-  double getAvailableBalance(Player player, {bool includeUnbudgeted = false}) {
+  double getAvailableBalance(Player player) {
     final PlayerAccount account = getPlayerAccount(player);
-
-    if (includeUnbudgeted) {
-      return account.availableBalance + account.savings.unbudgeted;
-    }
 
     return account.availableBalance;
   }
@@ -469,12 +461,10 @@ class AccountsManager implements IManager {
         "Deducted $amount from player ${player.name}'s investment account.");
   }
 
-  void deductAny(Player player, double amount,
-      {bool includeUnbudgeted = false}) {
+  void deductAny(Player player, double amount) {
     PlayerAccount account = getPlayerAccount(player);
 
-    final double availableBalance =
-        getAvailableBalance(player, includeUnbudgeted: includeUnbudgeted);
+    final double availableBalance = getAvailableBalance(player);
 
     if (availableBalance < amount) {
       log.warning(
@@ -482,11 +472,13 @@ class AccountsManager implements IManager {
       return;
     }
 
+    /// First deduct from savings
     final double deductibleSavings = min(account.savings.balance, amount);
     final double amountAfterSavings = amount - deductibleSavings;
 
     account.savings.deduct(deductibleSavings);
 
+    /// Then deduct from investments if necessary
     final double deductibleInvestments =
         min(account.investments.balance, amountAfterSavings);
     final double amountAfterInvestments =
@@ -494,8 +486,9 @@ class AccountsManager implements IManager {
 
     account.investments.deduct(deductibleInvestments);
 
+    /// Finally deduct from unbudgeted savings if necessary
     double deductibleUnbudgeted = 0.0;
-    if (includeUnbudgeted && amountAfterInvestments > 0) {
+    if (amountAfterInvestments > 0) {
       deductibleUnbudgeted =
           min(account.savings.unbudgeted, amountAfterInvestments);
 
