@@ -138,7 +138,7 @@ class PlayerAccountBalanceStatCard extends StatelessWidget {
         width: 270.0,
         emoji: "💵",
         title: "Balance",
-        value: accounts.totalBalance,
+        value: accounts.availableBalance,
         isCurrency: true,
       ),
     );

@@ -99,9 +99,7 @@ class PlayerDebt extends ChangeNotifier {
 
 class LoanManager implements IManager {
   static const kIncomeToDebtPaymentRatio = 0.80;
-
-  static const kBusinessLoanAmount = 20000.0;
-  static const kBusinessLoanRepaymentPeriod = 8;
+  static const kBusinessLoanAmount = 10000.0;
 
   @override
   final Logger log = Logger("LoanManager");
@@ -178,7 +176,7 @@ class LoanManager implements IManager {
 
     if (!canAfford) {
       log.info(
-          "Player ${player.name} cannot afford new loan, current repayment per round: $totalRepaymentPerRound but income is ${careerManager.getPlayerJob(player).salary}");
+          "Player ${player.name} cannot afford new loan, current repayment per round: $totalRepaymentPerRound but income is ${accountsManager.getPlayerCashflow(player)}");
       return const LoanApplicationOutcome(
           isApproved: false, rejectReason: LoanRejectReason.insufficientIncome);
     }

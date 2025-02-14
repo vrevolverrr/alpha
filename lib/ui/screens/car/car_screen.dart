@@ -49,7 +49,8 @@ class _CarScreenState extends State<CarScreen> {
   }
 
   void _handleBuyCar(BuildContext context, Car car) {
-    if (accountsManager.getAvailableBalance(activePlayer) >= car.price) {
+    if (accountsManager.getAvailableBalance(activePlayer) >=
+        carManager.getCarPriceWithCOE(_selectedCar)) {
       context
           .showDialog(buildBuyCarWithoutDebtDialog(context, onTapConfirm: () {
         carManager.buyCar(activePlayer, car, takeLoan: false);

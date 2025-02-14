@@ -2,7 +2,7 @@ name: alpha
 description: "The companion app for the IIC Cashflow Game"
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 0.3.1+4
+version: 0.4.1+1
 
 environment:
   sdk: ">=3.3.1 <4.0.0"

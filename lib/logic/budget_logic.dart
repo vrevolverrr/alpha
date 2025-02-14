@@ -102,6 +102,7 @@ class BudgetManager implements IManager {
 
     accountsManager.creditToSavings(
         player, totalBudget * allocation[Budget.savings]! / 10);
+
     accountsManager.creditToInvestments(
         player, totalBudget * allocation[Budget.investments]! / 10);
 

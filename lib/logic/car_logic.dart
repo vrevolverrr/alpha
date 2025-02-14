@@ -39,7 +39,7 @@ class Car {
     required this.name,
     required this.price,
     this.depreciationRate = 0.065,
-    this.repaymentPeriod = 8,
+    this.repaymentPeriod = 5,
     required this.type,
     required this.happinessBonus,
     required this.esgBonus,
@@ -68,7 +68,7 @@ class CarManager implements IManager {
   bool canPurchaseCar(Player player, Car car) {
     final double availableBalance = accountsManager.getAvailableBalance(player);
 
-    if (availableBalance > car.price) {
+    if (availableBalance > carManager.getCarPriceWithCOE(car)) {
       return true;
     }
 

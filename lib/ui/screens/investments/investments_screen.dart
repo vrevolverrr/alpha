@@ -277,7 +277,7 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                   )),
           Builder(
             builder: (context) {
-              final double profitChange = investments.getPortfolioValueChange();
+              final double profitChange = investments.getPortfolioProfit();
               final double percentChange =
                   investments.getPortfolioValueChangePercent();
 

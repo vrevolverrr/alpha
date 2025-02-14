@@ -11,9 +11,9 @@ class RealEstateSelectionLandingdialog extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Purchasing a real estate is a long-term investment that can provide a decent income stream, "
+            "Purchasing a real estate is a long-term investment that can provide a high income stream, "
             "as the value of the property appreciates every round. You can take a mortgage "
-            "if your cash flow per round is sufficient to cover the loan repayments.",
+            "if you have sufficient cashflow to repay the loan.",
             style: TextStyles.medium22,
             textAlign: TextAlign.center,
           ),

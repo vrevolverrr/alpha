@@ -202,14 +202,16 @@ class InvestmentAccount extends Account {
   }
 
   /// Gets the total portfolio value of the player up to the nth round.
-  double getPortfolioValue({int? nth}) {
+  double getPortfolioValue({int? nth, int? priceNth}) {
     nth = (nth ?? gameManager.round).clamp(1, gameManager.round);
+    priceNth = priceNth ?? nth;
 
     return shareOwnership.where((share) => share.round <= nth!).fold(
         0,
         (prev, share) =>
             prev +
-            share.units * marketManager.getStockPrice(share.item, nth: nth));
+            share.units *
+                marketManager.getStockPrice(share.item, nth: priceNth));
   }
 
   /// Gets the change in portfolio value from the [startNth] round to the [endNth] round.
@@ -224,14 +226,12 @@ class InvestmentAccount extends Account {
     return endValue - startValue;
   }
 
-  /// Gets the percentage change in portfolio value from the [startNth] round to the [endNth] round.
+  /// Gets the percentage change in portfolio value compared to the last round.
   /// If no startNth is provided, the change from the last round is calculated.
-  double getPortfolioValueChangePercent({int? startNth, int? endNth}) {
-    startNth = (startNth ?? gameManager.round - 1).clamp(1, gameManager.round);
-    endNth = (endNth ?? gameManager.round).clamp(1, gameManager.round);
-
-    final double startValue = getPortfolioValue(nth: startNth);
-    final double endValue = getPortfolioValue(nth: endNth);
+  double getPortfolioValueChangePercent() {
+    final double startValue = getPortfolioValue(nth: gameManager.round - 1);
+    final double endValue = getPortfolioValue(
+        nth: gameManager.round - 1, priceNth: gameManager.round);
 
     /// Handle zero base value case
     if (startValue == 0) {
@@ -245,35 +245,13 @@ class InvestmentAccount extends Account {
     return double.parse(percentChange.toStringAsFixed(2));
   }
 
-  /// Gets the total profit of the player's portfolio up to the [nth] round.
-  double getPortfolioProfit({int? nth}) {
-    nth = nth ?? gameManager.round;
+  /// Gets the total profit of the player's portfolio compared to the last round.
+  double getPortfolioProfit() {
+    final double startValue = getPortfolioValue(nth: gameManager.round - 1);
+    final double endValue = getPortfolioValue(
+        nth: gameManager.round - 1, priceNth: gameManager.round);
 
-    final List<ShareOwnership> shares =
-        _shareOwnership.where((share) => share.round <= nth!).toList();
-
-    final double profit = shares.fold(
-        0.0,
-        (value, share) =>
-            value +
-            (marketManager.getStockPrice(share.item) - share.buyinPrice) *
-                share.units);
-
-    return profit;
-  }
-
-  double getPortfolioProfitPercentChange({int? startNth, int? endNth}) {
-    startNth = startNth ?? gameManager.round - 1;
-    endNth = endNth ?? gameManager.round;
-
-    final double startProfit = getPortfolioProfit(nth: startNth);
-    final double endProfit = getPortfolioProfit(nth: endNth);
-
-    if (startProfit == 0) return 0.0;
-
-    final double percentChange = (endProfit - startProfit) / startProfit * 100;
-
-    return double.parse(percentChange.toStringAsFixed(2));
+    return endValue - startValue;
   }
 }
 
@@ -318,7 +296,8 @@ class PlayerAccount extends ChangeNotifier {
   PlayerAccount(
       {double savingsInitial = 0.0,
       double cpfInitial = 0.0,
-      double investmentsInitial = 0.0}) {
+      double investmentsInitial = 0.0,
+      double positiveCashFlowInitial = 0.0}) {
     savings.add(savingsInitial);
     cpf.add(cpfInitial);
     investments.add(investmentsInitial);
@@ -326,6 +305,8 @@ class PlayerAccount extends ChangeNotifier {
     savings.addListener(() => notifyListeners());
     cpf.addListener(() => notifyListeners());
     investments.addListener(() => notifyListeners());
+
+    _positiveCashFlow = positiveCashFlowInitial;
   }
 
   void addToCashflow(double amount) {
@@ -354,8 +335,10 @@ class AccountsManager implements IManager {
 
   void initialisePlayerAccounts(List<Player> players) {
     for (final player in players) {
-      _playerAccounts[player] =
-          PlayerAccount(savingsInitial: 4000.0, investmentsInitial: 1000.0);
+      _playerAccounts[player] = PlayerAccount(
+          savingsInitial: 4000.0,
+          investmentsInitial: 1000.0,
+          positiveCashFlowInitial: careerManager.getPlayerJob(player).salary);
     }
   }
 
