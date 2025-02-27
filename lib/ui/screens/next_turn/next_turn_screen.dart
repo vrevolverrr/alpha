@@ -36,6 +36,14 @@ class PlayersMenuScreen extends StatelessWidget {
               },
             ),
             TextButton(
+              child: const Text('Change Turn'),
+              onPressed: () {
+                if (controller.text == "alpha0502") {
+                  _handleChangeTurn(context);
+                }
+              },
+            ),
+            TextButton(
               child: const Text('End Game'),
               onPressed: () {
                 if (controller.text == "alpha0502") {
@@ -48,6 +56,23 @@ class PlayersMenuScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _handleChangeTurn(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) => SimpleDialog(
+              title: const Text("Change Turn"),
+              children: playerManager.playersList.players.map((player) {
+                return SimpleDialogOption(
+                  onPressed: () {
+                    gameManager.changeTurn(player);
+                    context.navigateAndPopTo(const PlayersMenuScreen());
+                  },
+                  child: Text(player.name),
+                );
+              }).toList(),
+            ));
   }
 
   @override

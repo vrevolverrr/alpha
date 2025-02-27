@@ -99,7 +99,7 @@ class PlayerDebt extends ChangeNotifier {
 
 class LoanManager implements IManager {
   static const kIncomeToDebtPaymentRatio = 0.80;
-  static const kBusinessLoanAmount = 10000.0;
+  static const kBusinessLoanAmount = 12000.0;
 
   @override
   final Logger log = Logger("LoanManager");

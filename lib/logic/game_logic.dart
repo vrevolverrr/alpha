@@ -276,6 +276,14 @@ class GameManager implements IManager {
         "Current round: $round, Current Turn: $_turn, Active Player: ${playerManager.getActivePlayer().name}");
   }
 
+  void changeTurn(Player player) {
+    _turn = playerManager.players.indexOf(player);
+    playerManager.setActivePlayer(_turn);
+
+    log.info(
+        "Current round: $round, Current Turn: $_turn, Active Player: ${playerManager.getActivePlayer().name}");
+  }
+
   int rollDice() {
     if (turn == lastDiceRoll.turn && round == lastDiceRoll.round) {
       log.warning("Player has already rolled the dice this turn");
