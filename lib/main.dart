@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 
-const String version = "0.4.1 Build 1";
+const String version = "0.4.1 Build 4";
 
 void main() {
   /// Configure logging

@@ -237,13 +237,14 @@ class BusinessManager implements IManager {
     final double roll = _random.nextDouble();
     final double risk = getRndSuccessRate(business);
 
+    accountsManager.deductAny(player, rndCost);
+
     if (roll > risk) {
-      log.warning(
+      log.info(
           "Player ${player.name} failed R&D for business ${business.name}, roll: $roll, risk: $risk");
       return false;
     }
 
-    accountsManager.deductAny(player, rndCost);
     business.completeRnD();
 
     log.info(
