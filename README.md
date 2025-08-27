@@ -11,8 +11,6 @@
   ![Version](https://img.shields.io/badge/version-0.4.1--build.4-blue)
   ![License](https://img.shields.io/badge/license-CC--BY--NC--4.0-blue)
   
-  <br/>
-  
   <small>
     📖 <a href="docs/IIC%20Cashflow%20Game%202025%20-%20Manual.pdf">Game Manual</a> • 
     📰 <a href="https://blogs.ntu.edu.sg/sao-ntuiic/national-cashflow-competition-boardgame/">NTU IIC Blog Post</a> • 
