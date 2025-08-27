@@ -9,6 +9,14 @@
   ![iOS](https://img.shields.io/badge/iOS-000000?style=flat&logo=ios&logoColor=white)
   ![Version](https://img.shields.io/badge/version-0.4.1--build.4-blue)
   ![License](https://img.shields.io/badge/license-CC--BY--NC--4.0-blue)
+  
+  <br/>
+  
+  <small>
+    📖 <a href="docs/IIC%20Cashflow%20Game%202025%20-%20Manual.pdf">Game Manual</a> • 
+    📰 <a href="https://blogs.ntu.edu.sg/sao-ntuiic/national-cashflow-competition-boardgame/">NTU IIC Blog Post</a> • 
+    📚 <a href="docs/IIC%20Cashflow%20Game%202025%20-%20Yearbook.pdf">Yearbook Write-up</a>
+  </small>
 </div>
 
 ---
@@ -51,10 +59,6 @@
 
 The game challenges players to navigate Singapore's financial landscape through strategic decision-making across multiple domains: career advancement, stock market investments, business management, asset acquisition, and personal life progression. Players compete to maximize their final score through a sophisticated scoring system that balances wealth accumulation, happiness, debt management, and ESG (Environmental, Social, Governance) contributions.
 
-**Additional Resources:**
-- 📖 [Game Manual](docs/IIC%20Cashflow%20Game%202025%20-%20Manual.pdf) - Complete gameplay instructions and rules
-- 📰 [NTU IIC Blog Post](https://blogs.ntu.edu.sg/sao-ntuiic/national-cashflow-competition-boardgame/) - Official announcement and project overview
-- 📚 [Yearbook Write-up](docs/IIC%20Cashflow%20Game%202025%20-%20Yearbook.pdf) - Project documentation and reflection
 
 ### Mission & Motivation
 
