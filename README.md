@@ -1,9 +1,6 @@
-# IIC Cashflow Game 2025
-
 <div align="center">
-  <img src="assets/images/logo/cashflow.png" alt="Cashflow Game Logo" width="300"/>
-  
-  **Project Codename: Alpha**
+  <img src="assets/images/logo/cashflow.png" alt="Cashflow Game Logo" width="350"/>
+  <br/>
   
   A comprehensive digital financial literacy board game designed to teach money management, investment strategies, and entrepreneurship within Singapore's economic landscape.
 
@@ -50,13 +47,13 @@
 
 ### Project Overview
 
-**IIC Cashflow Game 2025** (Project Codename: Alpha) is an innovative digital board game developed by Bryan Soong and licensed to NTU's Investment Interactive Club (IIC) as part of their AY24/25 digitalization efforts. This iOS-exclusive Flutter application transforms complex financial concepts into an engaging, interactive learning experience.
+**IIC Cashflow Game 2025** (Project Alpha) is an innovative digital board game developed by Bryan Soong and team, licensed to NTU's Investment Interactive Club (IIC) as part of their AY24/25 digitalization efforts. This iOS-exclusive Flutter application transforms complex financial concepts into an engaging, interactive learning experience.
 
 The game challenges players to navigate Singapore's financial landscape through strategic decision-making across multiple domains: career advancement, stock market investments, business management, asset acquisition, and personal life progression. Players compete to maximize their final score through a sophisticated scoring system that balances wealth accumulation, happiness, debt management, and ESG (Environmental, Social, Governance) contributions.
 
 ### Mission & Motivation
 
-Our mission is to democratize financial education by making it accessible, practical, and engaging. In an era where financial transactions increasingly rely on digital platforms, this game empowers players to:
+Our mission is to democratize financial education by making it accessible, practical, and engaging. In an era where financial transactions increasingly rely on digital platforms, enpowering players to:
 
 - **Master Financial Decision-Making**: Experience real-world financial scenarios in a risk-free environment
 - **Understand Investment Strategies**: Learn stock market dynamics, portfolio management, and ESG investing
@@ -255,6 +252,6 @@ Their dedication and expertise were instrumental in bringing this educational fi
 
 *Empowering the next generation of financially literate individuals through innovative gamification*
 
-Version 0.4.1 Build 4 | Project Codename: Alpha
+Version 0.4.1 Build 4 (Discontinued)
 
 </div>
