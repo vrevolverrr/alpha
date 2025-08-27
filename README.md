@@ -196,19 +196,34 @@ All documentation, game mechanics, and technical implementation details have bee
 
 ## 📄 License
 
-This project is developed by **Bryan Soong** and licensed to NTU Investment Interactive Club (IIC) for educational purposes.
+**IIC Cashflow Game 2025** is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](LICENSE).
 
-**License**: [Creative Commons Attribution-NonCommercial 4.0 International License](LICENSE)
+### License Summary
 
-**Key Terms**:
-- ✅ **Educational Use**: Designed for financial literacy education and should be used in accordance with educational objectives
-- ✅ **Sharing & Adaptation**: Free to share and modify for non-commercial purposes with proper attribution
-- ❌ **Commercial Use Prohibited**: Commercial use or distribution is strictly forbidden without explicit written permission from Bryan Soong
-- 📝 **Attribution Required**: Must credit Bryan Soong and indicate if changes were made
+This software is provided for educational and non-commercial purposes only.
 
-**Copyright**: © 2025 Bryan Soong. Licensed to NTU Investment Interactive Club.
+**Permitted Uses:**
+- Educational instruction and learning
+- Academic research and analysis
+- Non-commercial sharing and modification with attribution
 
-For commercial licensing inquiries, please contact Bryan Soong.
+**Restrictions:**
+- Commercial use, distribution, or monetization is strictly prohibited
+- All derivative works must maintain the same license terms
+- Attribution to the original author is required
+
+### Copyright Notice
+
+© 2025 Bryan Soong. All rights reserved.
+
+Licensed to Nanyang Technological University Investment Interactive Club (NTU IIC) for educational purposes.
+
+### Contact Information
+
+For licensing inquiries or permissions beyond the scope of this license, please contact:
+
+**Bryan Soong**  
+Email: bryansoong35@gmail.com
 
 ---
 
