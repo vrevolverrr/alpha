@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/images/logo/cashflow.png" alt="Cashflow Game Logo" width="350"/>
+  <img src="assets/images/logo/cashflow.png" alt="Cashflow Game Logo" width="400"/>
   <br/>
   
   A comprehensive digital financial literacy board game designed to teach money management, investment strategies, and entrepreneurship within Singapore's economic landscape.
@@ -50,6 +50,11 @@
 **IIC Cashflow Game 2025** (Project Alpha) is an innovative digital board game developed by Bryan Soong and team, licensed to NTU's Investment Interactive Club (IIC) as part of their AY24/25 digitalization efforts. This iOS-exclusive Flutter application transforms complex financial concepts into an engaging, interactive learning experience.
 
 The game challenges players to navigate Singapore's financial landscape through strategic decision-making across multiple domains: career advancement, stock market investments, business management, asset acquisition, and personal life progression. Players compete to maximize their final score through a sophisticated scoring system that balances wealth accumulation, happiness, debt management, and ESG (Environmental, Social, Governance) contributions.
+
+**Additional Resources:**
+- 📖 [Game Manual](docs/IIC%20Cashflow%20Game%202025%20-%20Manual.pdf) - Complete gameplay instructions and rules
+- 📰 [NTU IIC Blog Post](https://blogs.ntu.edu.sg/sao-ntuiic/national-cashflow-competition-boardgame/) - Official announcement and project overview
+- 📚 [Yearbook Write-up](docs/IIC%20Cashflow%20Game%202025%20-%20Yearbook.pdf) - Project documentation and reflection
 
 ### Mission & Motivation
 
@@ -229,16 +234,16 @@ Email: bryansoong35@gmail.com
 Sincere gratitude to the following individuals who contributed to the development of the IIC Cashflow Game 2025:
 
 **Development Team:**
-- **Raphel Sim**
-- **Eldon Lim**
+- Raphel Sim
+- Eldon Lim
 
 **Art & Design:**
-- **Chooi Jia Yue**
-- **Neriah Tan**
+- Chooi Jia Yue
+- Neriah Tan
 
 **Game Design:**
-- **Phoon Mei Gi**
-- **Kevin Yok**
+- Phoon Mei Gi
+- Kevin Yok
 
 Their dedication and expertise were instrumental in bringing this educational financial literacy game to life.
 
