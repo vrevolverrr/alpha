@@ -50,3 +50,5 @@ macos/
 windows/
 
 ios/Runner.xcodeproj/
+
+.vscode/
