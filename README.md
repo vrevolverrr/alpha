@@ -227,6 +227,26 @@ Email: bryansoong35@gmail.com
 
 ---
 
+## 🙏 Special Thanks
+
+Sincere gratitude to the following individuals who contributed to the development of the IIC Cashflow Game 2025:
+
+**Development Team:**
+- **Raphel Sim**
+- **Eldon Lim**
+
+**Art & Design:**
+- **Chooi Jia Yue**
+- **Neriah Tan**
+
+**Game Design:**
+- **Phoon Mei Gi**
+- **Kevin Yok**
+
+Their dedication and expertise were instrumental in bringing this educational financial literacy game to life.
+
+---
+
 <div align="center">
   
 **Developed with ❤️ by Bryan Soong**
