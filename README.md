@@ -24,7 +24,7 @@
 
 - [Introduction](#introduction)
   - [Project Overview](#project-overview)
-  - [Mission & Motivation](#mission--motivation)
+  - [Motivation](#motivation)
 - [Technical Stack](#technical-stack)
   - [Architecture & Patterns](#architecture--patterns)
   - [State Management](#state-management)
@@ -59,15 +59,9 @@
 The game challenges players to navigate Singapore's financial landscape through strategic decision-making across multiple domains: career advancement, stock market investments, business management, asset acquisition, and personal life progression. Players compete to maximize their final score through a sophisticated scoring system that balances wealth accumulation, happiness, debt management, and ESG (Environmental, Social, Governance) contributions.
 
 
-### Mission & Motivation
+### Motivation
 
-Our mission is to democratize financial education by making it accessible, practical, and engaging. In an era where financial transactions increasingly rely on digital platforms, enpowering players to:
-
-- **Master Financial Decision-Making**: Experience real-world financial scenarios in a risk-free environment
-- **Understand Investment Strategies**: Learn stock market dynamics, portfolio management, and ESG investing
-- **Develop Entrepreneurial Skills**: Navigate business creation, competition, and strategic growth
-- **Embrace Sustainable Finance**: Discover how ESG factors influence modern financial success
-- **Build Financial Literacy**: Gain practical knowledge of budgeting, loans, and wealth management
+The motivation for building the IIC Cashflow Game 2025 is to democratize financial education by making it accessible, practical, and engaging. In an era where financial transactions increasingly rely on digital platforms, we enpower the youth to experience real-world financial scenarios in a risk free environment, gaining exposure to essential financial knowledge through a fun and hands on experience.
 
 ---
 
@@ -98,22 +92,14 @@ lib/
 │   ├── career_logic.dart     # Career progression system
 │   ├── economy_logic.dart    # Economic cycle management
 │   ├── game_logic.dart       # Main game orchestration
-│   └── data/                 # Game data models
+│   ├── ...
+│   └── data/                 # Game data objects
 ├── ui/                       # User interface components
-│   ├── common/              # Reusable UI components
+│   ├── common/              # Shared UI components
 │   └── screens/             # Game screen implementations
 ├── services.dart            # Global service providers
-└── main.dart               # Application entry point
+└── main.dart                # Application entry point
 ```
-
-**Key Dependencies**:
-- `provider`: State management and reactive programming
-- `get_it`: Dependency injection and service location
-- `lottie`: Animation support for enhanced UX
-- `vector_math`: Mathematical operations for game calculations
-- `logging`: Comprehensive logging system
-
----
 
 ## 🎮 Game Features
 
