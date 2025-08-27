@@ -237,8 +237,8 @@ Email: bryansoong35@gmail.com
 Sincere gratitude to the following individuals who contributed to the development of the IIC Cashflow Game 2025:
 
 **Development Team:**
-- Raphel Sim
-- Eldon Lim
+- Raphel Sim @RaphelSim
+- Eldon Lim @EldonLim
 
 **Art & Design:**
 - Chooi Jia Yue
