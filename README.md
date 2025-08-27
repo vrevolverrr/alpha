@@ -1,6 +1,7 @@
 <div align="center">
   <img src="assets/images/logo/cashflow.png" alt="Cashflow Game Logo" width="400"/>
-  <br/>
+  
+  <br/><br/>
   
   A comprehensive digital financial literacy board game designed to teach money management, investment strategies, and entrepreneurship within Singapore's economic landscape.
 
