@@ -20,7 +20,7 @@
 
 ---
 
-<div style="display: flex; flex-direction: row; justify-content: center;">
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center">
   <img src="docs/gifs/career-preview.gif" alt="In-game preview of the career selection screen" width="380">
   <img src="docs/gifs/investements-preview.gif" alt="In-game preview of the stock market screen" width="380">
 </div>
