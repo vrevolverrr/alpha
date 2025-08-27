@@ -16,28 +16,52 @@ The game features a sophisticated stock market simulation using **Geometric Brow
 
 ## Price Simulation Algorithm
 
-**Geometric Brownian Motion Formula**:
+**Base Geometric Brownian Motion Formula**:
 ```
-S(t) = S₀ × exp((μ - σ²/2) × dt + σ × √dt × Z)
+S_new = S_current × exp(totalMovement)
 ```
 
-Where:
-- `S₀`: Initial stock price
-- `μ`: Drift rate (expected return)
-- `σ`: Volatility
-- `dt`: Time step (1 round)
-- `Z`: Random normal variable N(0,1)
+**Total Movement Calculation**:
+```
+totalMovement = baseMovement + sectorTrendEffect + marketSentimentEffect
+```
+
+**Component Formulas**:
+1. **Base Movement (Standard GBM)**:
+   ```
+   baseMovement = (μ - 0.5 × σ²) × dt + σ × dW
+   ```
+   Where: `dW = √dt × Z` (Wiener process increment)
+
+2. **Sector Trend Effect**:
+   ```
+   sectorTrendEffect = sectorTrend × 0.8 × dt
+   ```
+
+3. **Market Sentiment Effect**:
+   ```
+   marketSentimentEffect = marketSentiment × 0.6 × dt
+   ```
+
+**Parameters**:
+- `S_current`: Current stock price
+- `μ`: Stock's drift rate (percent expected return)
+- `σ`: Stock's volatility (percent)
+- `dt`: Time step = T/N = 15.0/140 ≈ 0.107 per round
+- `Z`: Gaussian random variable N(0,1) using Box-Muller transform
+- `sectorTrend`: ±1.0 based on world events
+- `marketSentiment`: Economic cycle influence
 
 **Market Influences**:
 - **Economic Cycle Impact**: 
-  - Depression: -50% sentiment
-  - Recession: 0% sentiment  
-  - Recovery: +50% sentiment
-  - Boom: +100% sentiment
+  - Depression: -0.5 market sentiment
+  - Recession: 0.0 market sentiment  
+  - Recovery: +0.5 market sentiment
+  - Boom: +1.0 market sentiment
 
-- **World Event Impact**: ±100% sector-specific trends
-- **Sector Trend Drift**: 0.8 weight factor
-- **Market Sentiment Drift**: 0.6 weight factor
+- **World Event Impact**: ±1.0 sector trend for affected sectors
+- **Sector Trend Drift Constant**: 0.8 (kSectorTrendDrift)
+- **Market Sentiment Drift Constant**: 0.6 (kMarketSentimentDrift)
 
 ## Investment Mechanics
 
